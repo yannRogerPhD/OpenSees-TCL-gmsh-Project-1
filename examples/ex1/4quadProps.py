@@ -11,7 +11,7 @@
 # $rho: element mass density (optional, default = 0.0)
 # $b1, $b2: constant body forces (optional, default = 0.0)
 
-quadMaterials = {
+quad_materials = {
     0: {  # Default material for elements with physical tag 0
         "thick": 1.0,
         "type": "PlaneStrain",
@@ -42,9 +42,3 @@ quadMaterials = {
     # Add more materials as needed
 }
 
-print("Use more general formula for weightX and weightY\nSee formula\n")
-
-""" 
-unitWeightX = (massDen - fluidDen) * gVal * sin((alpha/180) * pi)
-unitWeightY = - (massDen - fluidDen) * gVal * cos((alpha/180) * pi)
-"""

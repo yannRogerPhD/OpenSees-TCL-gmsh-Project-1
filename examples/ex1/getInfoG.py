@@ -9,7 +9,7 @@ please note that:
 """
 import sys
 
-meshFile = 'model.msh'
+meshFile = 'model1.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
