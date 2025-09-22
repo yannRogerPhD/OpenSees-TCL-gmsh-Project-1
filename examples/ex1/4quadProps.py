@@ -43,3 +43,8 @@ quadMaterials = {
 }
 
 print("Use more general formula for weightX and weightY\nSee formula\n")
+
+""" 
+unitWeightX = (massDen - fluidDen) * gVal * sin((alpha/180) * pi)
+unitWeightY = - (massDen - fluidDen) * gVal * cos((alpha/180) * pi)
+"""
