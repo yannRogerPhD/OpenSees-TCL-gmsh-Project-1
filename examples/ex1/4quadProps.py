@@ -42,4 +42,4 @@ quadMaterials = {
     # Add more materials as needed
 }
 
-print("Use more general formula for weightX and weightY\n")
+print("Use more general formula for weightX and weightY\nSee formula\n")
