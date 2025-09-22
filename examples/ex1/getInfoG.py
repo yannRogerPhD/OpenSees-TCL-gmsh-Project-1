@@ -24,17 +24,17 @@ elements_File = 'elements.tcl'
 
 # Try to import the material properties
 try:
-    from quadUP_properties import quadUP_materials
-    from quad_properties import quad_materials
+    from quadUProp9 import quad9materials
+    from quadProps4 import quad4Materials
 except ImportError:
     print("ERROR: A properties file was not found. "
-          "Please ensure quadUP_properties.py and quad_properties.py are in the same directory.")
+          "Please ensure quadUProp9.py and quadProps4.py are in the same directory.")
     sys.exit(1)
 
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 1.5, 0.0
+leftX, rightX, bottomY = 0.0, 1.0, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
 
@@ -267,8 +267,8 @@ with open(elements_File, 'w') as f_ele:
                     continue
 
                 if elementType == 10:  # 9-node quad
-                    if physicalTag in quadUP_materials:
-                        mat = quadUP_materials[physicalTag]
+                    if physicalTag in quad9materials:
+                        mat = quad9materials[physicalTag]
                         nodes = ' '.join(map(str, ns))
                         f_ele.write(f"element 9_4_QuadUP "
                                     f"{eleTag} "
@@ -284,8 +284,8 @@ with open(elements_File, 'w') as f_ele:
                               "Element not created.".format(physicalTag, eleTag))
 
                 elif elementType == 3:  # 4-node quad
-                    if physicalTag in quad_materials:
-                        mat = quad_materials[physicalTag]
+                    if physicalTag in quad4Materials:
+                        mat = quad4Materials[physicalTag]
                         nodes = ' '.join(map(str, ns))
                         f_ele.write(f"element quad "
                                     f"{eleTag} "
