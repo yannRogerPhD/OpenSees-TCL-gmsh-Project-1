@@ -1,117 +1,112 @@
 import abc
-# =================================================================================================
-#
-#  Generalized Python Script for Generating OpenSees nDMaterial Commands
-#  (a) for PIMY (PressureIndependMultiYield) and PDMY (PressureDependMultiYield) Materials
-#  (b) will be adding other materials progressively
-#
-#  Instructions:
-#  1. Define default parameters in the `GLOBAL_PARAMS` dictionary. These will be used for all
-#     layers unless overridden in a specific layer's definition;
-#  2. Define your soil stratigraphy in the `SOIL_LAYERS_DEFINITION` list. Each item in the
-#     list is a dictionary representing a layer;
-#  3. You can override any global parameter by adding it to a layer's dictionary;
-#  4. Run the script. It will generate 'materials.tcl' and 'updateMat.tcl' in the same directory.
-#
-# =================================================================================================
 
 
 class Material(abc.ABC):
-    """
-    abstract base class for a material model:
-        - notice that the parameters defined below are the same for both PDMY and PIMY
-        - layerTag, nd, rho, refShearModul (gMod), and refBulkModul (bulkMod)
-    """
+    # abstract base class for a material model
     def __init__(self, layerTag, params):
         self.layerTag = layerTag
+        self.params = params
         self.nd = params.get("nd", 2)
         self.rho = params["rho"]
-        self.gMod = params["gMod"]
-        self.bulkMod = params["bulkMod"]
+        self.refShearModul = params["refShearModul"]
+        self.refBulkModul = params["refBulkModul"]
 
     @abc.abstractmethod
     def toTCL(self):
-        """
-        returns the nDMaterial command string for the material
-        """
+        # returns the nDMaterial command string for the material.
         pass
+
+    def validateParams(self, requiredKeys):
+        # checks if all required keys are present in the params dictionary
+        for key in requiredKeys:
+            if key not in self.params:
+                raise ValueError(f"Missing required parameter '{key}' for layer {self.layerTag}")
 
 
 class PdmyMaterial(Material):
-    """
-    specific parameters for the PressureDependMultiYield material (see OpenSees wiki for more info):
-    """
-    def __init__(self, layerTag, params):
-        super().__init__(layerTag, params)
-        self.phi = params["phi"]
-        self.gammaPeak = params.get("gammaPeak", 0.1)
-        self.refPress = params.get("refPress", 101.3)
-        self.pressCoef = params.get("pressCoef", 0.5)
-        self.phaseAng = params.get("phaseAng", 27.0)
-        self.contract = params.get("contract", 0.06)
-        self.dilate1 = params.get("dilate1", 0.5)
-        self.dilate2 = params.get("dilate2", 2.5)
-        self.liq1 = params.get("liq1", 0.0)
-        self.liq2 = params.get("liq2", 0.0)
-        self.liq3 = params.get("liq3", 0.0)
-        self.numYield = params.get("numYieldPDMY", 16)
-
+    # for PressureDependMultiYield material
     def toTCL(self):
-        return (f"nDMaterial PressureDependMultiYield {self.layerTag} {self.nd} {self.rho} {self.gMod:.4f} "
-                f"{self.bulkMod:.4f} {self.phi} {self.gammaPeak} {self.refPress} {self.pressCoef} "
-                f"{self.phaseAng} {self.contract} {self.dilate1} {self.dilate2} {self.liq1} {self.liq2} "
-                f"{self.liq3} {self.numYield}")
+        if "modulusReductionCurve" in self.params:
+            # mode: User-defined backbone curve
+            required = ["rho", "refShearModul", "refBulkModul", "phi", "gammaPeak", "refPress",
+                        "modulusReductionCurve"]
+            self.validateParams(required)
+
+            curve = self.params["modulusReductionCurve"]
+            numYield = len(curve)
+            curveStr = " ".join([f"{gamma} {gRatio}" for gamma, gRatio in curve])
+            return (
+                f"nDMaterial PressureDependMultiYield {self.layerTag} {self.nd} {self.rho} {self.refShearModul:.4f} "
+                f"{self.refBulkModul:.4f} {self.params['phi']} {self.params['gammaPeak']} "
+                f"{self.params['refPress']} -{numYield} {curveStr}")
+        else:
+            # Mode: Automatic backbone generation
+            required = ["rho", "refShearModul", "refBulkModul", "phi", "gammaPeak", "refPress", "pressCoef",
+                        "phaseAng",
+                        "contract", "dilate1", "dilate2", "liq1", "liq2", "liq3"]
+            self.validateParams(required)
+
+            return (
+                f"nDMaterial PressureDependMultiYield {self.layerTag} {self.nd} {self.rho} {self.refShearModul:.4f} "
+                f"{self.refBulkModul:.4f} {self.params['phi']} {self.params['gammaPeak']} "
+                f"{self.params['refPress']} {self.params['pressCoef']} {self.params['phaseAng']} "
+                f"{self.params['contract']} {self.params['dilate1']} {self.params['dilate2']} "
+                f"{self.params['liq1']} {self.params['liq2']} {self.params['liq3']} "
+                f"{self.params.get('numYield', 20)}")
 
 
 class PimyMaterial(Material):
-    """
-    for the PressureIndependMultiYield material
-    """
-    def __init__(self, layerTag, params):
-        super().__init__(layerTag, params)
-        self.cohesion = params["cohesion"]
-        self.phi = params.get("phi", 0.0)
-        self.gammaPeak = params.get("gammaPeak", 0.1)
-        self.refPress = params.get("refPress", 101.3)
-        self.pressCoef = params.get("pressCoef", 0.0)
-        self.modReductCurve = params["modulusReductionCurve"]
+    """Represents the PressureIndependMultiYield material."""
 
     def toTCL(self):
-        numYield = len(self.modReductCurve)
-        curveStr = " ".join([f"{gamma} {gRatio}" for gamma, gRatio in self.modReductCurve])
-        return (
-            f"nDMaterial PressureIndependMultiYield {self.layerTag} {self.nd} {self.rho} {self.gMod:.4f} "
-            f"{self.bulkMod:.4f} {self.cohesion} {self.gammaPeak} {self.phi} {self.refPress} "
-            f"{self.pressCoef} -{numYield} {curveStr}"
-        )
+        if "modulusReductionCurve" in self.params:
+            # Mode: User-defined backbone curve
+            required = ["rho", "refShearModul", "refBulkModul", "cohesion", "gammaPeak", "phi", "refPress",
+                        "pressCoef", "modulusReductionCurve"]
+            self.validateParams(required)
+
+            curve = self.params["modulusReductionCurve"]
+            numYield = len(curve)
+            curveStr = " ".join([f"{gamma} {gRatio}" for gamma, gRatio in curve])
+            return (
+                f"nDMaterial PressureIndependMultiYield {self.layerTag} {self.nd} {self.rho} {self.refShearModul:.4f} "
+                f"{self.refBulkModul:.4f} {self.params['cohesion']} {self.params['gammaPeak']} "
+                f"{self.params['phi']} {self.params['refPress']} "
+                f"{self.params['pressCoef']} -{numYield} {curveStr}")
+        else:
+            # Mode: Automatic backbone generation
+            required = ["rho", "refShearModul", "refBulkModul", "cohesion", "gammaPeak", "phi", "refPress",
+                        "pressCoef"]
+            self.validateParams(required)
+            return (
+                f"nDMaterial PressureIndependMultiYield {self.layerTag} {self.nd} {self.rho} {self.refShearModul:.4f} "
+                f"{self.refBulkModul:.4f} {self.params['cohesion']} {self.params['gammaPeak']} "
+                f"{self.params['phi']} {self.params['refPress']} "
+                f"{self.params['pressCoef']} {self.params.get('numYield', 20)}")
 
 
 class Layer:
-    """
-    represents a single soil layer
-    """
-    def __init__(self, layerTag, layerData, globalParams):
+    # for a single soil layer
+    def __init__(self, layerTag, layerData):
         self.layerTag = layerTag
         self.name = layerData.get("name", f"Layer-{layerTag}")
 
-        # combine global and layer-specific parameters
-        params = {**globalParams, **layerData}
+        params = layerData
 
-        # basic properties
-        self.thickness = params["thickness"]
-        self.vs = params["vs"]
-        self.rho = params["rho"]
-        self.nu = params["nu"]
+        # Basic properties required for all materials
+        if not all(k in params for k in ["rho", "refShearModul", "refBulkModul"]):
+            raise ValueError(
+                f"Layer {self.layerTag} "
+                f"is missing one of the basic required keys: 'rho', 'refShearModul', or 'refBulkModul'.")
 
-        # calculated properties
-        params["gMod"] = self.rho * self.vs ** 2
-        params["bulkMod"] = (2 * params["gMod"] * (1 + self.nu)) / (3 * (1 - 2 * self.nu))
+        # Material instantiation
+        materialType = params.get("materialType")
+        if not materialType:
+            raise ValueError(f"Missing required parameter 'materialType' for layer {self.layerTag}")
 
-        # material instantiation
-        materialType = params.get("materialType", "PDMY").upper()
-        if materialType == "PDMY":
+        if materialType.upper() == "PDMY":
             self.material = PdmyMaterial(self.layerTag, params)
-        elif materialType == "PIMY":
+        elif materialType.upper() == "PIMY":
             self.material = PimyMaterial(self.layerTag, params)
         else:
             raise ValueError(f"Unknown material type '{materialType}' for layer {self.layerTag}")
@@ -121,27 +116,22 @@ class Layer:
 
 
 class SoilProfile:
-    """
-    manages the entire soil profile and file generation.
-    """
-    def __init__(self, layersDefinition, globalParams):
+    # manages the entire soil profile and file generation
+    def __init__(self, layersDefinition):
         self.layers = []
         for i, layerDef in enumerate(layersDefinition, 1):
-            layer = Layer(i, layerDef, globalParams)
+            layer = Layer(i, layerDef)
             self.layers.append(layer)
 
-    def generate_tcl_files(self, materialsFile="materials.tcl", updateMatFile="updateMat.tcl"):
-        # generate materials.tcl
+    def generateTCLFiles(self, materialsFile="materials.tcl", updateMatFile="updateMat.tcl"):
         with open(materialsFile, 'w') as f:
             f.write("# Generated nDMaterial definitions for the soil profile\n\n")
             for layer in self.layers:
                 f.write(f"# Material for {layer.name}\n")
-                f.write(f"{layer.getMaterialTCL()} \
-")
+                f.write(f"{layer.getMaterialTCL()}" + " \n")
                 f.write("\n")
         print(f"Successfully generated '{materialsFile}'")
 
-        # generate updateMat.tcl
         with open(updateMatFile, 'w') as f:
             f.write("# Generated updateMaterialStage commands\n\n")
             for layer in self.layers:
@@ -157,112 +147,72 @@ class SoilProfile:
 
 if __name__ == "__main__":
 
-    # 1. DEFINE GLOBAL PARAMETERS,
-    # These parameters will be applied to all layers unless overridden in a specific layer's definition.
-    GLOBAL_PARAMS = {
-        "rho": 2.202,
-        "nu": 0.0,
-        # Default to PDMY material properties
-        "materialType": "PDMY",
-        "phi": 35.0,
-        "gammaPeak": 0.1,
-        "refPress": 80.0,
-        "pressCoef": 0.0,
-        "phaseAng": 27.0,
-        "contract": 0.06,
-        "dilate1": 0.5,
-        "dilate2": 2.5,
-        "liq1": 0.0,
-        "liq2": 0.0,
-        "liq3": 0.0,
-    }
-
-    # 2. DEFINE SOIL LAYERS
-    # Each dictionary represents a layer. It must have 'thickness' and 'vs';
-    # Other parameters can be added to override the GLOBAL_PARAMS for that specific layer...
-    soilLayersDefinition = [
-        {"name": "PIMY Layer 1", "thickness": 1.0, "vs": 170.9, "materialType": "PIMY", "cohesion": 95.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
+    # DEFINE EXAMPLE MODULUS REDUCTION CURVE (for convenience)
+    modReductionCurve = [
+        (1.00e-6, 1.000), (2.00e-6, 0.999), (5.00e-6, 0.998), (1.00e-5, 0.995),
+        (2.00e-5, 0.985), (5.00e-5, 0.955), (1.00e-4, 0.905), (2.00e-4, 0.815),
+        (5.00e-4, 0.635), (1.00e-3, 0.475), (2.00e-3, 0.325), (5.00e-3, 0.185),
+        (1.00e-2, 0.115), (2.00e-2, 0.075), (5.00e-2, 0.045), (1.00e-1, 0.030)
     ]
-    """
+
+    E1, poisson1 = 90000, 0.40
+    G1 = E1 / (2 * (1 + poisson1))
+    K1 = E1 / (3 * (1 - 2 * poisson1))
+    cohesion = 30
+    peakShearStrain = 0.1
+
+    phiRef, refPressRef, pressCoefRef = 0.0, 100.0, 0.0
+    # DEFINE SOIL LAYERS
+    # Each dictionary MUST be a complete definition for the material.
     soilLayersDefinition = [
-        # Top 5 layers as PIMY material (example)
-        {"name": "PIMY Layer 1", "thickness": 1.0, "vs": 170.9, "materialType": "PIMY", "cohesion": 95.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
-        {"name": "PIMY Layer 2", "thickness": 1.0, "vs": 224.9, "materialType": "PIMY", "cohesion": 105.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
-        {"name": "PIMY Layer 3", "thickness": 1.0, "vs": 255.6, "materialType": "PIMY", "cohesion": 115.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
-        {"name": "PIMY Layer 4", "thickness": 1.0, "vs": 278.0, "materialType": "PIMY", "cohesion": 125.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
-        {"name": "PIMY Layer 5", "thickness": 1.0, "vs": 296.0, "materialType": "PIMY", "cohesion": 135.0,
-         "modulusReductionCurve": [
-             (1.00e-6, 1.000), (2.00e-6, 1.000), (5.00e-6, 0.996), (1.00e-5, 0.984),
-             (2.00e-5, 0.975), (5.00e-5, 0.922), (1.00e-4, 0.850), (2.00e-4, 0.734),
-             (5.00e-4, 0.532), (1.00e-3, 0.367), (2.00e-3, 0.224), (5.00e-3, 0.139),
-             (1.00e-2, 0.085), (2.00e-2, 0.051), (5.00e-2, 0.027), (1.00e-1, 0.021)
-         ]},
-
-        # remaining layers as PDMY material (default) ---
-        # the 'materialType' is not specified, so it will use the default from GLOBAL_PARAMS.
-        {"name": "PDMY Layer 6", "thickness": 1.0, "vs": 311.3},
-        {"name": "PDMY Layer 7", "thickness": 1.0, "vs": 324.5},
-        {"name": "PDMY Layer 8", "thickness": 1.0, "vs": 336.4},
-        {"name": "PDMY Layer 9", "thickness": 1.0, "vs": 347.0},
-        {"name": "PDMY Layer 10", "thickness": 1.0, "vs": 356.8},
-        {"name": "PDMY Layer 11", "thickness": 1.0, "vs": 365.9},
-        {"name": "PDMY Layer 12", "thickness": 1.0, "vs": 374.3},
-        {"name": "PDMY Layer 13", "thickness": 1.0, "vs": 382.2},
-        {"name": "PDMY Layer 14", "thickness": 1.0, "vs": 389.6},
-        {"name": "PDMY Layer 15", "thickness": 1.0, "vs": 396.6},
-        {"name": "PDMY Layer 16", "thickness": 1.0, "vs": 403.3},
-        {"name": "PDMY Layer 17", "thickness": 1.0, "vs": 409.6},
-        {"name": "PDMY Layer 18", "thickness": 1.0, "vs": 415.7},
-        {"name": "PDMY Layer 19", "thickness": 1.0, "vs": 421.5},
-        {"name": "PDMY Layer 20", "thickness": 1.0, "vs": 427.1},
-        {"name": "PDMY Layer 21", "thickness": 1.0, "vs": 432.5},
-        {"name": "PDMY Layer 22", "thickness": 1.0, "vs": 437.7},
-        {"name": "PDMY Layer 23", "thickness": 1.0, "vs": 442.7},
-        {"name": "PDMY Layer 24", "thickness": 1.0, "vs": 447.5},
-        {"name": "PDMY Layer 25", "thickness": 1.0, "vs": 452.2},
-        {"name": "PDMY Layer 26", "thickness": 1.0, "vs": 456.7},
-        {"name": "PDMY Layer 27", "thickness": 1.0, "vs": 461.2},
-        {"name": "PDMY Layer 28", "thickness": 1.0, "vs": 465.4},
-        {"name": "PDMY Layer 29", "thickness": 1.0, "vs": 469.6},
-        {"name": "PDMY Layer 30", "thickness": 1.0, "vs": 473.7, "phi": 40.0},  # example of overriding one param
+        {
+            "name": "Layer 1",
+            "materialType": "PIMY",
+            "rho": 2.000,
+            "refShearModul": G1,
+            "refBulkModul": K1,
+            "cohesion": cohesion,
+            "gammaPeak": peakShearStrain,
+            "phi": phiRef,
+            "refPress": refPressRef,
+            "pressCoef": pressCoefRef
+        },
+        # {
+        #     "name": "directInputPDMYLayer",
+        #     "materialType": "PDMY",
+        #     "rho": 2.0,
+        #     "refShearModul": 80000.0,
+        #     "refBulkModul": 133333.3,
+        #     "phi": 30.0,
+        #     "gammaPeak": 0.1,
+        #     "refPress": 101.3,
+        #     "pressCoef": 0.5,
+        #     "phaseAng": 25.0,
+        #     "contract": 0.05,
+        #     "dilate1": 0.1,
+        #     "dilate2": 2.0,
+        #     "liq1": 0.0, "liq2": 0.0, "liq3": 0.0,
+        #     "numYield": 20
+        # },
+        # {
+        #     "name": "directInputPIMYLayerWithCurve",
+        #     "materialType": "PIMY",
+        #     "rho": 1.8,
+        #     "refShearModul": 58320.0,
+        #     "refBulkModul": 97200.0,
+        #     "cohesion": 60.0,
+        #     "gammaPeak": 0.08,
+        #     "phi": 0.0,
+        #     "refPress": 101.3,
+        #     "pressCoef": 0.0,
+        #     "modulusReductionCurve": modReductionCurve
+        # },
     ]
-    """
 
-    # 3. CREATE THE SOIL PROFILE AND GENERATE TCL FILES
+    # CREATE THE SOIL PROFILE AND GENERATE TCL FILES
     try:
-        soil_profile = SoilProfile(soilLayersDefinition, GLOBAL_PARAMS)
-        soil_profile.generate_tcl_files()
-    except KeyError as e:
-        print(f"ERROR: A required parameter is missing. Please check your definitions. Missing key: {e}")
-    except ValueError as e:
-        print(f"ERROR: {e}")
+        soilProfile = SoilProfile(soilLayersDefinition)
+        soilProfile.generateTCLFiles()
+    except (KeyError, ValueError) as e:
+        print(f"\nERROR: Could not generate files. Please check your layer definitions.")
+        print(f"DETAILS: {e}")

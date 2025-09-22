@@ -7,3 +7,7 @@ Steps:
     (a) if quad 4:
         - check thickness, pressure, rhoVal, massDen and fluidDen for all layers
         - add tags if necessary
+
+
+WHEN EVER CONFLICTS HAPPEN WHEN TRYING TO PULL, ENFORCE
+rm -rf .idea/
