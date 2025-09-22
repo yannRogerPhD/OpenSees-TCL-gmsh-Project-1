@@ -1,3 +1,3 @@
 # Generated updateMaterialStage commands
 
-updateMaterialStage -material 1 -stage 1
+updateMaterialStage -material 1 -stage 0

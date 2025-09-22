@@ -9,6 +9,11 @@ please note that:
 """
 import sys
 
+# for base nodes, fix both x and y
+fixX = 1
+fixY = 1
+fixP = 0
+
 meshFile = 'model1.msh'
 
 nodes3D_File = 'nodes3D.tcl'
@@ -207,19 +212,29 @@ print('left 3D nodes:', leftNodes3D)
 print('right 3D nodes:', rightNodes3D)
 print('bottom 3D nodes:', bottomNodes3D)
 
+
+titleFixities2D = False
+titleFixities3D = False
+
 # 3DOFs nodes fixities
 with open(fixity3D_File, 'w') as f3Fix:
     # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
     for nodeTag in bottomNodes3D:
         if nodeTag in node3DOFs:
-            f3Fix.write(f"fix {nodeTag} 0 1 0\n")
+            if not titleFixities3D:
+                f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
+                titleFixities3D = True
+            f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
 
 # 2DOFs nodes fixities
 with open(fixity2D_File, 'w') as f2Fix:
     # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
     for nodeTag in bottomNodes2D:
         if nodeTag in node2DOFs:
-            f2Fix.write(f"fix {nodeTag} 0 1\n")
+            if not titleFixities2D:
+                f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
+                titleFixities2D = True
+            f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
 
 # 3DOFs equalDOFs
 with open(equalDOFs3D_File, 'w') as f3Equal:

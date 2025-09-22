@@ -1,6 +1,10 @@
 import abc
 
 
+# update material to stage 0 or stage 1?
+stage = 0
+
+
 class Material(abc.ABC):
     # abstract base class for a material model
     def __init__(self, layerTag, params):
@@ -135,7 +139,7 @@ class SoilProfile:
         with open(updateMatFile, 'w') as f:
             f.write("# Generated updateMaterialStage commands\n\n")
             for layer in self.layers:
-                f.write(f"updateMaterialStage -material {layer.layerTag} -stage 1\n")
+                f.write(f"updateMaterialStage -material {layer.layerTag} -stage {stage}\n")
         print(f"Successfully generated '{updateMatFile}'")
 
 
