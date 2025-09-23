@@ -7,9 +7,20 @@ please note that:
        rightX HAS TO BE CHANGED GENERALLY, please modify rightX accordingly, it's the largest x-coord value
        bottomY is the line characterizing the bottom BC, here, y = 0
 """
-import sys
+import numpy as np
 
-meshFile = 'model.msh'
+# for base nodes, fix both x and y
+fixX = 0
+fixY = 1
+fixP = 0
+
+nodeCoords = {}
+nodeDOFs = {}
+
+leftX, rightX, bottomY = 0.0, 0.2, 0.0
+leftBound, rightBound, bottomBound = [], [], []
+
+meshFile = 'modelP.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -22,20 +33,72 @@ equalDOFs2D_File = 'equalDOFs2D.tcl'
 
 elements_File = 'elements.tcl'
 
-# Try to import the material properties
-try:
-    from quadUP_properties import quadUP_materials
-    from quad_properties import quad_materials
-except ImportError:
-    print("ERROR: A properties file was not found. "
-          "Please ensure quadUP_properties.py and quad_properties.py are in the same directory.")
-    sys.exit(1)
+# find max phyGroup for elementType 3
+maxPhyGroup = 0
+with open(meshFile) as f:
+    lines = f.readlines()
+    inElementSection = False
+    for line in lines:
+        line = line.strip()
+        if line == '$Elements':
+            inElementSection = True
+            continue
+        elif line == '$EndElements':
+            inElementSection = False
+            break
+        if inElementSection:
+            parts = line.split()
+            if len(parts) > 4:
+                try:
+                    elementType = int(parts[1])
+                    if elementType == 3:
+                        phyGroup = int(parts[4])
+                        if phyGroup > maxPhyGroup:
+                            maxPhyGroup = phyGroup
+                except (ValueError, IndexError):
+                    continue
 
-nodeCoords = {}
-nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 1.5, 0.0
-leftBound, rightBound, bottomBound = [], [], []
+'''
+!!! quad4 elements !!!
+    (1) define a list of rhoVals values, make sure its len, that is len(rhoVals) is equal to maxPhyGroup + 1 else ERROR!
+        !!! len(rhoVals) >= maxPhyGroup + 1
+    (2) replace massDen and fluidDen with appropriate values
+    (3) change, if necessary, the list of thickness values, presently its '1' for all soil layers
+    (4) list of:
+        (a) rhoVals
+        (b) thickness values for each layer
+    (5) no need of the mainSoilTags since it is adaptative from number of soil layers in gmsh
+'''
+# Default material properties and variables
+defaultQuad9Material = {'thick': 1.0, 'matTag': 1, 'bulk': 1.0, 'fmass': 1.0, 'hPerm': 1.0, 'vPerm': 1.0}
+
+gVal = 9.806
+massDen, fluidDen = 2.202, 0.000
+alpha = 0.0
+alphaRads = np.deg2rad(alpha)
+# mainSoilTags = list(range(maxPhyGroup + 1))  # assuming soil tags correspond to phyGroup
+mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
+thickness = {i: 1.0 for i in mainSoilTags}
+rhoVals = {i: massDen - fluidDen for i in mainSoilTags}
+
+# # Added print statement for debugging
+print(f"Max phyGroup found in pre-pass: {maxPhyGroup}")
+print(len(rhoVals))
+print(len(mainSoilTags))
+print(len(thickness))
+
+'''
+!!! quad9 elements !!!
+    (1) list of fmass values for each soil layer, such that len(fmass) = maxPhyGroup
+'''
+
+bulkVals = {i: 5.06e6 for i in mainSoilTags}
+fmassVals = {i: 1 for i in mainSoilTags}
+hPermVals = {i: 1.0e-4 for i in mainSoilTags}
+vPermVals = {i: 1.0e-4 for i in mainSoilTags}
+# print("fmass values are:", fmassVals)
+# print(len(fmassVals))
 
 
 # helper functions for DOF rules
@@ -91,7 +154,6 @@ for line in lines:
         else:
             print(f"warning: skipped malformed node line: '{line}' ")
 
-
 inElementSection = False
 for line in lines:
     line = line.strip()
@@ -135,7 +197,6 @@ node2DOFs = {tag: coords for tag, coords in nodeCoords.items()
 
 # write output of 3DOFs nodes
 with open(nodes3D_File, 'w') as f3:
-
     if node3DOFs:  # only write this section if it’s not empty
         f3.write('# !!!!!!!! 3DOFs nodes !!!!!!!!!\n\n')
         f3.write('model BasicBuilder -ndm 2 -ndf 3\n\n')
@@ -207,19 +268,28 @@ print('left 3D nodes:', leftNodes3D)
 print('right 3D nodes:', rightNodes3D)
 print('bottom 3D nodes:', bottomNodes3D)
 
+titleFixities2D = False
+titleFixities3D = False
+
 # 3DOFs nodes fixities
 with open(fixity3D_File, 'w') as f3Fix:
     # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
     for nodeTag in bottomNodes3D:
         if nodeTag in node3DOFs:
-            f3Fix.write(f"fix {nodeTag} 0 1 0\n")
+            if not titleFixities3D:
+                f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
+                titleFixities3D = True
+            f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
 
 # 2DOFs nodes fixities
 with open(fixity2D_File, 'w') as f2Fix:
     # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
     for nodeTag in bottomNodes2D:
         if nodeTag in node2DOFs:
-            f2Fix.write(f"fix {nodeTag} 0 1\n")
+            if not titleFixities2D:
+                f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
+                titleFixities2D = True
+            f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
 
 # 3DOFs equalDOFs
 with open(equalDOFs3D_File, 'w') as f3Equal:
@@ -231,10 +301,9 @@ with open(equalDOFs3D_File, 'w') as f3Equal:
 # 2DOFs equalDOFs
 with open(equalDOFs2D_File, 'w') as f2Equal:
     # Left–Right equalDOFs (1 & 2 only)
-    for i, j in zip(leftNodes2D[0:], rightNodes2D[0:]):
+    for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
         if i in node2DOFs and j in node2DOFs:
             f2Equal.write(f"equalDOF {i} {j} 1 2\n")
-
 
 with open(elements_File, 'w') as f_ele:
     with open(meshFile) as f:
@@ -261,42 +330,55 @@ with open(elements_File, 'w') as f_ele:
                     eleTag = int(parts[0])
                     elementType = int(parts[1])
                     numOfTags = int(parts[2])
-                    physicalTag = int(parts[3])  # Assuming the first tag is the physical group
-                    ns = [int(n) for n in parts[3 + numOfTags:]]
+                    nodes_ = ' '.join(parts[5:])
                 except (ValueError, IndexError):
                     continue
 
                 if elementType == 10:  # 9-node quad
-                    if physicalTag in quadUP_materials:
-                        mat = quadUP_materials[physicalTag]
-                        nodes = ' '.join(map(str, ns))
-                        f_ele.write(f"element 9_4_QuadUP "
-                                    f"{eleTag} "
-                                    f"{nodes} "
-                                    f"{mat['thick']} "
-                                    f"{mat['matTag']} "
-                                    f"{mat['bulk']} "
-                                    f"{mat['fmass']} "
-                                    f"{mat['hPerm']} "
-                                    f"{mat['vPerm']}\n")
-                    else:
-                        print("Warning: quadUP properties not found for physical tag {} in element {}. "
-                              "Element not created.".format(physicalTag, eleTag))
+                    mat = defaultQuad9Material
+
+                    if len(parts) == 14:
+                        try:
+                            phyGroup = int(parts[4])
+
+                            if phyGroup in mainSoilTags:
+                                xWgt = - gVal * np.sin(alphaRads)
+                                yWgt = - gVal * np.cos(alphaRads)
+
+                                f_ele.write(f"element 9_4_QuadUP "
+                                            f"{eleTag} "
+                                            f"{nodes_} "
+                                            f"{thickness[phyGroup]} "
+                                            # f"{mat['matTag']} "
+                                            f"{phyGroup} "
+                                            f"{bulkVals[phyGroup]} "
+                                            f"{fmassVals[phyGroup]} "
+                                            f"{hPermVals[phyGroup]} "
+                                            f"{vPermVals[phyGroup]} "
+                                            f"{xWgt} "
+                                            f"{yWgt}\n")
+                        except (ValueError, IndexError):
+                            continue
 
                 elif elementType == 3:  # 4-node quad
-                    if physicalTag in quad_materials:
-                        mat = quad_materials[physicalTag]
-                        nodes = ' '.join(map(str, ns))
-                        f_ele.write(f"element quad "
-                                    f"{eleTag} "
-                                    f"{nodes} "
-                                    f"{mat['thick']} "
-                                    f"{mat['type']} "
-                                    f"{mat['matTag']} "
-                                    f"{mat['pressure']} "
-                                    f"{mat['rho']} "
-                                    f"{mat['b1']} "
-                                    f"{mat['b2']}\n")
-                    else:
-                        print("Warning: quad properties not found for physical tag {} in element {}. "
-                              "Element not created.".format(physicalTag, eleTag))
+                    # relaxed condition to check for at least 5 parts
+                    if len(parts) == 9:
+                        try:
+                            phyGroup = int(parts[4])
+                            # print(phyGroup)
+                            if phyGroup in mainSoilTags:
+                                wtX = gVal * rhoVals[phyGroup] * np.sin(alphaRads)
+                                wtY = - gVal * rhoVals[phyGroup] * np.cos(alphaRads)
+                                f_ele.write(f"element "
+                                            f"quad "
+                                            f"{eleTag} "
+                                            f"{nodes_} "
+                                            f"{thickness[phyGroup]} "
+                                            f"PlaneStrain "
+                                            f"{mainSoilTags[phyGroup]} "
+                                            f"0.0 "
+                                            f"0.0 "
+                                            f"{wtX} "
+                                            f"{wtY}\n")
+                        except (ValueError, IndexError):
+                            continue
