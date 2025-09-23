@@ -17,10 +17,10 @@ fixP = 0
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 3.0, 0.0
+leftX, rightX, bottomY = 0.0, 0.2, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
-meshFile = 'modelT.msh'
+meshFile = 'modelP.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -28,14 +28,12 @@ nodes2D_File = 'nodes2D.tcl'
 fixity2D_File = 'fixity2D.tcl'
 fixity3D_File = 'fixity3D.tcl'
 
-fixityWT3D_File = 'fixity3DWT.tcl'
-
 equalDOFs3D_File = 'equalDOFs3D.tcl'
 equalDOFs2D_File = 'equalDOFs2D.tcl'
 
 elements_File = 'elements.tcl'
 
-# find max phyGroup for elementType 3 and 10
+# find max phyGroup for elementType 3
 maxPhyGroup = 0
 with open(meshFile) as f:
     lines = f.readlines()
@@ -57,12 +55,9 @@ with open(meshFile) as f:
                         phyGroup = int(parts[4])
                         if phyGroup > maxPhyGroup:
                             maxPhyGroup = phyGroup
-                    elif elementType == 10:
-                        phyGroup = int(parts[4])
-                        if phyGroup > maxPhyGroup:
-                            maxPhyGroup = phyGroup
                 except (ValueError, IndexError):
                     continue
+
 
 '''
 !!! quad4 elements !!!
@@ -75,11 +70,14 @@ with open(meshFile) as f:
         (b) thickness values for each layer
     (5) no need of the mainSoilTags since it is adaptative from number of soil layers in gmsh
 '''
+# Default material properties and variables
+defaultQuad9Material = {'thick': 1.0, 'matTag': 1, 'bulk': 1.0, 'fmass': 1.0, 'hPerm': 1.0, 'vPerm': 1.0}
 
 gVal = 9.806
 massDen, fluidDen = 2.202, 0.000
 alpha = 0.0
 alphaRads = np.deg2rad(alpha)
+# mainSoilTags = list(range(maxPhyGroup + 1))  # assuming soil tags correspond to phyGroup
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
 thickness = {i: 1.0 for i in mainSoilTags}
 rhoVals = {i: massDen - fluidDen for i in mainSoilTags}
@@ -93,9 +91,6 @@ print(len(thickness))
 '''
 !!! quad9 elements !!!
     (1) list of fmass values for each soil layer, such that len(fmass) = maxPhyGroup
-    (2) check physical group for the water table; if not water table, choose 0
-        phyGroupWT = 0
-        phyGroupWT = put the "plane surface" number from gmsh
 '''
 
 bulkVals = {i: 5.06e6 for i in mainSoilTags}
@@ -104,10 +99,6 @@ hPermVals = {i: 1.0e-4 for i in mainSoilTags}
 vPermVals = {i: 1.0e-4 for i in mainSoilTags}
 # print("fmass values are:", fmassVals)
 # print(len(fmassVals))
-
-# physical group to store WT tables as this will helo for pore pressure fixities
-phyGroupWT = 6
-nodesWT = {}
 
 
 # helper functions for DOF rules
@@ -193,17 +184,10 @@ for line in lines:
         if elementType in DOFsRules:
             nodeDOFs.update(DOFsRules[elementType](ns))
 
-            if elementType == 10:
-                phyGroup = int(parts[4])
-
-                if phyGroup == phyGroupWT:
-                    nodesWT.update(DOFsRules[elementType](ns))
-
             # uncomment the line below for debug if necessary
             # print(f"Processed element {eleTag}: unknown elementType {elementType}")
 
 # print(nodeDOFs)
-# print(f"nodes of water table are:", nodesWT)
 
 # we can now separate 2DOFs and 3DOFs nodes
 node3DOFs = {tag: coords for tag, coords in nodeCoords.items()
@@ -211,39 +195,22 @@ node3DOFs = {tag: coords for tag, coords in nodeCoords.items()
 node2DOFs = {tag: coords for tag, coords in nodeCoords.items()
              if nodeDOFs.get(tag) == 2}
 
-node3DOFsWT = {tag: coords for tag, coords in nodeCoords.items()
-               if nodesWT.get(tag) == 3}
-node2DOFsWT = {tag: coords for tag, coords in nodeCoords.items()
-               if nodesWT.get(tag) == 2}
-
-print(f"3 DOFs water table nodes are:", node3DOFsWT)
-print(f"2 DOFs water table nodes are:", node2DOFsWT)
-
-print(f"length of 3 DOFs water table nodes are:", len(node3DOFsWT))
-print(f"length of 2 DOFs water table nodes are:", len(node2DOFsWT))
-
 # write output of 3DOFs nodes
-if node3DOFs:  # only write this section if it’s not empty
-    with open(nodes3D_File, 'w') as f3:
+with open(nodes3D_File, 'w') as f3:
+    if node3DOFs:  # only write this section if it’s not empty
         f3.write('# !!!!!!!! 3DOFs nodes !!!!!!!!!\n\n')
         f3.write('model BasicBuilder -ndm 2 -ndf 3\n\n')
         for nodeTAGS, coordS in sorted(node3DOFs.items()):
             f3.write(f"node {nodeTAGS} {coordS[0]:.3f} {coordS[1]:.3f}\n")
+        # f3.write("\n")
 
 # write output of 2DOFs nodes
-if node2DOFs:  # only write this section if it’s not empty
-    with open(nodes2D_File, 'w') as f2:
+with open(nodes2D_File, 'w') as f2:
+    if node2DOFs:  # only write this section if it’s not empty
         f2.write('# !!!!!!!! 2DOFs nodes !!!!!!!!!\n\n')
         f2.write('model BasicBuilder -ndm 2 -ndf 2\n\n')
         for nodeTAGS, coordS in sorted(node2DOFs.items()):
             f2.write(f"node {nodeTAGS} {coordS[0]:.3f} {coordS[1]:.3f}\n")
-
-# fix output of 3rd DOF (pressure) nodes for those above the WT
-if node3DOFsWT:
-    with open(fixityWT3D_File, 'w') as f3WT:
-        f3WT.write("# fix the 3rd DOF, the pressure DOFs, for nodes above the water table\n")
-        for nodeTAGS, coordS in sorted(node3DOFsWT.items()):
-            f3WT.write(f"fix {nodeTAGS} 0 0 1\n")
 
 # we then parse boundary elements
 with open(meshFile) as f:
@@ -305,41 +272,38 @@ titleFixities2D = False
 titleFixities3D = False
 
 # 3DOFs nodes fixities
-if node3DOFs:
-    with open(fixity3D_File, 'w') as f3Fix:
-        for nodeTag in bottomNodes3D:
-            if nodeTag in node3DOFs:
-                if not titleFixities3D:
-                    f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
-                    titleFixities3D = True
-                f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
+with open(fixity3D_File, 'w') as f3Fix:
+    # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
+    for nodeTag in bottomNodes3D:
+        if nodeTag in node3DOFs:
+            if not titleFixities3D:
+                f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
+                titleFixities3D = True
+            f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
 
 # 2DOFs nodes fixities
-if node2DOFs:
-    with open(fixity2D_File, 'w') as f2Fix:
-        # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
-        for nodeTag in bottomNodes2D:
-            if nodeTag in node2DOFs:
-                if not titleFixities2D:
-                    f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
-                    titleFixities2D = True
-                f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
+with open(fixity2D_File, 'w') as f2Fix:
+    # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
+    for nodeTag in bottomNodes2D:
+        if nodeTag in node2DOFs:
+            if not titleFixities2D:
+                f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
+                titleFixities2D = True
+            f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
 
 # 3DOFs equalDOFs
-if node3DOFs:
-    with open(equalDOFs3D_File, 'w') as f3Equal:
-        # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes3D[1:], rightNodes3D[1:]):
-            if i in node3DOFs and j in node3DOFs:
-                f3Equal.write(f"equalDOF {i} {j} 1 2\n")
+with open(equalDOFs3D_File, 'w') as f3Equal:
+    # Left–Right equalDOFs (1 & 2 only)
+    for i, j in zip(leftNodes3D[1:], rightNodes3D[1:]):
+        if i in node3DOFs and j in node3DOFs:
+            f3Equal.write(f"equalDOF {i} {j} 1 2\n")
 
 # 2DOFs equalDOFs
-if node2DOFs:
-    with open(equalDOFs2D_File, 'w') as f2Equal:
-        # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
-            if i in node2DOFs and j in node2DOFs:
-                f2Equal.write(f"equalDOF {i} {j} 1 2\n")
+with open(equalDOFs2D_File, 'w') as f2Equal:
+    # Left–Right equalDOFs (1 & 2 only)
+    for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
+        if i in node2DOFs and j in node2DOFs:
+            f2Equal.write(f"equalDOF {i} {j} 1 2\n")
 
 with open(elements_File, 'w') as f_ele:
     with open(meshFile) as f:
@@ -371,12 +335,11 @@ with open(elements_File, 'w') as f_ele:
                     continue
 
                 if elementType == 10:  # 9-node quad
+                    mat = defaultQuad9Material
 
                     if len(parts) == 14:
-                        # print(eleTag)
                         try:
                             phyGroup = int(parts[4])
-                            # print(phyGroup)
 
                             if phyGroup in mainSoilTags:
                                 xWgt = - gVal * np.sin(alphaRads)
