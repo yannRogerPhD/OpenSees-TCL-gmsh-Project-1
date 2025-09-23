@@ -75,11 +75,14 @@ with open(meshFile) as f:
         (b) thickness values for each layer
     (5) no need of the mainSoilTags since it is adaptative from number of soil layers in gmsh
 '''
+# Default material properties and variables
+defaultQuad9Material = {'thick': 1.0, 'matTag': 1, 'bulk': 1.0, 'fmass': 1.0, 'hPerm': 1.0, 'vPerm': 1.0}
 
 gVal = 9.806
 massDen, fluidDen = 2.202, 0.000
 alpha = 0.0
 alphaRads = np.deg2rad(alpha)
+# mainSoilTags = list(range(maxPhyGroup + 1))  # assuming soil tags correspond to phyGroup
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
 thickness = {i: 1.0 for i in mainSoilTags}
 rhoVals = {i: massDen - fluidDen for i in mainSoilTags}
@@ -222,23 +225,24 @@ print(f"2 DOFs water table nodes are:", node2DOFsWT)
 print(f"length of 3 DOFs water table nodes are:", len(node3DOFsWT))
 print(f"length of 2 DOFs water table nodes are:", len(node2DOFsWT))
 
+
 # write output of 3DOFs nodes
-if node3DOFs:  # only write this section if it’s not empty
-    with open(nodes3D_File, 'w') as f3:
+with open(nodes3D_File, 'w') as f3:
+    if node3DOFs:  # only write this section if it’s not empty
         f3.write('# !!!!!!!! 3DOFs nodes !!!!!!!!!\n\n')
         f3.write('model BasicBuilder -ndm 2 -ndf 3\n\n')
         for nodeTAGS, coordS in sorted(node3DOFs.items()):
             f3.write(f"node {nodeTAGS} {coordS[0]:.3f} {coordS[1]:.3f}\n")
+        # f3.write("\n")
 
 # write output of 2DOFs nodes
-if node2DOFs:  # only write this section if it’s not empty
-    with open(nodes2D_File, 'w') as f2:
+with open(nodes2D_File, 'w') as f2:
+    if node2DOFs:  # only write this section if it’s not empty
         f2.write('# !!!!!!!! 2DOFs nodes !!!!!!!!!\n\n')
         f2.write('model BasicBuilder -ndm 2 -ndf 2\n\n')
         for nodeTAGS, coordS in sorted(node2DOFs.items()):
             f2.write(f"node {nodeTAGS} {coordS[0]:.3f} {coordS[1]:.3f}\n")
 
-# fix output of 3rd DOF (pressure) nodes for those above the WT
 if node3DOFsWT:
     with open(fixityWT3D_File, 'w') as f3WT:
         f3WT.write("# fix the 3rd DOF, the pressure DOFs, for nodes above the water table\n")
@@ -305,41 +309,38 @@ titleFixities2D = False
 titleFixities3D = False
 
 # 3DOFs nodes fixities
-if node3DOFs:
-    with open(fixity3D_File, 'w') as f3Fix:
-        for nodeTag in bottomNodes3D:
-            if nodeTag in node3DOFs:
-                if not titleFixities3D:
-                    f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
-                    titleFixities3D = True
-                f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
+with open(fixity3D_File, 'w') as f3Fix:
+    # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
+    for nodeTag in bottomNodes3D:
+        if nodeTag in node3DOFs:
+            if not titleFixities3D:
+                f3Fix.write("# !!!!!!! fixities for 3DOFs nodes !!!!!!!\n")
+                titleFixities3D = True
+            f3Fix.write(f"fix {nodeTag} {fixX} {fixY} {fixP}\n")
 
 # 2DOFs nodes fixities
-if node2DOFs:
-    with open(fixity2D_File, 'w') as f2Fix:
-        # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
-        for nodeTag in bottomNodes2D:
-            if nodeTag in node2DOFs:
-                if not titleFixities2D:
-                    f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
-                    titleFixities2D = True
-                f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
+with open(fixity2D_File, 'w') as f2Fix:
+    # for nodeTag in sorted(bottomNodesB | leftNodesB | rightNodesB):
+    for nodeTag in bottomNodes2D:
+        if nodeTag in node2DOFs:
+            if not titleFixities2D:
+                f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
+                titleFixities2D = True
+            f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
 
 # 3DOFs equalDOFs
-if node3DOFs:
-    with open(equalDOFs3D_File, 'w') as f3Equal:
-        # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes3D[1:], rightNodes3D[1:]):
-            if i in node3DOFs and j in node3DOFs:
-                f3Equal.write(f"equalDOF {i} {j} 1 2\n")
+with open(equalDOFs3D_File, 'w') as f3Equal:
+    # Left–Right equalDOFs (1 & 2 only)
+    for i, j in zip(leftNodes3D[1:], rightNodes3D[1:]):
+        if i in node3DOFs and j in node3DOFs:
+            f3Equal.write(f"equalDOF {i} {j} 1 2\n")
 
 # 2DOFs equalDOFs
-if node2DOFs:
-    with open(equalDOFs2D_File, 'w') as f2Equal:
-        # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
-            if i in node2DOFs and j in node2DOFs:
-                f2Equal.write(f"equalDOF {i} {j} 1 2\n")
+with open(equalDOFs2D_File, 'w') as f2Equal:
+    # Left–Right equalDOFs (1 & 2 only)
+    for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
+        if i in node2DOFs and j in node2DOFs:
+            f2Equal.write(f"equalDOF {i} {j} 1 2\n")
 
 with open(elements_File, 'w') as f_ele:
     with open(meshFile) as f:
@@ -419,3 +420,4 @@ with open(elements_File, 'w') as f_ele:
                                             f"{wtY}\n")
                         except (ValueError, IndexError):
                             continue
+
