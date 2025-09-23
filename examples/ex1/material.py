@@ -60,7 +60,9 @@ class PdmyMaterial(Material):
 
 
 class PimyMaterial(Material):
-    """Represents the PressureIndependMultiYield material."""
+    """
+    represents the PressureIndependMultiYield material
+    """
 
     def toTCL(self):
         if "modulusReductionCurve" in self.params:
