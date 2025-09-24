@@ -10,17 +10,17 @@ please note that:
 import numpy as np
 
 # for base nodes, fix both x and y
-fixX = 0
+fixX = 1
 fixY = 1
 fixP = 0
 
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 3.0, 0.0
+leftX, rightX, bottomY = 0.0, 1.0, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
-meshFile = 'modelT.msh'
+meshFile = 'model.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -77,7 +77,7 @@ with open(meshFile) as f:
 '''
 
 gVal = 9.806
-massDen, fluidDen = 2.202, 0.000
+massDen, fluidDen = 2.000, 1.000
 alpha = 0.0
 alphaRads = np.deg2rad(alpha)
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
@@ -106,7 +106,7 @@ vPermVals = {i: 1.0e-4 for i in mainSoilTags}
 # print(len(fmassVals))
 
 # physical group to store WT tables as this will helo for pore pressure fixities
-phyGroupWT = 6
+phyGroupWT = 0
 nodesWT = {}
 
 
@@ -216,11 +216,13 @@ node3DOFsWT = {tag: coords for tag, coords in nodeCoords.items()
 node2DOFsWT = {tag: coords for tag, coords in nodeCoords.items()
                if nodesWT.get(tag) == 2}
 
-print(f"3 DOFs water table nodes are:", node3DOFsWT)
-print(f"2 DOFs water table nodes are:", node2DOFsWT)
+if phyGroupWT:
+    print(f"3 DOFs water table nodes are:", node3DOFsWT)
+    print(f"2 DOFs water table nodes are:", node2DOFsWT)
 
-print(f"length of 3 DOFs water table nodes are:", len(node3DOFsWT))
-print(f"length of 2 DOFs water table nodes are:", len(node2DOFsWT))
+if phyGroupWT:
+    print(f"length of 3 DOFs water table nodes are:", len(node3DOFsWT))
+    print(f"length of 2 DOFs water table nodes are:", len(node2DOFsWT))
 
 # write output of 3DOFs nodes
 if node3DOFs:  # only write this section if it’s not empty
@@ -238,12 +240,6 @@ if node2DOFs:  # only write this section if it’s not empty
         for nodeTAGS, coordS in sorted(node2DOFs.items()):
             f2.write(f"node {nodeTAGS} {coordS[0]:.3f} {coordS[1]:.3f}\n")
 
-# fix output of 3rd DOF (pressure) nodes for those above the WT
-if node3DOFsWT:
-    with open(fixityWT3D_File, 'w') as f3WT:
-        f3WT.write("# fix the 3rd DOF, the pressure DOFs, for nodes above the water table\n")
-        for nodeTAGS, coordS in sorted(node3DOFsWT.items()):
-            f3WT.write(f"fix {nodeTAGS} 0 0 1\n")
 
 # we then parse boundary elements
 with open(meshFile) as f:
@@ -293,13 +289,15 @@ leftNodes3D = [n for n in leftBound if n in node3DOFs]
 rightNodes3D = [n for n in rightBound if n in node3DOFs]
 bottomNodes3D = [n for n in bottomBound if n in node3DOFs]
 
-print('left 2D nodes:', leftNodes2D)
-print('right 2D nodes:', rightNodes2D)
-print('bottom 2D nodes:', bottomNodes2D)
+if node2DOFs:
+    print('left 2D nodes:', leftNodes2D)
+    print('right 2D nodes:', rightNodes2D)
+    print('bottom 2D nodes:', bottomNodes2D)
 
-print('left 3D nodes:', leftNodes3D)
-print('right 3D nodes:', rightNodes3D)
-print('bottom 3D nodes:', bottomNodes3D)
+if node3DOFs:
+    print('left 3D nodes:', leftNodes3D)
+    print('right 3D nodes:', rightNodes3D)
+    print('bottom 3D nodes:', bottomNodes3D)
 
 titleFixities2D = False
 titleFixities3D = False
@@ -324,6 +322,15 @@ if node2DOFs:
                     f2Fix.write("# !!!!!!! fixities for 2DOFs nodes !!!!!!!\n")
                     titleFixities2D = True
                 f2Fix.write(f"fix {nodeTag} {fixX} {fixY}\n")
+
+
+# fix output of 3rd DOF (pressure) nodes for those above the WT
+if node3DOFsWT:
+    with open(fixityWT3D_File, 'w') as f3WT:
+        f3WT.write("# fix the 3rd DOF, the pressure DOFs, for nodes above the water table\n")
+        for nodeTAGS, coordS in sorted(node3DOFsWT.items()):
+            f3WT.write(f"fix {nodeTAGS} 0 0 1\n")
+
 
 # 3DOFs equalDOFs
 if node3DOFs:
