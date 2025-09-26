@@ -17,10 +17,10 @@ fixP = 0
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 1.0, 0.0
+leftX, rightX, bottomY = 0.0, 0.5, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
-meshFile = 'model.msh'
+meshFile = 'model2.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -77,7 +77,7 @@ with open(meshFile) as f:
 '''
 
 gVal = 9.806
-massDen, fluidDen = 2.000, 1.000
+massDen, fluidDen = 1755, 0.000
 alpha = 0.0
 alphaRads = np.deg2rad(alpha)
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}

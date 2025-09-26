@@ -1,1 +1,27 @@
+equalDOF 50 5 1 2
+equalDOF 49 6 1 2
+equalDOF 48 7 1 2
+equalDOF 47 8 1 2
+equalDOF 46 9 1 2
+equalDOF 45 10 1 2
+equalDOF 44 11 1 2
+equalDOF 43 12 1 2
+equalDOF 42 13 1 2
+equalDOF 41 14 1 2
+equalDOF 40 15 1 2
+equalDOF 39 16 1 2
+equalDOF 38 17 1 2
+equalDOF 37 18 1 2
+equalDOF 36 19 1 2
+equalDOF 35 20 1 2
+equalDOF 34 21 1 2
+equalDOF 33 22 1 2
+equalDOF 32 23 1 2
+equalDOF 31 24 1 2
+equalDOF 30 25 1 2
+equalDOF 29 26 1 2
+equalDOF 28 27 1 2
 equalDOF 4 3 1 2
+
+# equalDOF 1 $dashpotR 1
+# equalDOF 1 2 1

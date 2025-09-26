@@ -22,7 +22,7 @@ Plane Surface(1) = {1};
 //+
 Transfinite Curve {4, 2} = 2 Using Progression 1;
 //+
-Transfinite Curve {1, 3} = 2 Using Progression 1;
+Transfinite Curve {3, 1} = 2 Using Progression 1;
 //+
 Transfinite Surface {1};
 //+

@@ -161,7 +161,7 @@ if __name__ == "__main__":
         (1.00e-2, 0.115), (2.00e-2, 0.075), (5.00e-2, 0.045), (1.00e-1, 0.030)
     ]
 
-    E1, poisson1 = 90000, 0.40
+    E1, poisson1 = 90000.0, 0.40
     G1 = E1 / (2 * (1 + poisson1))
     K1 = E1 / (3 * (1 - 2 * poisson1))
     cohesion = 30
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         {
             "name": "Layer 1",
             "materialType": "PIMY",
-            "rho": 2.000,
+            "rho": 2.000,  # massDen
             "refShearModul": G1,
             "refBulkModul": K1,
             "cohesion": cohesion,
