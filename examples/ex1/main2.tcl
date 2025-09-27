@@ -65,7 +65,9 @@ set r3 [nodeReaction $dashpotR 2]
 # puts "$r3"
 
 set dt 0.001
-timeSeries Path 2 -dt $dt -filePath "rickerInputVelocity.txt" -factor $mC
+# timeSeries Path 2 -dt $dt -filePath "rickerInputVelocity.txt" -factor $mC
+
+timeSeries Path 2 -dt $dt -filePath "rickerInputVelocity.txt" -factor 2000
 
 pattern Plain 2 2 {
     load 1 1.0 0.0
