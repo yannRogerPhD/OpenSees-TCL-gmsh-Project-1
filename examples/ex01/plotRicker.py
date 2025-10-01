@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use("MyLaTeXPlotStyle")
+# plt.style.use("MyLaTeXPlotStyle")
 
 # print(plt.style.available)
 
