@@ -1,0 +1,32 @@
+Index: examples/ex02/model.msh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/examples/ex02/model.msh b/examples/ex02/model.msh
+new file mode 100644
+--- /dev/null	(date 1759323102732)
++++ b/examples/ex02/model.msh	(date 1759323102732)
+@@ -0,0 +1,22 @@
++$MeshFormat
++2.2 0 8
++$EndMeshFormat
++$Nodes
++4
++1 0 0 0
++2 1 0 0
++3 1 1 0
++4 0 1 0
++$EndNodes
++$Elements
++9
++1 15 2 0 1 1
++2 15 2 0 2 2
++3 15 2 0 3 3
++4 15 2 0 4 4
++5 1 2 0 1 1 2
++6 1 2 0 2 2 3
++7 1 2 0 3 3 4
++8 1 2 0 4 4 1
++9 3 2 0 1 1 2 3 4
++$EndElements
