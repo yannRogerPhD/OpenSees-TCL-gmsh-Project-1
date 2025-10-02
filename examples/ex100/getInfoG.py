@@ -17,7 +17,7 @@ fixP = 0
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 10.0, 0.0
+leftX, rightX, bottomY = 0.0, 1.0, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
 # meshFile = 'model.msh'

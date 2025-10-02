@@ -1,6 +1,6 @@
 wipe
 
-set thickX 10
+set thickX 1
 set nu 0.0
 set matTag 1
 set rhoS 1.7
@@ -12,6 +12,7 @@ set E [expr {2 * $G * (1 + $nu)}]
 set K [expr {$E / (3 * (1 - 2 * $nu))}]
 
 set mC [expr {$thickX * $VsB * $rhoB}]
+set mC2 [expr {$mC}]
 
 set motionSteps 7990
 
@@ -33,7 +34,7 @@ source equalDOFs2DBottom.tcl
 equalDOF 1 $dashTagR 1
 
 nDMaterial ElasticIsotropic $matTag $E $nu $rhoS
-uniaxialMaterial Viscous $matZeroLengthTag $mC 1
+uniaxialMaterial Viscous $matZeroLengthTag $mC2 1
 
 source elements.tcl
 element zeroLength $elementZeroLengthTag $dashTagL $dashTagR -mat $matZeroLengthTag -dir 1
@@ -43,7 +44,7 @@ numberer RCM
 integrator LoadControl 0.1
 algorithm Newton
 system ProfileSPD
-test NormDispIncr 1.0e-6 15 0
+test NormDispIncr 1.0e-6 15 1
 analysis Static
 
 analyze 10
@@ -54,8 +55,9 @@ wipeAnalysis
 set timeSeriesTag 1004
 set dt 0.005
 set seismicInput velHistory.out
+# set seismicInput rickerVelocity.txt
 
-timeSeries Path $timeSeriesTag -dt $dt -filePath $seismicInput -factor $mC
+timeSeries Path $timeSeriesTag -dt $dt -filePath $seismicInput -factor $mC2
 
 set plainPatterTag 1005
 pattern Plain $plainPatterTag $timeSeriesTag {
@@ -74,5 +76,6 @@ algorithm Newton
 system ProfileSPD
 integrator Newmark 0.5 0.25
 analysis Transient
+test NormDispIncr 1.0e-3 15 1
 
 analyze $motionSteps $dt
