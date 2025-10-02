@@ -4,15 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="run2">
-      <change afterPath="$PROJECT_DIR$/examples/ex100/matModelParams.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex100 - matParams update1">
+      <change afterPath="$PROJECT_DIR$/examples/ex100/plotRes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/getInfoG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/main.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/main.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/model.db" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/model.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/model.msh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/nodes2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/velBotResults.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/velBotResults.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex100/velTopResults.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/velTopResults.out" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -23,7 +36,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.anaVSnum.executor": "Run",
+    "Python.defMyPlotStyle.executor": "Run",
     "Python.getInfoG.executor": "Run",
+    "Python.plotRes.executor": "Run",
     "Python.plotRicker.executor": "Run",
     "git-widget-placeholder": "master",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
@@ -38,11 +54,20 @@
       <option name="project" value="LOCAL" />
       <updated>1759323311380</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="ex100 - matParams update1">
+      <option name="closed" value="true" />
+      <created>1759416276290</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759416276290</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="run2" />
-    <option name="LAST_COMMIT_MESSAGE" value="run2" />
+    <MESSAGE value="ex100 - matParams update1" />
+    <option name="LAST_COMMIT_MESSAGE" value="ex100 - matParams update1" />
   </component>
 </project>
