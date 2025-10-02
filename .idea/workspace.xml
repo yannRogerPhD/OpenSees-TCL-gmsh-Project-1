@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/my first project.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex01/accelTop.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex01/accelTop.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex01/plotRicker.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex01/plotRicker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex01/velBot.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex01/velBot.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex01/velTop.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex01/velTop.out" afterDir="false" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="run2">
+      <change afterPath="$PROJECT_DIR$/examples/ex100/matModelParams.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +30,19 @@
   }
 }]]></component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="run2">
+      <option name="closed" value="true" />
+      <created>1759323311380</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759323311380</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="run2" />
+    <option name="LAST_COMMIT_MESSAGE" value="run2" />
   </component>
 </project>
