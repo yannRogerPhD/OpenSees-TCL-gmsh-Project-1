@@ -4,16 +4,70 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex100 - matParams update1">
-      <change afterPath="$PROJECT_DIR$/examples/ex100/plotRes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/getInfoG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/main.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/main.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/model.db" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/model.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/model.msh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/nodes2D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/velBotResults.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/velBotResults.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/velTopResults.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/velTopResults.out" afterDir="false" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex100 - complete1">
+      <change afterPath="$PROJECT_DIR$/examples/ex02/getInfoG.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/ex02/model.geo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/ex1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/ex1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/baseAcc.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/baseAcc.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/elements.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/elements.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/equalDOFs2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/equalDOFs2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/fixity2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/fixity2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/getInfoG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/gmon.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/gmon.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/getInfoG2.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/getInfoG2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/getInfoG3.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/getInfoG3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/gmon.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/gmon.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/acce.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/acce.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/disp.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/disp.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/strain1.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/strain1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/strain3.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/strain3.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/stress1.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/stress1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/results/stress3.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/results/stress3.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/keep getInfo/test.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/keep getInfo/test.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/main2.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/main2.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/mainI.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/mainI.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/material.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/material.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/materials.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/materials.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/model.geo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/model.msh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/model2.db" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/model2.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/model2.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/model2.geo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/model2.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/model2.msh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/nodes2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/plotTransF.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/plotTransF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/rickerInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/rickerInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/rickerInputVelocity.txt" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/rickerInputVelocity.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/rickerVel.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/rickerVel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/surfAcc.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/surfAcc.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex101/updateMat.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex02/updateMat.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/ex2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/ex2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/elements.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/elements.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/equalDOFs2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/equalDOFs2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/fixity2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/fixity2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/getInfoG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/gmon.out" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/gmon.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/mainASD.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/mainASD.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/model.db" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/model.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/model.geo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/model.msh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/model_ABC_1.drawio.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/model_ABC_1.drawio.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/nodes2D.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/plotRes.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/plotRes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/soil_base.txt" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/soil_base.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/soil_top.txt" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/soil_top.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex102/updateASD.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex03/updateASD.tcl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,9 +96,15 @@
     "Python.plotRes.executor": "Run",
     "Python.plotRicker.executor": "Run",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1/examples/ex101",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/examples/ex101" />
+    </key>
+  </component>
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="run2">
       <option name="closed" value="true" />
@@ -62,12 +122,21 @@
       <option name="project" value="LOCAL" />
       <updated>1759416276290</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="ex100 - complete1">
+      <option name="closed" value="true" />
+      <created>1759422586971</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759422586971</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="run2" />
     <MESSAGE value="ex100 - matParams update1" />
-    <option name="LAST_COMMIT_MESSAGE" value="ex100 - matParams update1" />
+    <MESSAGE value="ex100 - complete1" />
+    <option name="LAST_COMMIT_MESSAGE" value="ex100 - complete1" />
   </component>
 </project>

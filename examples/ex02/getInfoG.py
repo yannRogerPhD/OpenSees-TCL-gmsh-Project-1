@@ -10,18 +10,17 @@ please note that:
 import numpy as np
 
 # for base nodes, fix both x and y
-fixX = 0
+fixX = 1
 fixY = 1
 fixP = 0
 
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 0.2, 0.0
+leftX, rightX, bottomY = 0.0, 0.5, 0.0
 leftBound, rightBound, bottomBound = [], [], []
 
-# meshFile = 'model.msh'
-meshFile = 'model.msh'
+meshFile = 'model2.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -33,7 +32,6 @@ fixityWT3D_File = 'fixity3DWT.tcl'
 
 equalDOFs3D_File = 'equalDOFs3D.tcl'
 equalDOFs2D_File = 'equalDOFs2D.tcl'
-equalDOFs2DBottom_File = 'equalDOFs2DBottom.tcl'
 
 elements_File = 'elements.tcl'
 
@@ -350,10 +348,6 @@ if node2DOFs:
             if i in node2DOFs and j in node2DOFs:
                 f2Equal.write(f"equalDOF {i} {j} 1 2\n")
 
-    with open(equalDOFs2DBottom_File, 'w') as f2BottomEqual:
-        for i in bottomNodes2D[1:]:
-            f2BottomEqual.write(f"equalDOF {bottomNodes2D[0]} {i} 1\n")
-
 with open(elements_File, 'w') as f_ele:
     with open(meshFile) as f:
         lines = f.readlines()
@@ -417,9 +411,8 @@ with open(elements_File, 'w') as f_ele:
                             phyGroup = int(parts[4])
                             # print(phyGroup)
                             if phyGroup in mainSoilTags:
-                                rhoV = 1.7
-                                wtX = gVal * rhoV * np.sin(alphaRads)
-                                wtY = - gVal * rhoV * np.cos(alphaRads)
+                                wtX = gVal * rhoVals[phyGroup] * np.sin(alphaRads)
+                                wtY = - gVal * rhoVals[phyGroup] * np.cos(alphaRads)
                                 f_ele.write(f"element "
                                             f"quad "
                                             f"{eleTag} "
