@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex101">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FreeFieldEffectiveY.tcl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ex101/FreeFieldEffective.tcl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ex101/materials.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/my first project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/my first project.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/elements.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/elements.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/equalDOFs2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/equalDOFs2D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/equalDOFs3D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/equalDOFs3D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/fixity3DWT.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/fixity3DWT.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/getInfoG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/main.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/main.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/model.geo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/model.msh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/nodes2D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex101/nodes3D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex101/nodes3D.tcl" afterDir="false" />
-    </list>
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex101 - equalDOF center nodes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -145,7 +125,23 @@
       <option name="presentableId" value="Default" />
       <updated>1759504779453</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="ex101 - equalDOF center nodes">
+      <option name="closed" value="true" />
+      <created>1759517134189</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1759517134189</updated>
+    </task>
+    <task id="LOCAL-00009" summary="ex101 - equalDOF center nodes">
+      <option name="closed" value="true" />
+      <created>1759517145664</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1759517145664</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -154,6 +150,7 @@
     <MESSAGE value="ex100 - complete1" />
     <MESSAGE value="ex101 -" />
     <MESSAGE value="ex101" />
-    <option name="LAST_COMMIT_MESSAGE" value="ex101" />
+    <MESSAGE value="ex101 - equalDOF center nodes" />
+    <option name="LAST_COMMIT_MESSAGE" value="ex101 - equalDOF center nodes" />
   </component>
 </project>
