@@ -80,7 +80,7 @@ with open(meshFile) as f:
 
 gVal = 9.806
 massDen, fluidDen = 1755, 0.000
-alpha = 2.0
+alpha = 0.0
 alphaRads = np.deg2rad(alpha)
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
 thickness = {i: 1.0 for i in mainSoilTags}
@@ -100,17 +100,12 @@ print(len(thickness))
         phyGroupWT = put the "plane surface" number from gmsh
 '''
 
-# bulkVals = {i: 5.06e6 for i in mainSoilTags}
+bulkVals = {i: 5.06e6 for i in mainSoilTags}
+print(bulkVals)
 # bulkVals2 = {1: 3, 2: 4, 3: 5.06e6}
-bulkVals = {1: 6.88e6, 2: 5.06e6, 3: 5.0e-6}
-
-# fmassVals = {i: 1 for i in mainSoilTags}
-fmassVals = {i: 1.0 for i in mainSoilTags}
-# print(f"fMass values: ", fmassVals)
-
-# hPermVals = {i: 1.0e-4 for i in mainSoilTags}
+# print(bulkVals2)
+fmassVals = {i: 1 for i in mainSoilTags}
 hPermVals = {i: 1.0e-4 for i in mainSoilTags}
-
 vPermVals = {i: 1.0e-4 for i in mainSoilTags}
 # print("fmass values are:", fmassVals)
 # print(len(fmassVals))
