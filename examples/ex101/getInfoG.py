@@ -17,8 +17,10 @@ fixP = 0
 nodeCoords = {}
 nodeDOFs = {}
 
-leftX, rightX, bottomY = 0.0, 10.0, 0.0
+leftX, rightX, bottomY = 0.0, 2.0, 0.0
+middleX, OneDimAnalysis = (rightX - leftX) / 2, True
 leftBound, rightBound, bottomBound = [], [], []
+middleBound = []
 
 # meshFile = 'model.msh'
 meshFile = 'model.msh'
@@ -80,8 +82,9 @@ with open(meshFile) as f:
 
 gVal = 9.806
 massDen, fluidDen = 1755, 0.000
-alpha = 2.0
-alphaRads = np.deg2rad(alpha)
+alpha = np.atan(2.0/100)
+# alphaRads = np.deg2rad(alpha)
+alphaRads = alpha
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
 thickness = {i: 1.0 for i in mainSoilTags}
 rhoVals = {i: massDen - fluidDen for i in mainSoilTags}
@@ -275,6 +278,7 @@ with open(meshFile) as f:
             if len(parts) == 4:
                 xBoundLeft = float(parts[1])
                 xBoundRight = float(parts[1])
+                xBoundMiddle = float(parts[1])
                 yBoundBottom = float(parts[2])
 
                 if xBoundLeft == leftX:
@@ -286,28 +290,42 @@ with open(meshFile) as f:
                 if yBoundBottom == bottomY:
                     bottomBound.append(nodeTag)
 
+                if OneDimAnalysis:
+                    if xBoundMiddle == middleX:
+                        middleBound.append(nodeTag)
+
 # print(leftBound)
 leftBound = sorted(leftBound, key=lambda it: nodeCoords[it][1])
 rightBound = sorted(rightBound, key=lambda it: nodeCoords[it][1])
 bottomBound = sorted(bottomBound, key=lambda it: nodeCoords[it][0])
 
+middleBound = sorted(middleBound, key=lambda it: nodeCoords[it][1])
+
 leftNodes2D = [n for n in leftBound if n in node2DOFs]
 rightNodes2D = [n for n in rightBound if n in node2DOFs]
 bottomNodes2D = [n for n in bottomBound if n in node2DOFs]
+
+middleBound2D = [n for n in middleBound if n in node2DOFs]
 
 leftNodes3D = [n for n in leftBound if n in node3DOFs]
 rightNodes3D = [n for n in rightBound if n in node3DOFs]
 bottomNodes3D = [n for n in bottomBound if n in node3DOFs]
 
+middleBound3D = [n for n in middleBound if n in node3DOFs]
+
+# check this to make sure it only holds for 1D SRAs
+
 if node2DOFs:
     print('left 2D nodes:', leftNodes2D)
     print('right 2D nodes:', rightNodes2D)
     print('bottom 2D nodes:', bottomNodes2D)
+    print('middle 2D nodes:', middleBound2D)
 
 if node3DOFs:
     print('left 3D nodes:', leftNodes3D)
     print('right 3D nodes:', rightNodes3D)
     print('bottom 3D nodes:', bottomNodes3D)
+    print('middle 3D nodes:', middleBound3D)
 
 titleFixities2D = False
 titleFixities3D = False

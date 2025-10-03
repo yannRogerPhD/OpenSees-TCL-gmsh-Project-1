@@ -54,7 +54,7 @@ Curve Loop(3) = {3, 10, -4, -7};
 //+
 Plane Surface(3) = {3};
 //+
-Transfinite Curve {5, 8} = 41 Using Progression 1;
+Transfinite Curve {5, 8} = 51 Using Progression 1;
 //+
 Transfinite Curve {6, 9} = 17 Using Progression 1;
 //+
