@@ -23,7 +23,7 @@ leftBound, rightBound, bottomBound = [], [], []
 middleBound = []
 
 # meshFile = 'model.msh'
-meshFile = 'model.msh'
+meshFile = 'model2.msh'
 
 nodes3D_File = 'nodes3D.tcl'
 nodes2D_File = 'nodes2D.tcl'
@@ -36,6 +36,8 @@ fixityWT3D_File = 'fixity3DWT.tcl'
 equalDOFs3D_File = 'equalDOFs3D.tcl'
 equalDOFs2D_File = 'equalDOFs2D.tcl'
 equalDOFs2DBottom_File = 'equalDOFs2DBottom.tcl'
+
+equalDOFs2DMiddle_File = 'equalDOFs2DMiddle.tcl'
 
 elements_File = 'elements.tcl'
 
@@ -112,9 +114,9 @@ fmassVals = {i: 1.0 for i in mainSoilTags}
 # print(f"fMass values: ", fmassVals)
 
 # hPermVals = {i: 1.0e-4 for i in mainSoilTags}
-hPermVals = {i: 1.0e-4 for i in mainSoilTags}
+hPermVals = {i: 1.0 for i in mainSoilTags}
 
-vPermVals = {i: 1.0e-4 for i in mainSoilTags}
+vPermVals = {i: 1.0 for i in mainSoilTags}
 # print("fmass values are:", fmassVals)
 # print(len(fmassVals))
 
@@ -171,7 +173,8 @@ for line in lines:
         parts = line.split()
         if len(parts) >= 4:
             nodeTag = int(parts[0])
-            nx, ny, nz = float(parts[1]), float(parts[2]), float(parts[3])
+            # nx, ny, nz = float(parts[1]), float(parts[2]), float(parts[3])
+            nx, ny, nz = round(float(parts[1]), 3), round(float(parts[2]), 3), round(float(parts[3]), 3)
             nodeCoords[nodeTag] = (nx, ny)  # keep only x,y since 2D for the moment
         else:
             print(f"warning: skipped malformed node line: '{line}' ")
@@ -276,10 +279,14 @@ with open(meshFile) as f:
             nodeTag = int(parts[0])
 
             if len(parts) == 4:
-                xBoundLeft = float(parts[1])
-                xBoundRight = float(parts[1])
-                xBoundMiddle = float(parts[1])
-                yBoundBottom = float(parts[2])
+                # xBoundLeft = float(parts[1])
+                # xBoundRight = float(parts[1])
+                # xBoundMiddle = float(parts[1])
+                # yBoundBottom = float(parts[2])
+                xBoundLeft = round(float(parts[1]), 3)
+                xBoundRight = round(float(parts[1]), 3)
+                xBoundMiddle = round(float(parts[1]), 3)
+                yBoundBottom = round(float(parts[2]), 3)
 
                 if xBoundLeft == leftX:
                     leftBound.append(nodeTag)
@@ -299,19 +306,28 @@ leftBound = sorted(leftBound, key=lambda it: nodeCoords[it][1])
 rightBound = sorted(rightBound, key=lambda it: nodeCoords[it][1])
 bottomBound = sorted(bottomBound, key=lambda it: nodeCoords[it][0])
 
-middleBound = sorted(middleBound, key=lambda it: nodeCoords[it][1])
-
 leftNodes2D = [n for n in leftBound if n in node2DOFs]
 rightNodes2D = [n for n in rightBound if n in node2DOFs]
 bottomNodes2D = [n for n in bottomBound if n in node2DOFs]
-
-middleBound2D = [n for n in middleBound if n in node2DOFs]
 
 leftNodes3D = [n for n in leftBound if n in node3DOFs]
 rightNodes3D = [n for n in rightBound if n in node3DOFs]
 bottomNodes3D = [n for n in bottomBound if n in node3DOFs]
 
+middleBound = sorted(middleBound, key=lambda it: nodeCoords[it][1])
+middleBound2D = [n for n in middleBound if n in node2DOFs]
 middleBound3D = [n for n in middleBound if n in node3DOFs]
+
+middleBound2D_1 = middleBound2D[1::2]
+middleBound2D_2 = middleBound2D[0::2]
+
+print('\n')
+
+print('middle bound 2D: ', middleBound2D)
+print('middle bound 2D I: ', middleBound2D_1)
+print('middle bound 2D II: ', middleBound2D_2)
+
+print('\n')
 
 # check this to make sure it only holds for 1D SRAs
 
@@ -319,13 +335,17 @@ if node2DOFs:
     print('left 2D nodes:', leftNodes2D)
     print('right 2D nodes:', rightNodes2D)
     print('bottom 2D nodes:', bottomNodes2D)
-    print('middle 2D nodes:', middleBound2D)
+    # print('middle 2D nodes:', middleBound2D)
+
+print('\n')
 
 if node3DOFs:
     print('left 3D nodes:', leftNodes3D)
     print('right 3D nodes:', rightNodes3D)
     print('bottom 3D nodes:', bottomNodes3D)
-    print('middle 3D nodes:', middleBound3D)
+    # print('middle 3D nodes:', middleBound3D)
+
+print('\n')
 
 titleFixities2D = False
 titleFixities3D = False
@@ -364,7 +384,7 @@ if node3DOFsWT:
 if node3DOFs:
     with open(equalDOFs3D_File, 'w') as f3Equal:
         # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes3D[1:], rightNodes3D[1:]):
+        for i, j in zip(leftNodes3D[0:], rightNodes3D[0:]):
             if i in node3DOFs and j in node3DOFs:
                 f3Equal.write(f"equalDOF {i} {j} 1 2\n")
 
@@ -372,7 +392,7 @@ if node3DOFs:
 if node2DOFs:
     with open(equalDOFs2D_File, 'w') as f2Equal:
         # Left–Right equalDOFs (1 & 2 only)
-        for i, j in zip(leftNodes2D[1:], rightNodes2D[1:]):
+        for i, j in zip(leftNodes2D[0:], rightNodes2D[0:]):
             if i in node2DOFs and j in node2DOFs:
                 f2Equal.write(f"equalDOF {i} {j} 1 2\n")
 
@@ -380,6 +400,17 @@ if node2DOFs:
         with open(equalDOFs2DBottom_File, 'w') as f2BottomEqual:
             for i in bottomNodes2D[1:]:
                 f2BottomEqual.write(f"equalDOF {bottomNodes2D[0]} {i} 1\n")
+
+    if middleBound2D:
+        with open(equalDOFs2DMiddle_File, 'w') as f2MiddleEqual1:
+            if len(middleBound) == (len(leftNodes2D) + len(leftNodes3D)):
+                f2MiddleEqual1.write("# equalDOF between left 2D nodes and corresponding middle nodes\n")
+                for i, j in zip(leftNodes2D, middleBound2D_1):
+                    f2MiddleEqual1.write(f"equalDOF {i} {j} 1 2\n")
+                f2MiddleEqual1.write("\n# equalDOF between left 3D nodes and corresponding middle nodes\n")
+                for k, l in zip(leftNodes3D, middleBound2D_2):
+                    f2MiddleEqual1.write(f"equalDOF {k} {l} 1 2\n")
+
 
 with open(elements_File, 'w') as f_ele:
     with open(meshFile) as f:

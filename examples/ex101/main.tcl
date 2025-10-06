@@ -13,7 +13,6 @@ source nodes3D.tcl
 source fixity3DWT.tcl
 source fixity3D.tcl
 source equalDOFs3D.tcl
-equalDOF 1 2 1 2
 
 source nodes2D.tcl
 node $dashL 0.0 0.0
@@ -25,8 +24,9 @@ fix $dashR 0 1
 
 source equalDOFs2D.tcl
 source equalDOFs2DBottom.tcl
+source equalDOFs2DMiddle.tcl
 equalDOF 1 $dashR 1
-# equalDOF 1 9 1 2
+equalDOF 1 9 1 2
 
 source materials.tcl
 uniaxialMaterial Viscous $matViscous $mC 1
@@ -54,3 +54,17 @@ updateMaterialStage -material 2 -stage 1
 updateMaterialStage -material 3 -stage 1
 
 analyze 40 5.0e-2
+
+setTime 0.0
+wipeAnalysis
+
+set dt     0.005
+set nSteps  7990
+set pi      3.141592654
+set damp    0.02
+set omega1  [expr 2*$pi*0.2]
+set omega2  [expr 2*$pi*20]
+set a0      [expr 2*$damp*$omega1*$omega2/($omega1 + $omega2)]
+set a1      [expr 2*$damp/($omega1 + $omega2)]
+set gamma  0.5
+set beta   0.25
