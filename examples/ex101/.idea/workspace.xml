@@ -4,32 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b820b94-3249-4ee2-9e0d-9670384df08a" name="Changes" comment="effective SRAs">
-      <change afterPath="$PROJECT_DIR$/.idea/ex101.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/equalDOFs2DMiddle.tcl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gmon.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mainTest.tcl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model2.msh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ex102/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elements.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/elements.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/equalDOFs2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/equalDOFs2D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/equalDOFs3D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/equalDOFs3D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fixity3DWT.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/fixity3DWT.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getInfoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/getInfoG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/main.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.db" beforeDir="false" afterPath="$PROJECT_DIR$/model.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.db.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/model.geo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/model.msh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nodes2D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/nodes2D.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nodes3D.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/nodes3D.tcl" afterDir="false" />
-    </list>
+    <list default="true" id="0b820b94-3249-4ee2-9e0d-9670384df08a" name="Changes" comment="effective SRAs" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -206,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759722968942</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="effective SRAs">
+      <option name="closed" value="true" />
+      <created>1759722979252</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1759722979252</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
