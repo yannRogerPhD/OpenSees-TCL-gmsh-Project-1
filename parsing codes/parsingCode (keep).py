@@ -78,7 +78,7 @@ maxPhyGroup = max(phyGroups) if phyGroups else 0
 
 gVal = 9.806
 massDen, fluidDen = 1755, 0.000
-alpha = np.atan(2.0 / 100)
+alpha = np.atan(2.0/100)
 # alphaRads = np.deg2rad(alpha)
 alphaRads = alpha
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}
@@ -141,38 +141,6 @@ DOFsRules = {
     10: both2and3DOFs  # for 9-node quad
 }
 
-# =====================================================
-#  ELEMENT PROFILES (extendable dictionary)
-# =====================================================
-
-# Each key (for ex., 3, 10, ...) is a gmsh element type number
-# - "key" is used for naming output files
-# - "ndm" = model dimension (2 or 3)
-# - "needsP" = True if element uses pressure DOF (e.g., u-p)
-# - "dofRule" = function to assign node DOFs
-elementProfiles = {
-    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    10: {"key": "quad9_4_UP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
-}
-
-# =====================================================
-#  DETERMINE GLOBAL MODEL DIMENSION (ndm) AND NDF
-# =====================================================
-
-usedProfiles = {el["type"] for el in elements if el["type"] in elementProfiles}
-
-if usedProfiles:
-    ndmGlobal = max(elementProfiles[t]["ndm"] for t in usedProfiles)
-    ndfGlobal = 3 if any(elementProfiles[t]["needsP"] for t in usedProfiles) else 2
-else:
-    ndmGlobal, ndfGlobal = 2, 2  # default fallback
-
-# write global model header once
-with open("modelHeader.tcl", "w") as f_:
-    f_.write(f"model BasicBuilder -ndm {ndmGlobal} -ndf {ndfGlobal}\n")
-
-print(f"✅ modelHeader.tcl written with ndm={ndmGlobal}, ndf={ndfGlobal}")
-
 for el in elements:
     if el["type"] in DOFsRules:
         for n, dof in DOFsRules[el["type"]](el["nodes"]).items():
@@ -183,6 +151,7 @@ for el in elements:
             for n, dof in DOFsRules[el["type"]](el["nodes"]).items():
                 if n not in nodesWT or dof > nodesWT[n]:
                     nodesWT[n] = dof
+
 
 inNodeSection = False
 for line in lines:
@@ -231,11 +200,11 @@ def writeNodesToFile(fileName, nodeDict, ndm, ndf):
     # write a set of nodes and their coordinates to a TCL file
     if not nodeDict:
         return
-    with open(fileName, 'w') as f__:
-        f__.write(f"# !!!!!!!! {ndf}DOFs nodes !!!!!!!!!\n\n")
-        f__.write(f"model BasicBuilder -ndm {ndm} -ndf {ndf}\n\n")
+    with open(fileName, 'w') as f_:
+        f_.write(f"# !!!!!!!! {ndf}DOFs nodes !!!!!!!!!\n\n")
+        f_.write(f"model BasicBuilder -ndm {ndm} -ndf {ndf}\n\n")
         for nodeTAG, (x, y) in sorted(nodeDict.items()):
-            f__.write(f"node {nodeTAG} {x:.4f} {y:.4f}\n")
+            f_.write(f"node {nodeTAG} {x:.4f} {y:.4f}\n")
 
 
 def nodesNearX(xTarget, tol=1e-5):
@@ -288,6 +257,7 @@ leftBound = sortNodesByY(leftBound)
 rightBound = sortNodesByY(rightBound)
 bottomBound = sortNodesByX(bottomBound)
 
+
 leftNodes2D = filter2DOFs(leftBound)
 rightNodes2D = filter2DOFs(rightBound)
 bottomNodes2D = filter2DOFs(bottomBound)
@@ -314,6 +284,7 @@ middleBound3D = filter3DOFs(middleBound)
 # alternate nodes in a middle strip: used to match left 2D and left 3D lists later
 middleBound2D_1 = middleBound2D[1::2]  # 2nd, 4th, 6th, ...
 middleBound2D_2 = middleBound2D[0::2]  # 1st, 3rd, 5th, ...
+
 
 print('\n')
 
@@ -346,13 +317,14 @@ titleFixities3D = False
 
 
 def writeFixities(fileName, nodes, fixValues, header):
+
     if not nodes:
         return
-    with open(fileName, 'w') as f__:
-        f__.write(f"# {header}\n\n")
+    with open(fileName, 'w') as f_:
+        f_.write(f"# {header}\n\n")
 
         for ns_ in nodes:
-            f__.write(f"fix {ns_} {' '.join(str(v) for v in fixValues)}\n")
+            f_.write(f"fix {ns_} {' '.join(str(v) for v in fixValues)}\n")
 
 
 def writeEqualDOFs(fileName, nodePairs, dofList, header):
@@ -366,18 +338,18 @@ def writeEqualDOFs(fileName, nodePairs, dofList, header):
     if not nodePairs:
         return
 
-    with open(fileName, 'w') as f__:
-        f__.write(f"# {header}\n\n")
+    with open(fileName, 'w') as f_:
+        f_.write(f"# {header}\n\n")
 
         for pair in nodePairs:
             if isinstance(pair, tuple) and len(pair) == 2:
                 i_, j_ = pair
-                f__.write(f"equalDOF {i_} {j_} {' '.join(map(str, dofList))}\n")
+                f_.write(f"equalDOF {i_} {j_} {' '.join(map(str, dofList))}\n")
             else:
                 # for cases like "equalDOF refNode node 1"
                 refNode = nodePairs[0]
                 if pair != refNode:
-                    f__.write(f"equalDOF {refNode} {pair} {' '.join(map(str, dofList))}\n")
+                    f_.write(f"equalDOF {refNode} {pair} {' '.join(map(str, dofList))}\n")
 
 
 def writeElements(fileName, elements_, mainSoilTags_, thickness_, bulkVals_,
@@ -386,8 +358,8 @@ def writeElements(fileName, elements_, mainSoilTags_, thickness_, bulkVals_,
     write element definition to file;
     handles both 9_4_QuadUP (type 10) and quad (type 3) elements automatically
     """
-    with open(fileName, 'w') as f__:
-        f__.write("# !!!!!!!!! elements !!!!!!!!! \n\n")
+    with open(fileName, 'w') as f_:
+        f_.write("# !!!!!!!!! elements !!!!!!!!! \n\n")
 
         for el in elements_:
             eleTag_ = el["id"]
@@ -400,34 +372,34 @@ def writeElements(fileName, elements_, mainSoilTags_, thickness_, bulkVals_,
                 xWgt_ = - gVal_ * np.sin(alphaRads_)
                 yWgt_ = - gVal_ * np.cos(alphaRads_)
 
-                f__.write(f"element 9_4_QuadUP "
-                          f"{eleTag_} "
-                          f"{nodes} "
-                          f"{thickness_[phyGroup_]} "
-                          f"{phyGroup_} "
-                          f"{bulkVals_[phyGroup_]} "
-                          f"{fmassVals_[phyGroup_]} "
-                          f"{hPermVals_[phyGroup_]} "
-                          f"{vPermVals_[phyGroup_]} "
-                          f"{xWgt_} "
-                          f"{yWgt_}\n")
+                f_.write(f"element 9_4_QuadUP "
+                         f"{eleTag_} "
+                         f"{nodes} "
+                         f"{thickness_[phyGroup_]} "
+                         f"{phyGroup_} "
+                         f"{bulkVals_[phyGroup_]} "
+                         f"{fmassVals_[phyGroup_]} "
+                         f"{hPermVals_[phyGroup_]} "
+                         f"{vPermVals_[phyGroup_]} "
+                         f"{xWgt_} "
+                         f"{yWgt_}\n")
 
             elif elementType_ == 3 and phyGroup_ in mainSoilTags_:
                 rhoV_ = 1.7
                 wtX_ = gVal_ * rhoV_ * np.sin(alphaRads_)
                 wtY_ = - gVal_ * rhoV_ * np.cos(alphaRads_)
 
-                f__.write(f"element "
-                          f"quad "
-                          f"{eleTag_} "
-                          f"{nodes} "
-                          f"{thickness_[phyGroup_]} "
-                          f"PlaneStrain "
-                          f"{mainSoilTags_[phyGroup_]} "
-                          f"0.0 "
-                          f"0.0 "
-                          f"{wtX_} "
-                          f"{wtY_}\n")
+                f_.write(f"element "
+                         f"quad "
+                         f"{eleTag_} "
+                         f"{nodes} "
+                         f"{thickness_[phyGroup_]} "
+                         f"PlaneStrain "
+                         f"{mainSoilTags_[phyGroup_]} "
+                         f"0.0 "
+                         f"0.0 "
+                         f"{wtX_} "
+                         f"{wtY_}\n")
 
 
 def writingOutputs(writingNodes=True,
@@ -508,4 +480,17 @@ if __name__ == "__main__":
     # example uses:
     # writingOutputs(writingNodes=False, writingFixities=True) # only fixities
     # writingOutputs(writingEqualDOFs=True) # only equalDOFs
-    writingOutputs(writingNodes=True, writingFixities=False, writingEqualDOFs=False, writingElements=False)
+    writingOutputs(writingNodes=False, writingFixities=False, writingEqualDOFs=False, writingElements=True)
+
+"""
+centerStrip = sortByY(selectNodes(lambda x, y: 0.45 < x < 0.55))  # one direct step
+centerStrip = selectNodes(lambda x, y: 0.0 <= y <= 1.0 and x >= 0.5)
+centerStrip = sorted(centerStrip, key=lambda tag: nodeCoords[tag][1])
+centerStrip = sorted(centerStrip, key=lambda tag: nodeCoords[tag][0])
+print(f"nodes defined such that: 0.45 < x < 0.55\n")
+print(centerStrip[:10])
+print(centerStrip[10:20])
+print(centerStrip[20:30])
+print(centerStrip[30:40])
+print(centerStrip[40:50])
+"""

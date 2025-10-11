@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex101 - equalDOF center nodes">
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="most recent parsing code for the moment">
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/yafeu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2025-10-02,_1_47 p_m__[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2025-10-02__1_47p_m___Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex100/anaVSnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/parsingCode.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingCode.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,9 +26,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="33YrK3FBAnDdjF50H19JNlTDrel" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -37,19 +40,22 @@
     "Python.anaVSnum.executor": "Run",
     "Python.defMyPlotStyle.executor": "Run",
     "Python.getInfoG.executor": "Run",
+    "Python.parsingCode.executor": "Run",
     "Python.plotRes.executor": "Run",
     "Python.plotRicker.executor": "Run",
+    "Python.reconstruct.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "last_opened_file_path": "/home/yafeu/Desktop/GitHup OpenSees/projects/parsing codes",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/parsing codes" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/examples/ex101" />
     </key>
@@ -60,10 +66,11 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-b3ae9b5d7125-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.439" />
+        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="run2">
       <option name="closed" value="true" />
@@ -152,7 +159,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759517820290</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="most recent parsing code for the moment">
+      <option name="closed" value="true" />
+      <created>1760017062766</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1760017062766</updated>
+    </task>
+    <task id="LOCAL-00012" summary="most recent parsing code for the moment">
+      <option name="closed" value="true" />
+      <created>1760017092608</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1760017092608</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -162,6 +185,7 @@
     <MESSAGE value="ex101 -" />
     <MESSAGE value="ex101" />
     <MESSAGE value="ex101 - equalDOF center nodes" />
-    <option name="LAST_COMMIT_MESSAGE" value="ex101 - equalDOF center nodes" />
+    <MESSAGE value="most recent parsing code for the moment" />
+    <option name="LAST_COMMIT_MESSAGE" value="most recent parsing code for the moment" />
   </component>
 </project>
