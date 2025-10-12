@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="most recent parsing code for the moment">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/yafeu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2025-10-02,_1_47 p_m__[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2025-10-02__1_47p_m___Changes_.xml" beforeDir="false" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="most recent actual parsing code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/parsingCode.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingCode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/reconstruct.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/reconstruct.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/testt.geo" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/testt.geo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760017092608</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="most recent actual parsing code">
+      <option name="closed" value="true" />
+      <created>1760153653525</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1760153653525</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -186,6 +192,7 @@
     <MESSAGE value="ex101" />
     <MESSAGE value="ex101 - equalDOF center nodes" />
     <MESSAGE value="most recent parsing code for the moment" />
-    <option name="LAST_COMMIT_MESSAGE" value="most recent parsing code for the moment" />
+    <MESSAGE value="most recent actual parsing code" />
+    <option name="LAST_COMMIT_MESSAGE" value="most recent actual parsing code" />
   </component>
 </project>

@@ -7,8 +7,11 @@ Custom elementType remapping.
     - "bbarGroups" defines which physical groups correspond to bbarQuadUP regions
 """
 
-bbarGroups = {}
-# bbarGroups = {1, 2}
+sspBrickGroups = {}  # example physical volume IDs
+# sspBrickGroups = {1, 2, 3}
+
+bbarQuadUPGroups = {}
+# bbarQuadUPGroups = {1, 2}
 
 quadUPGroups = {}
 
@@ -63,13 +66,14 @@ vPermVals = {i: 1.0e-4 for i in mainSoilTags}
 # !!!!! Element profiles !!!!!
 # -------------------------------------------------------
 elementProfiles = {
-    3:   {"key": "quad4",        "ndm": 2,  "needsP": False, "dofRule": only2DOFs},
-    103: {"key": "bbarQuadUP",   "ndm": 2,  "needsP": True,  "dofRule": threeDOFs},
-    1003: {"key": "quadUP",       "ndm": 2,  "needsP": True,  "dofRule": threeDOFs},
-    10:  {"key": "9_4_QuadUP",   "ndm": 2,  "needsP": True,  "dofRule": both2and3DOFs},
-    5:   {"key": "brickUP",      "ndm": 3,  "needsP": True,  "dofRule": threeDOFs3D},  # 8-node 3D u-p
-    105: {"key": "bbarBrickUP",  "ndm": 3,  "needsP": True,  "dofRule": threeDOFs3D},
-    17:  {"key": "20_8_BrickUP", "ndm": 3,  "needsP": True,  "dofRule": twentyEightBrickDOFs},
+    3:    {"key": "quad4",         "ndm": 2,  "needsP": False, "dofRule": only2DOFs},
+    103:  {"key": "bbarQuadUP",    "ndm": 2,  "needsP": True,  "dofRule": threeDOFs},
+    1003: {"key": "quadUP",        "ndm": 2,  "needsP": True,  "dofRule": threeDOFs},
+    10:   {"key": "9_4_QuadUP",    "ndm": 2,  "needsP": True,  "dofRule": both2and3DOFs},
+    5:    {"key": "brickUP",       "ndm": 3,  "needsP": True,  "dofRule": threeDOFs3D},  # 8-node 3D u-p
+    105:  {"key": "bbarBrickUP",   "ndm": 3,  "needsP": True,  "dofRule": threeDOFs3D},
+    1005: {"key": "SSPbrickUP",    "ndm": 3,  "needsP": True,  "dofRule": threeDOFs3D},  # best for large 3D dynamic pbs
+    17:   {"key": "20_8_BrickUP",  "ndm": 3,  "needsP": True,  "dofRule": twentyEightBrickDOFs},
 }
 
 # -------------------------------------------------------
@@ -120,12 +124,14 @@ if has3D:
 
 for el in elements:
     if el["type"] == 3:
-        if el["group"] in bbarGroups:
+        if el["group"] in bbarQuadUPGroups:
             el["type"] = 103  # 2D bbarQuadUP
         elif el["group"] in quadUPGroups:
             el["type"] = 1003  # 2D quadUP
     elif el["type"] == 5 and el["group"] in bbarBrickGroups:
         el["type"] = 105  # 3D bbarBrickUP
+    elif el["type"] == 5 and el["group"] in sspBrickGroups:
+        el["type"] = 1005  # 3D SSPbrickUP
 
 mappedBbar = sum(el["type"] == 103 for el in elements)
 mappedQuadUP = sum(el["type"] == 1003 for el in elements)
@@ -407,6 +413,39 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_"):
                         f"{bXBbarBrickUP} "
                         f"{bYBbarBrickUP} "
                         f"{bZBbarBrickUP}\n"
+                    )
+
+                elif key == "SSPbrickUP":
+                    # for 3D SSPbrickUP
+                    # best and largely stabilized for a dynamic-only,
+                    # single-point, high-performance version of brickUP
+                    bulkSSPbrickUP = {i: 2.2e6 for i in mainSoilTags}  # fluid bulk modulus
+                    fMassSSPbrickUP = {i: 1.0 for i in mainSoilTags}  # fluid density
+                    permXSSPbrickUP = permYSSPbrickUP = permZSSPbrickUP = 5.0e-4  # isotropic permeability (m/s)
+                    voidsSSPbrickUP = {i: 0.7 for i in mainSoilTags}
+                    alphaParamSSPbrickUP = {i: 2.4e-6 for i in mainSoilTags}  # stabilization parameter
+                    gx, gy, gz = 0.0, 0.0, -9.81  # body forces
+
+                    permXSSPbrickUP = {i: permXSSPbrickUP / (gVal * fMassSSPbrickUP[i]) for i in mainSoilTags}
+                    permYSSPbrickUP = {i: permYSSPbrickUP / (gVal * fMassSSPbrickUP[i]) for i in mainSoilTags}
+                    permZSSPbrickUP = {i: permZSSPbrickUP / (gVal * fMassSSPbrickUP[i]) for i in mainSoilTags}
+
+                    f__.write(
+                        f"element "
+                        f"SSPbrickUP "
+                        f"{el['id']} "
+                        f"{nodes} "
+                        f"{mainSoilTags[phy]} "
+                        f"{bulkSSPbrickUP[phy]} "
+                        f"{fMassSSPbrickUP[phy]} "
+                        f"{permXSSPbrickUP[phy]} "
+                        f"{permYSSPbrickUP[phy]} "
+                        f"{permZSSPbrickUP[phy]} "
+                        f"{voidsSSPbrickUP[phy]} "
+                        f"{alphaParamSSPbrickUP[phy]} "
+                        f"{gx} "
+                        f"{gy} "
+                        f"{gz}\n"
                     )
 
                 elif key == "20_8_BrickUP":
