@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="most recent actual parsing code">
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parsing codes/reconstruct.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/reconstruct.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parsing codes/testt.geo" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/testt.geo" afterDir="false" />
@@ -181,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760153653525</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="final parsing code - 1">
+      <option name="closed" value="true" />
+      <created>1760253593876</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1760253593876</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -193,6 +201,7 @@
     <MESSAGE value="ex101 - equalDOF center nodes" />
     <MESSAGE value="most recent parsing code for the moment" />
     <MESSAGE value="most recent actual parsing code" />
-    <option name="LAST_COMMIT_MESSAGE" value="most recent actual parsing code" />
+    <MESSAGE value="final parsing code - 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="final parsing code - 1" />
   </component>
 </project>
