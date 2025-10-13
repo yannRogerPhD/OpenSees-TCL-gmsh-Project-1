@@ -5,9 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 1">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/yafeu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/yafeu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/elements_brickUP.tcl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/4quadProps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/9quadUProp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/getInfoG.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/getInfoG2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/getInfoG2_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/getInfoG3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/getInfoG_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/material.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/first/material_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/model.msh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/model2.msh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/model3.msh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/modelHeader.tcl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/modelHeader_4DOF.tcl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/nodes3D.tcl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/nodesByDOF_4DOF.tcl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/parsingCode (keep).py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/parsingCode.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/parsing codes/reconstruct.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/reconstruct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/testt.geo" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/testt.geo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +208,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760253593876</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="final parsing code - 1">
+      <option name="closed" value="true" />
+      <created>1760253600532</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1760253600532</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

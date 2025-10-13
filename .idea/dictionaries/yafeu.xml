@@ -2,6 +2,10 @@
   <dictionary name="yafeu">
     <words>
       <w>bbar</w>
+      <w>bfgs</w>
+      <w>broyden</w>
+      <w>kinit</w>
+      <w>unbal</w>
     </words>
   </dictionary>
 </component>
