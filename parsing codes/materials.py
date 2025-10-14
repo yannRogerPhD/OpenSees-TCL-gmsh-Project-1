@@ -437,7 +437,7 @@ with open("materials_elastic_test.tcl", "w") as f:
 """
 
 
-def write_materials(materials, registry, filename=None):
+def write_materials(materials, registry):
     """
     Write one or more material definitions to file(s).
 
@@ -451,9 +451,6 @@ def write_materials(materials, registry, filename=None):
         registry (dict):
             The material registry (e.g., MATERIAL_TPL) that maps material keys
             to their template definitions, required, and optional parameters.
-
-        filename (str, optional):
-            The name of the combined output file (required if combined=True).
 
     Returns:
         None
@@ -476,9 +473,8 @@ def write_materials(materials, registry, filename=None):
             write_material_def(key, params, f, registry)
         print(f"Wrote {outName} successfully.")
 
-
-write_materials([
-    ("PressureDependMultiYield", paramsPDMY),
-    # ("PressureDependMultiYield02", paramsPDMY02),
-    # ("ElasticIsotropic", paramsElastic),
-], MATERIAL_TPL)
+# write_materials([
+#     # ("PressureDependMultiYield", paramsPDMY),
+#     # ("PressureDependMultiYield02", paramsPDMY02),
+#     # ("ElasticIsotropic", paramsElastic),
+# ], MATERIAL_TPL)
