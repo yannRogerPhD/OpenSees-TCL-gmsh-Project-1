@@ -496,19 +496,29 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{yW:.4f}\n"
                     )
 
-                elif key == "quadUP":
+                elif key == "quadUP":  # OK VERIFIED
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
+                    # thickness, bulk, fluid mass per physical group
                     thicknessQuadUP = {i: 1.0 for i in mainSoilTags}
-                    bulkQuadUP = {i: 2.2e6 for i in mainSoilTags}
-                    fMassQuadUP = {i: 1 for i in mainSoilTags}
-                    hPerm = 5.0e-4
-                    vPerm = 5.0e-4
+
+                    bulkQuadUP = {i: Bf / porosity[i] for i in mainSoilTags}
+                    fMassQuadUP = {i: 1 for i in mainSoilTags}  # fluid density (for ex., 1.0 t/m^3)
+
+                    hPermRaw = 5.0e-4
+                    vPermRaw = 5.0e-4
+
+                    hPermQuadUP = {i: hPermRaw / (gVal * fMassQuadUP[i]) for i in mainSoilTags}
+                    vPermQuadUP = {i: vPermRaw / (gVal * fMassQuadUP[i]) for i in mainSoilTags}
+
                     alpha_ = 4  # in degrees already! always convert in radians
                     alpha_V = np.deg2rad(alpha_)
-                    hPermQuadUP = {i: hPerm / (gVal * fMassQuadUP[i]) for i in mainSoilTags}
-                    vPermQuadUP = {i: vPerm / (gVal * fMassQuadUP[i]) for i in mainSoilTags}
-                    b1QuadUP = - gVal
-                    b2QuadUP = - gVal * np.sin(alpha_V)
-                    tQuadUP = 0.0
+                    b1QuadUP = + gVal * np.sin(alpha_V)
+                    b2QuadUP = - gVal * np.cos(alpha_V)
+
+                    tQuadUP = 0.0  # normal traction if needed
+
                     f__.write(
                         f"element "
                         f"{key} "
@@ -525,19 +535,27 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{tQuadUP}\n"
                     )
 
-                elif key == "bbarQuadUP":
+                elif key == "bbarQuadUP":  # OK VERIFIED
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
                     thicknessBbarQuadUP = {i: 1.0 for i in mainSoilTags}
-                    bulkBbarQuadUP = {i: 2.2e6 for i in mainSoilTags}
+
+                    bulkBbarQuadUP = {i: Bf / porosity[i] for i in mainSoilTags}
                     fMassBbarQuadUP = {i: 1 for i in mainSoilTags}
+
                     hPermBbarQuadUP = 5.0e-4
                     vPermBbarQuadUP = 5.0e-4
-                    alpha_ = 4  # in degrees already! always convert in radian
-                    alpha_V = np.deg2rad(alpha_)
                     hPermBbarQuadUP = {i: hPermBbarQuadUP / (gVal * fMassBbarQuadUP[i]) for i in mainSoilTags}
                     vPermBbarQuadUP = {i: vPermBbarQuadUP / (gVal * fMassBbarQuadUP[i]) for i in mainSoilTags}
-                    b1BbarQuadUP = - gVal
-                    b2BbarQuadUP = - gVal * np.sin(alpha_V)
+
+                    alpha_ = 4  # in degrees already! always convert in radian
+                    alpha_V = np.deg2rad(alpha_)
+                    b1BbarQuadUP = + gVal * np.sin(alpha_V)
+                    b2BbarQuadUP = - gVal * np.cos(alpha_V)
+
                     tBbarQuadUP = 0.0
+
                     f__.write(
                         f"element "
                         f"{key} "
@@ -554,18 +572,26 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{tBbarQuadUP}\n"
                     )
 
-                elif key == "9_4_QuadUP":
+                elif key == "9_4_QuadUP":  # OK VERIFIED
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
                     thickness9_4_QuadUP = {i: 1.0 for i in mainSoilTags}
-                    bulk9_4_QuadUP = {i: 2.2e6 for i in mainSoilTags}
+
+                    bulk9_4_QuadUP = {i: Bf / porosity[i] for i in mainSoilTags}
                     fMass9_4_QuadUP = {i: 1 for i in mainSoilTags}
+
                     hPerm9_4_QuadUP = 5.0e-4
                     vPerm9_4_QuadUP = 5.0e-4
-                    alpha_ = 4  # in degrees already! always convert in radians
-                    alpha_V = np.deg2rad(alpha_)
+
                     hPerm9_4_QuadUP = {i: hPerm9_4_QuadUP / (gVal * fMass9_4_QuadUP[i]) for i in mainSoilTags}
                     vPerm9_4_QuadUP = {i: vPerm9_4_QuadUP / (gVal * fMass9_4_QuadUP[i]) for i in mainSoilTags}
-                    b19_4_QuadUP = - gVal
-                    b29_4_QuadUP = - gVal * np.sin(alpha_V)
+
+                    alpha_ = 4  # in degrees already! always convert in radians
+                    alpha_V = np.deg2rad(alpha_)
+                    b19_4_QuadUP = + gVal * np.sin(alpha_V)
+                    b29_4_QuadUP = - gVal * np.cos(alpha_V)
+
                     f__.write(
                         f"element "
                         f"{key} "
@@ -581,12 +607,15 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{b29_4_QuadUP}\n"
                     )
 
-                elif key == "brickUP":
+                elif key == "brickUP":  # OK VERIFIED
                     # !!!!!!!!! 3D cases !!!!!!!!!
-                    alpha__ = 0.0  # in degrees
-                    alphaVal = np.deg2rad(alpha__)
-                    bulkBrickUP = {i: 2.2e6 for i in mainSoilTags}
+
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
+                    bulkBrickUP = {i: Bf / porosity[i] for i in mainSoilTags}
                     fMassBrickUP = {i: 1 for i in mainSoilTags}
+
                     PermXBrickUP = 5.0e-4
                     PermYBrickUP = 5.0e-4
                     PermZBrickUP = 5.0e-4
@@ -594,12 +623,17 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                     PermXBrickUP = {i: PermXBrickUP / (gVal * fMassBrickUP[i]) for i in mainSoilTags}
                     PermYBrickUP = {i: PermYBrickUP / (gVal * fMassBrickUP[i]) for i in mainSoilTags}
                     PermZBrickUP = {i: PermZBrickUP / (gVal * fMassBrickUP[i]) for i in mainSoilTags}
-                    gx = gVal * np.sin(alphaVal)
+
+                    alpha__ = 0.0  # in degrees
+                    alphaVal = np.deg2rad(alpha__)
+                    gx = + gVal * np.sin(alphaVal)
                     gy = 0.0
                     gz = - gVal * np.cos(alphaVal)
+
                     bXBrickUP = gx
                     bYBrickUP = gy
                     bZBrickUP = gz
+
                     f__.write(
                         f"element "
                         f"{key} "
@@ -616,14 +650,13 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{bZBrickUP}\n"
                     )
 
-                elif key == "bbarBrickUP":
-                    """
-                    # !!!!!!!!! 3D cases !!!!!!!!!
-                    """
-                    alpha__ = 0.0  # in degrees
-                    alphaVal = np.deg2rad(alpha__)
-                    bulkBbarBrickUP = {i: 2.2e6 for i in mainSoilTags}
+                elif key == "bbarBrickUP":  # OK VERIFIED
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
+                    bulkBbarBrickUP = {i: Bf / porosity[i] for i in mainSoilTags}
                     fMassBbarBrickUP = {i: 1 for i in mainSoilTags}
+
                     PermXBbarBrickUP = 5.0e-4
                     PermYBbarBrickUP = 5.0e-4
                     PermZBbarBrickUP = 5.0e-4
@@ -631,12 +664,17 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                     PermXBbarBrickUP = {i: PermXBbarBrickUP / (gVal * fMassBbarBrickUP[i]) for i in mainSoilTags}
                     PermYBbarBrickUP = {i: PermYBbarBrickUP / (gVal * fMassBbarBrickUP[i]) for i in mainSoilTags}
                     PermZBbarBrickUP = {i: PermZBbarBrickUP / (gVal * fMassBbarBrickUP[i]) for i in mainSoilTags}
-                    gx = gVal * np.sin(alphaVal)
+
+                    alpha__ = 0.0  # in degrees
+                    alphaVal = np.deg2rad(alpha__)
+                    gx = + gVal * np.sin(alphaVal)
                     gy = 0.0
                     gz = - gVal * np.cos(alphaVal)
+
                     bXBbarBrickUP = gx
                     bYBbarBrickUP = gy
                     bZBbarBrickUP = gz
+
                     f__.write(
                         f"element "
                         f"{key} "
@@ -653,16 +691,29 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{bZBbarBrickUP}\n"
                     )
 
-                elif key == "SSPbrickUP":
+                elif key == "SSPbrickUP":  # VERIFIED BUT BE CAREFUL ABOUT "alphaParamSSPbrickUP"
                     # for 3D SSPbrickUP
                     # best and largely stabilized for a dynamic-only,
                     # single-point, high-performance version of brickUP
-                    bulkSSPbrickUP = {i: 2.2e6 for i in mainSoilTags}  # fluid bulk modulus
+
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
+                    bulkSSPbrickUP = {i: Bf / porosity[i] for i in mainSoilTags}  # fluid bulk modulus
                     fMassSSPbrickUP = {i: 1.0 for i in mainSoilTags}  # fluid density
-                    permXSSPbrickUP = permYSSPbrickUP = permZSSPbrickUP = 5.0e-4  # isotropic permeability (m/s)
+
+                    permXSSPbrickUP = 5.0e-4  # isotropic permeability (m/s)
+                    permYSSPbrickUP = 5.0e-4
+                    permZSSPbrickUP = 5.0e-4
+
                     voidsSSPbrickUP = {i: 0.7 for i in mainSoilTags}
                     alphaParamSSPbrickUP = {i: 2.4e-6 for i in mainSoilTags}  # stabilization parameter
-                    gx, gy, gz = 0.0, 0.0, -9.81  # body forces
+
+                    alpha__ = 0.0  # in degrees
+                    alphaVal = np.deg2rad(alpha__)
+                    gx = + gVal * np.sin(alphaVal)
+                    gy = 0.0
+                    gz = - gVal * np.cos(alphaVal)
 
                     permXSSPbrickUP = {i: permXSSPbrickUP / (gVal * fMassSSPbrickUP[i]) for i in mainSoilTags}
                     permYSSPbrickUP = {i: permYSSPbrickUP / (gVal * fMassSSPbrickUP[i]) for i in mainSoilTags}
@@ -686,11 +737,13 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                         f"{gz}\n"
                     )
 
-                elif key == "20_8_BrickUP":
-                    alpha__ = 0.0  # in degrees
-                    alphaVal = np.deg2rad(alpha__)
-                    bulk_20_8_BrickUP = {i: 2.2e6 for i in mainSoilTags}
+                elif key == "20_8_BrickUP":  # OK VERIFIED
+                    porosity = {i: 1.0 for i in mainSoilTags}
+                    Bf = 2.2e6  # kN/m^2 (for pure water)
+
+                    bulk_20_8_BrickUP = {i: Bf / porosity[i] for i in mainSoilTags}
                     fMass_20_8_BrickUP = {i: 1 for i in mainSoilTags}
+
                     PermX_20_8_BrickUP = 5.0e-4
                     PermY_20_8_BrickUP = 5.0e-4
                     PermZ_20_8_BrickUP = 5.0e-4
@@ -698,12 +751,17 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                     PermX_20_8_BrickUP = {i: PermX_20_8_BrickUP / (gVal * fMass_20_8_BrickUP[i]) for i in mainSoilTags}
                     PermY_20_8_BrickUP = {i: PermY_20_8_BrickUP / (gVal * fMass_20_8_BrickUP[i]) for i in mainSoilTags}
                     PermZ_20_8_BrickUP = {i: PermZ_20_8_BrickUP / (gVal * fMass_20_8_BrickUP[i]) for i in mainSoilTags}
-                    gx = gVal * np.sin(alphaVal)
+
+                    alpha__ = 0.0  # in degrees
+                    alphaVal = np.deg2rad(alpha__)
+                    gx = + gVal * np.sin(alphaVal)
                     gy = 0.0
                     gz = - gVal * np.cos(alphaVal)
+
                     bX_20_8_BrickUP = gx
                     bY_20_8_BrickUP = gy
                     bZ_20_8_BrickUP = gz
+
                     f__.write(
                         f"element "
                         f"{key} "
