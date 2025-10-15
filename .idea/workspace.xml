@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 2" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 2">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex1/ex1.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/ex1.geo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex1/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/parsingG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingG.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;yannRogerPhD&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/yannRogerPhD/OpenSees-TCL-gmsh-Project-1.git&quot;,
+    &quot;accountId&quot;: &quot;d8d60f10-26d0-49ac-988e-3af7b29a1956&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -35,6 +53,7 @@
     "Python.defMyPlotStyle.executor": "Run",
     "Python.getInfoG.executor": "Run",
     "Python.parsingCode.executor": "Run",
+    "Python.parsingG.executor": "Run",
     "Python.plotRes.executor": "Run",
     "Python.plotRicker.executor": "Run",
     "Python.reconstruct.executor": "Run",
@@ -43,8 +62,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/yafeu/Desktop/GitHup OpenSees/projects/parsing codes",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "last_opened_file_path": "/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1",
+    "settings.editor.selected.configurable": "configurable.group.editor"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -60,7 +79,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
+        <option value="bundled-python-sdk-b3ae9b5d7125-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.439" />
       </set>
     </attachedChunks>
   </component>

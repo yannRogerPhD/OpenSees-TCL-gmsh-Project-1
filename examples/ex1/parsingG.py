@@ -3,11 +3,11 @@ import numpy as np
 
 # lines
 
-meshFile = "model4.msh"
+meshFile = "ex1.msh"
 
-transX, transY, transZ = 7, 5, 0
-xMin, xMax = 0.0, 0.5
-yMin, yMax = 0.0, 0.5
+transX, transY, transZ = 2, 2, 0
+xMin, xMax = 0.0, 1.0
+yMin, yMax = 0.0, 1.0
 zMin, zMax = 0.0, 0.0
 
 thickX, thickY, thickZ = (xMax - xMin) / (transX - 1), (yMax - yMin) / (transY - 1), (zMax - zMin) / (transZ - 1)
@@ -231,9 +231,6 @@ def twentyEightBrickDOFs(ns_):
 # ------------------------------------------------------------------------------
 
 gVal = 9.806
-massDen, fluidDen = 1755, 1000
-alpha = np.atan(2.0 / 100)  # 2% slope
-alphaRads = alpha
 
 # detect the maximum physical group ID directly from mesh
 maxPhyGroup = 0
@@ -478,6 +475,13 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                 key = profile["key"]
 
                 if key == "quad4":
+                    # massDen, fluidDen = 1755, 1000
+                    # alpha = np.atan(2.0 / 100)  # 2% slope
+                    # alphaRads = alpha
+
+                    alpha = 0.0
+                    alphaRads = np.deg2rad(alpha)
+
                     thicknessQuad4 = {i: 1.0 for i in mainSoilTags}
                     # !!!!!!!!! 2D cases !!!!!!!!!
                     xW = - gVal * np.sin(alphaRads)
@@ -1054,7 +1058,7 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
     orderedFiles.extend([f_ for f_ in tclFiles if f_ not in orderedFiles])
 
     # path to the global main.tcl
-    mainPath = os.path.join(tclRootDir, "main.tcl")
+    mainPath = os.path.join(tclRootDir, "mainInit.tcl")
 
     with open(mainPath, "w") as f_:
         f_.write("# ============================================================\n")
@@ -1071,7 +1075,9 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         f_.write(f"# writing main code HERE\n")
 
         f_.write(f"wipe\n"
-                 f"model BasicBuilder -ndm 2 -ndf 3\n")
+                 f"model BasicBuilder -ndm 2 -ndf 3\n"
+                 f"\n"
+                 f"source modelHeader_2DOF.tcl")
 
         f_.write("\n")
 
@@ -1113,7 +1119,7 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         # - Broyden # HERE we MUST define the count int (see Berkeley website for more info)
         #
 
-        f_.write("integrator LoadControl\n")
+        f_.write("integrator LoadControl 1.0\n")
         # A) For static analysis
         #   - LoadControl $dLambda1 <$Jd $minLambda $maxLambda>
         #   - DisplacementControl $nodeTag $dofTag $dU1 <$Jd $minDu $maxDu>
