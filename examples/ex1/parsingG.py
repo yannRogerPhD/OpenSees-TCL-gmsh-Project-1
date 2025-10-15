@@ -475,6 +475,7 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                 key = profile["key"]
 
                 if key == "quad4":
+                    key = "quad"
                     # massDen, fluidDen = 1755, 1000
                     # alpha = np.atan(2.0 / 100)  # 2% slope
                     # alphaRads = alpha
@@ -930,7 +931,7 @@ def writingOutputs(writingNodes=True,
     if writingFixities:
         bottomNodes__ = sortNodesByX(nodesNearY(0.0))
         writeFixities("fixityBottom.tcl", bottomNodes__, [1, 1],
-                      "Bottom boundary fixities (u,v,p fixed)", outputDir=outDir_)
+                      "Bottom boundary fixities (u,v)", outputDir=outDir_)
         print("✅ Fixity files written.")
     else:
         print("❌ Fixities skipped.")
@@ -1018,7 +1019,7 @@ if __name__ == "__main__":
     writingOutputs(writingNodes=False,
                    writingFixities=True,
                    writingEqualDOFs=False,
-                   writingElements=False, outDir_=outDir)
+                   writingElements=True, outDir_=outDir)
 
 
 def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
@@ -1065,42 +1066,55 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         f_.write(f"# main.tcl for {modelName}\n")
         # f_.write("# loaded automatically from/by Python\n")
         f_.write("# ============================================================\n\n")
-        f_.write(f'puts "==== Running main.tcl for {modelName} ===="\n\n')
+        # f_.write(f'puts "==== Running main.tcl for {modelName} ===="\n\n')
 
         f_.write(f"set thickX {round(thickX, 6)}\n")
         f_.write(f"set thickY {round(thickY, 6)}\n")
         f_.write(f"set thickZ {round(thickZ, 6)}\n\n")
 
-        # automatically source subfiles inside model folder
-        f_.write(f"# writing main code HERE\n")
+        # ============================================================
+        # MAIN CODE
+        # ============================================================
 
         f_.write(f"wipe\n"
-                 f"model BasicBuilder -ndm 2 -ndf 3\n"
+                 f"model BasicBuilder -ndm 2 -ndf 2\n"
                  f"\n"
-                 f""
+                 f"source {modelName}/nodesByDOF_2DOF.tcl\n"
+                 f"source {modelName}/fixityBottom.tcl\n"
+                 f"source material_pressureindependmultiyield_test.tcl\n"
+                 f"source {modelName}/elements_quad4.tcl\n"
+                 f"updateMaterialStage -material 1 -stage 0\n"
                  )
 
-        f_.write(f"\n"
-                 f"source {modelName}")
-
         f_.write("\n\n")
+
+        f_.write("constraints Transformation\n")
+        f_.write("numberer RCM\n")
+        f_.write("system ProfileSPD\n")
+        f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        f_.write(f"algorithm Newton\n")
+        f_.write("integrator LoadControl 1 1 1 1\n")
+        f_.write("analysis Static\n\n")
+
+        f_.write(f"analyze 2\n")
+
 
         # more details HERE (link down) for the selection of analysis commands
         # https://opensees.berkeley.edu/OpenSees/manuals/usermanual/toc187244.htm
 
-        f_.write("constraints Transformation\n")
+        # f_.write("constraints Transformation\n")
         # - Plain
         # - Penalty
         # - Lagrange
         # - Transformation
         #
 
-        f_.write("numberer RCM\n")
+        # f_.write("numberer RCM\n")
         # - Plain
         # - RCM
         #
 
-        f_.write("system ProfileSPD\n")
+        # f_.write("system ProfileSPD\n")
         # - BandGeneral
         # - BandSPD
         # - ProfileSPD
@@ -1109,11 +1123,12 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         # - SparseSPD
         #
 
-        f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        # f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
         # - NormDispIncr
         # - EnergyIncr
 
-        f_.write(f"algorithm Newton\n")
+
+        # f_.write(f"algorithm Newton\n")
         # - Linear
         # - Newton
         # - NewtonLineSearch $ratio # HERE we MUST define the ratio (see Berkeley website for more info)
@@ -1123,7 +1138,7 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         # - Broyden # HERE we MUST define the count int (see Berkeley website for more info)
         #
 
-        f_.write("integrator LoadControl 1.0\n")
+        # f_.write("integrator LoadControl 1 1 1 1\n")
         # A) For static analysis
         #   - LoadControl $dLambda1 <$Jd $minLambda $maxLambda>
         #   - DisplacementControl $nodeTag $dofTag $dU1 <$Jd $minDu $maxDu>
@@ -1135,11 +1150,11 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         #   - HHT $gamma <$alphaM $betaK $betaKInit $betaKComm>
         #
 
-        f_.write("analysis Static\n\n")
+        # f_.write("analysis Static\n\n")
         # Transient
         # VariableTransient
 
-        f_.write(f'puts "==== {modelName} TCL model loaded successfully ===="\n')
+        # f_.write(f'puts "==== {modelName} TCL model loaded successfully ===="\n')
 
     print(f"✅ Global main.tcl written at: {mainPath}")
     print("   Contains source calls for:")

@@ -4,6 +4,7 @@ import numpy as np
 # lines
 # for fixities, search "fixityBottom" to find the line where it can be applied directly
 # for select specific nodes, search for "detect boundaries and apply constraints"
+# writingOutputs search "__main__"
 
 meshFile = "model4.msh"
 
@@ -477,6 +478,7 @@ def writeElementsTcl(elements_, profiles_, filePrefix="elements_", outputDir='.'
                 key = profile["key"]
 
                 if key == "quad4":
+                    key = "quad"
                     # massDen, fluidDen = 1755, 1000
                     # alpha = np.atan(2.0 / 100)  # 2% slope
                     # alphaRads = alpha
@@ -1081,22 +1083,34 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
 
         f_.write("\n")
 
+        f_.write("constraints Transformation\n")
+        f_.write("numberer RCM\n")
+        f_.write("system ProfileSPD\n")
+        f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        f_.write(f"algorithm Newton\n")
+        f_.write("integrator LoadControl 1.0\n")
+        f_.write("analysis Static\n\n")
+
+        f_.write("\n")
+
+
         # more details HERE (link down) for the selection of analysis commands
         # https://opensees.berkeley.edu/OpenSees/manuals/usermanual/toc187244.htm
 
-        f_.write("constraints Transformation\n")
+
+        # f_.write("constraints Transformation\n")
         # - Plain
         # - Penalty
         # - Lagrange
         # - Transformation
         #
 
-        f_.write("numberer RCM\n")
+        # f_.write("numberer RCM\n")
         # - Plain
         # - RCM
         #
 
-        f_.write("system ProfileSPD\n")
+        # f_.write("system ProfileSPD\n")
         # - BandGeneral
         # - BandSPD
         # - ProfileSPD
@@ -1105,11 +1119,11 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         # - SparseSPD
         #
 
-        f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        # f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
         # - NormDispIncr
         # - EnergyIncr
 
-        f_.write(f"algorithm Newton\n")
+        # f_.write(f"algorithm Newton\n")
         # - Linear
         # - Newton
         # - NewtonLineSearch $ratio # HERE we MUST define the ratio (see Berkeley website for more info)
@@ -1119,7 +1133,7 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         # - Broyden # HERE we MUST define the count int (see Berkeley website for more info)
         #
 
-        f_.write("integrator LoadControl 1.0\n")
+        # f_.write("integrator LoadControl 1.0\n")
         # A) For static analysis
         #   - LoadControl $dLambda1 <$Jd $minLambda $maxLambda>
         #   - DisplacementControl $nodeTag $dofTag $dU1 <$Jd $minDu $maxDu>
@@ -1131,11 +1145,11 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         #   - HHT $gamma <$alphaM $betaK $betaKInit $betaKComm>
         #
 
-        f_.write("analysis Static\n\n")
+        # f_.write("analysis Static\n\n")
         # Transient
         # VariableTransient
 
-        f_.write(f'puts "==== {modelName} TCL model loaded successfully ===="\n')
+        # f_.write(f'puts "==== {modelName} TCL model loaded successfully ===="\n')
 
     print(f"✅ Global main.tcl written at: {mainPath}")
     print("   Contains source calls for:")

@@ -473,8 +473,35 @@ def write_materials(materials, registry):
             write_material_def(key, params, f, registry)
         print(f"Wrote {outName} successfully.")
 
-# write_materials([
-#     # ("PressureDependMultiYield", paramsPDMY),
-#     # ("PressureDependMultiYield02", paramsPDMY02),
-#     # ("ElasticIsotropic", paramsElastic),
-# ], MATERIAL_TPL)
+
+# ============================================================
+# APPLICATIONS
+# ============================================================
+
+# gRefExX = EexX / (2 * (1 + nuExX))
+# kRefExX = EexX / (3 * (1 - 2 * nuExX))
+
+rhoEx1 = 2.0
+Eex1 = 9.0e4
+nuEx1 = 0.40
+gRefEx1 = Eex1 / (2 * (1 + nuEx1))
+kRefEx1 = Eex1 / (3 * (1 - 2 * nuEx1))
+cohesionEx1 = 30
+gammPeakEx1 = 0.1
+
+paramsPIMYex1 = {
+    "matTag": 1,
+    "ndm": 2,
+    "rho": rhoEx1,
+    "gRef": gRefEx1,
+    "kRef": kRefEx1,
+    "cohesion": cohesionEx1,
+    "peakShearStra": gammPeakEx1,
+}
+
+write_materials([
+    # ("PressureIndependMultiYield", paramsPIMYex1),
+    # ("PressureDependMultiYield", paramsPDMY),
+    # ("PressureDependMultiYield02", paramsPDMY02),
+    # ("ElasticIsotropic", paramsElastic),
+], MATERIAL_TPL)
