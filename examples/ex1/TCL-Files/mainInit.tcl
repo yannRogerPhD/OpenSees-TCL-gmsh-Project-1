@@ -1,6 +1,5 @@
 # ============================================================
 # main.tcl for ex1
-# loaded automatically from/by Python
 # ============================================================
 
 puts "==== Running main.tcl for ex1 ===="
@@ -14,6 +13,8 @@ wipe
 model BasicBuilder -ndm 2 -ndf 3
 
 source modelHeader_2DOF.tcl
+source ex1
+
 constraints Transformation
 numberer RCM
 system ProfileSPD

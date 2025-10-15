@@ -1077,9 +1077,13 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
         f_.write(f"wipe\n"
                  f"model BasicBuilder -ndm 2 -ndf 3\n"
                  f"\n"
-                 f"source modelHeader_2DOF.tcl")
+                 f""
+                 )
 
-        f_.write("\n")
+        f_.write(f"\n"
+                 f"source {modelName}")
+
+        f_.write("\n\n")
 
         # more details HERE (link down) for the selection of analysis commands
         # https://opensees.berkeley.edu/OpenSees/manuals/usermanual/toc187244.htm

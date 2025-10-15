@@ -3,6 +3,7 @@ import numpy as np
 
 # lines
 # for fixities, search "fixityBottom" to find the line where it can be applied directly
+# for select specific nodes, search for "detect boundaries and apply constraints"
 
 meshFile = "model4.msh"
 
