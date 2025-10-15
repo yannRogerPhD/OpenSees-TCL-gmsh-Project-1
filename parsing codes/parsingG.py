@@ -1063,9 +1063,9 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
     with open(mainPath, "w") as f_:
         f_.write("# ============================================================\n")
         f_.write(f"# mainInit.tcl for {modelName}\n")
-        f_.write("# loaded automatically from/by Python\n")
+        # f_.write("# loaded automatically from/by Python\n")
         f_.write("# ============================================================\n\n")
-        f_.write(f'puts "==== Running main.tcl for {modelName} ===="\n\n')
+        # f_.write(f"puts '==== Running main.tcl for {modelName} ===='\n\n')
 
         f_.write(f"set thickX {round(thickX, 6)}\n")
         f_.write(f"set thickY {round(thickY, 6)}\n")
