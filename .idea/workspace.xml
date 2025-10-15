@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 2" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="final parsing code - 2">
+      <change beforePath="$PROJECT_DIR$/examples/ex1/TCL-Files/mainInit.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/TCL-Files/mainInit.tcl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex1/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/parsingG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parsing codes/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingG.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -244,6 +248,7 @@
     <MESSAGE value="most recent actual parsing code" />
     <MESSAGE value="final parsing code - 1" />
     <MESSAGE value="final parsing code - 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="final parsing code - 2" />
+    <MESSAGE value="ex1 - OpenSees" />
+    <option name="LAST_COMMIT_MESSAGE" value="ex1 - OpenSees" />
   </component>
 </project>

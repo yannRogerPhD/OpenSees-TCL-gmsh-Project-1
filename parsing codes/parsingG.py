@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 # lines
+# for fixities, search "fixityBottom" to find the line where it can be applied directly
 
 meshFile = "model4.msh"
 
