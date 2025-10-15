@@ -929,7 +929,7 @@ def writingOutputs(writingNodes=True,
     # 2️⃣ FIXITIES
     if writingFixities:
         bottomNodes__ = sortNodesByX(nodesNearY(0.0))
-        writeFixities("fixityBottom.tcl", bottomNodes__, [1, 1, 1],
+        writeFixities("fixityBottom.tcl", bottomNodes__, [1, 1],
                       "Bottom boundary fixities (u,v,p fixed)", outputDir=outDir_)
         print("✅ Fixity files written.")
     else:
@@ -1015,8 +1015,8 @@ pairs = list(zip(leftNodes[:minLen], rightNodes[:minLen]))
 # print(xs[-20:])     # last few
 
 if __name__ == "__main__":
-    writingOutputs(writingNodes=True,
-                   writingFixities=False,
+    writingOutputs(writingNodes=False,
+                   writingFixities=True,
                    writingEqualDOFs=False,
                    writingElements=False, outDir_=outDir)
 
@@ -1063,7 +1063,7 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
     with open(mainPath, "w") as f_:
         f_.write("# ============================================================\n")
         f_.write(f"# main.tcl for {modelName}\n")
-        f_.write("# loaded automatically from/by Python\n")
+        # f_.write("# loaded automatically from/by Python\n")
         f_.write("# ============================================================\n\n")
         f_.write(f'puts "==== Running main.tcl for {modelName} ===="\n\n')
 

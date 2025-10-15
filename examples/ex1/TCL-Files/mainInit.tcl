@@ -19,7 +19,7 @@ numberer RCM
 system ProfileSPD
 test NormUnbalance 1e-05 25 1
 algorithm Newton
-integrator LoadControl
+integrator LoadControl 1.0
 analysis Static
 
 puts "==== ex1 TCL model loaded successfully ===="
