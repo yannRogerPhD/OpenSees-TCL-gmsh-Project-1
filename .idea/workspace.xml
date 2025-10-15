@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="ex1 - OpenSees">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/.idea/examples.iml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/.idea/examples.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/examples/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex1/TCL-Files/ex1/fixityBottom.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/TCL-Files/ex1/fixityBottom.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex1/TCL-Files/mainInit.tcl" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/TCL-Files/mainInit.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex1/materials.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/materials.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex1/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex1/parsingG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/materials.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/materials.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/parsingG.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingG.py" afterDir="false" />
-    </list>
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="general parsing code optimized" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,27 +40,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.anaVSnum.executor": "Run",
-    "Python.defMyPlotStyle.executor": "Run",
-    "Python.getInfoG.executor": "Run",
-    "Python.materials.executor": "Run",
-    "Python.parsingCode.executor": "Run",
-    "Python.parsingG.executor": "Run",
-    "Python.plotRes.executor": "Run",
-    "Python.plotRicker.executor": "Run",
-    "Python.reconstruct.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.anaVSnum.executor&quot;: &quot;Run&quot;,
+    &quot;Python.defMyPlotStyle.executor&quot;: &quot;Run&quot;,
+    &quot;Python.getInfoG.executor&quot;: &quot;Run&quot;,
+    &quot;Python.materials.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parsingCode.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parsingG.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plotRes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plotRicker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.reconstruct.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/parsing codes" />
@@ -266,6 +254,7 @@
     <MESSAGE value="most recent actual parsing code" />
     <MESSAGE value="final parsing code - 1" />
     <MESSAGE value="final parsing code - 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="final parsing code - 2" />
+    <MESSAGE value="general parsing code optimized" />
+    <option name="LAST_COMMIT_MESSAGE" value="general parsing code optimized" />
   </component>
 </project>

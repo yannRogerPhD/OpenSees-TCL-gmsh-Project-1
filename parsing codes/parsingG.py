@@ -1093,10 +1093,8 @@ def writeMainTcl_global(tclRootDir, modelName, orderedSections=None):
 
         f_.write("\n")
 
-
         # more details HERE (link down) for the selection of analysis commands
         # https://opensees.berkeley.edu/OpenSees/manuals/usermanual/toc187244.htm
-
 
         # f_.write("constraints Transformation\n")
         # - Plain
