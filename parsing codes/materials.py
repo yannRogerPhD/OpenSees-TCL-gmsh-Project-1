@@ -292,6 +292,7 @@ paramsPIMY = {
     "kRef": 6.5e4,
     "cohesion": 18,
     "peakShearStra": 0.1,
+    # optional
     "frictionAng": 0,
     "refPress": 100,
     "pressDependCoe": 0,
@@ -328,6 +329,7 @@ paramsPDMY = {
     "liquefac1": 10,
     "liquefac2": 0.01,
     "liquefac3": 1.0,
+    # optional
     "modulus_reduction_curve":
         [
             1e-6, 0.999, 3e-6, 0.995, 1e-5, 0.99, 3e-5, 0.96,
@@ -357,6 +359,7 @@ paramsPDMY02 = {
     "contract3": 0.5,
     "dilate1": 0.3,
     "dilate3": 3.0,
+    # optional
     "modulus_reduction_curve":
         [
             1e-6, 0.999, 3e-6, 0.995, 1e-5, 0.99, 3e-5, 0.96,
@@ -389,6 +392,7 @@ paramsPDMY03 = {
     "mType": 0,
     "ca": 0.02, "cb": 0.04, "cc": 0.08, "cd": 0.1, "ce": 0.2,
     "da": 0.01, "db": 0.02, "dc": 0.03,
+    # optional
     "modulus_reduction_curve":
         [
             1e-6, 0.999, 3e-6, 0.995, 1e-5, 0.99, 3e-5, 0.96,
@@ -406,6 +410,7 @@ paramsFSP = {
     "ndm": 2,
     "soilMatTag": 5,  # this should correspond to your PDMY03 tag
     "combinedBulkModul": 2.2e6 / 0.3,  # for example, Bf/n (if porosity = 0.3)
+    # optional
     "pa": 101.0,
 }
 
@@ -487,7 +492,7 @@ nuEx1 = 0.40
 gRefEx1 = Eex1 / (2 * (1 + nuEx1))
 kRefEx1 = Eex1 / (3 * (1 - 2 * nuEx1))
 cohesionEx1 = 30
-gammPeakEx1 = 0.1
+gammaPeakEx1 = 0.1
 
 paramsPIMYex1 = {
     "matTag": 1,
@@ -496,7 +501,7 @@ paramsPIMYex1 = {
     "gRef": gRefEx1,
     "kRef": kRefEx1,
     "cohesion": cohesionEx1,
-    "peakShearStra": gammPeakEx1,
+    "peakShearStra": gammaPeakEx1,
 }
 
 write_materials([
