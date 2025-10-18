@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/materials.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/materials.py" afterDir="false" />
-    </list>
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -283,7 +280,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760679511292</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="!!">
+      <option name="closed" value="true" />
+      <created>1760679523168</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1760679523168</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
