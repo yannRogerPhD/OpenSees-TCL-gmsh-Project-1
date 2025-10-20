@@ -915,6 +915,77 @@ def parseElementsFromMsh(meshFile):
     return elements
 
 
+def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None):
+    """
+    Returns the nodes belonging to the 'before last' element type in the mesh.
+    Optionally filters by a physical group ID.
+
+    Args:
+        meshFile_ (str): path to .msh file
+        phyGroupID (int, optional): if given, restricts nodes to this physical group
+
+    Returns:
+        set[int]: node tags associated with the before-last element type
+    """
+
+    # Step 1. Find distinct consecutive element types
+    eleTypesRaw = []
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) > 1:
+                    try:
+                        eleType_ = int(parts_[1])
+                        eleTypesRaw.append(eleType_)
+                    except ValueError:
+                        continue
+
+    distinctTypes = []
+    for t in eleTypesRaw:
+        if not distinctTypes or t != distinctTypes[-1]:
+            distinctTypes.append(t)
+
+    if not distinctTypes:
+        raise RuntimeError(f"No elements found in {meshFile_}")
+
+    eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
+
+    # Step 2. Collect nodes from elements of that type
+    boundaryNodes = set()
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) >= 7:
+                    try:
+                        eleType = int(parts_[1])
+                        phyGroup = int(parts_[4])
+                        if eleType == eleTypeBL and (phyGroupID is None or phyGroup == phyGroupID):
+                            nodesB = [int(n) for n in parts_[5:]]
+                            boundaryNodes.update(nodesB)
+                    except ValueError:
+                        continue
+
+    return boundaryNodes
+
+
 def parseNodesFromMsh(meshFile, precision=6):
     """
     Parse the $Nodes section from a Gmsh .msh file.

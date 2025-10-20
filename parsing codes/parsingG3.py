@@ -4,12 +4,12 @@ from meshHelper import (
     outputFolder, FuzzyFloat, defaultTolerance, _roundFunc, nodesNearX, nodesNearY, nodesNearZ,  # noqa: F401
     selectNodes, sortNodesByX, sortNodesByY, sortNodesByZ, writeFixities, writeEqualDOFs, writeNodesTcl,  # noqa: F401
     writeSeparatedNodeFiles, writeElementsTcl, writeMainTclGlobal, parseElementsFromMsh, parseNodesFromMsh,
-    detectMaxPhyGroup,
+    detectMaxPhyGroup, getBoundaryNodesFromMsh,  # noqa: F401
     only2DOFs, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs, elementProfiles  # noqa: F401
 )
 
 # noqa: F401
-meshFile = "model4.msh"
+meshFile = "model5.msh"
 
 # basic geometry setup
 transX, transY, transZ = 7, 5, 0
@@ -245,7 +245,6 @@ print("✅ Essential outputs successfully written.\n")
 # writeFixities("fixityInclined.tcl", inclined, [1,1,1],
 #               "Inclined boundary fixities", outputDir=outDir)
 
-
 if __name__ == "__main__":
     writeMainTclGlobal(
         tclRootDir="TCL-Files",
@@ -256,3 +255,8 @@ if __name__ == "__main__":
         tsX=tsX,
         tsY=tsY
     )
+
+phyGroupID = 2
+boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID)  # for example
+boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)
+print(f"Boundary nodes: {boundaryNodes}")
