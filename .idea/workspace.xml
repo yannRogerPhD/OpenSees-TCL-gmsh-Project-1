@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!" />
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="new plotting function!" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -288,7 +288,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760679523168</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="new plotting function!">
+      <option name="closed" value="true" />
+      <created>1760805617629</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1760805617629</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -306,6 +314,7 @@
     <MESSAGE value="linux corrections" />
     <MESSAGE value="cleaning" />
     <MESSAGE value="!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="!!" />
+    <MESSAGE value="new plotting function!" />
+    <option name="LAST_COMMIT_MESSAGE" value="new plotting function!" />
   </component>
 </project>

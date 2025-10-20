@@ -1,4 +1,4 @@
-# ----- Node definitions (2D) -----
+# ------- Node definitions (2D) -------
 
 node 1      0.000000 0.000000    # 3 DOFs (u,v,p)
 node 2      0.500000 0.000000    # 3 DOFs (u,v,p)
