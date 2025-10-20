@@ -387,7 +387,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "ASDLeft":
-                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D'
+                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
                     E_ASD = 3.0e9
@@ -412,7 +412,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "ASDRight":
-                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D'
+                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
                     E_ASD = 3.0e9
@@ -437,7 +437,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "ASDBottom":
-                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D'
+                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
                     E_ASD = 3.0e9
@@ -466,7 +466,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "ASDBottomL":
-                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D'
+                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
                     E_ASD = 3.0e9
@@ -493,7 +493,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "ASDBottomR":
-                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D'
+                    # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
                     E_ASD = 3.0e9
