@@ -194,7 +194,7 @@ print("✅ Node files written.")
 writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
 print("✅ Element files written.")
 
-# --- MODEL HEADER ---
+# model header
 headerPath_ = os.path.join(outDir, "modelHeader.tcl")
 with open(headerPath_, "w") as f_:
     f_.write(f"model BasicBuilder -ndm {ndmGlobal} -ndf {ndfGlobal}\n")
