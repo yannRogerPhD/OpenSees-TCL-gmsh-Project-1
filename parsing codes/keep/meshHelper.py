@@ -1,6 +1,7 @@
 import os
 import numpy as np
 
+
 """
 Custom elementType remapping.
     - !! For ex: Gmsh uses type=3 for all 4-node quads, but we want to distinguish "bbarQuadUP" using our own ID (103)
@@ -165,49 +166,8 @@ def writeFixities(fileName, nodes, fixValues, header="Fixities", outputDir='.'):
     with open(fullPath, 'w') as f_:
         f_.write(f"# {header}\n\n")
         for n in nodes:
-            f_.write(f"fix {n:>3} {' '.join(map(str, fixValues))}\n")
+            f_.write(f"fix {n} {' '.join(map(str, fixValues))}\n")
     print(f"✅ Wrote {fileName} ({len(nodes)} nodes)")
-
-
-def writeSeparatedFixities(nodes_to_fix, nodeDOFs, fixValuesPerDOF,
-                           outputDir='.', filePrefix="fixity", headerPrefix="Fixities"):
-    """
-    Split a *specific* set of nodes into DOF groups and write separate fixity files.
-
-    Parameters
-    ----------
-    nodes_to_fix : Iterable[int]
-        Only these nodes will be fixed (e.g., bottom boundary nodes).
-    nodeDOFs : dict[int, int]
-        Node -> DOF count (2, 3, 4...).
-        Source this from your existing build step.
-    fixValuesPerDOF: dict[int, list[int]]
-        DOF count -> fix vector to use for that DOF count.
-        Define manually per call.
-        Example: {2: [1,1], 3: [1,1,0], 4: [1,1,1,0]}
-    outputDir : str
-        Target folder for the TCL files.
-    filePrefix : str
-        Prefix for generated files, e.g. "fixity_bottom" → "fixity_bottom_3DOF.tcl".
-    headerPrefix : str
-        Prefix for the header comment inside each file.
-    """
-    # bucket the requested nodes by their DOF count
-    buckets = {}
-    for n in nodes_to_fix:
-        d = nodeDOFs.get(n, None)
-        if d is None:
-            continue  # node not present in nodeDOFs map
-        if d not in fixValuesPerDOF:
-            # caller did not provide a fix vector for this DOF count → skip safely
-            continue
-        buckets.setdefault(d, []).append(n)
-
-    # write one file per DOF bucket present in the subset
-    for dofCount, ns in buckets.items():
-        fName = f"{filePrefix}_{dofCount}DOF.tcl"
-        header = f"{headerPrefix} — {dofCount}-DOF nodes"
-        writeFixities(fName, ns, fixValuesPerDOF[dofCount], header=header, outputDir=outputDir)
 
 
 def writeEqualDOFs(fileName, nodePairs, dofS, header="EqualDOF pairs", outputDir="."):
@@ -882,19 +842,19 @@ def twentyEightBrickDOFs(ns_):
 # ELEMENT PROFILE MAP (GMSH element type → metadata)
 # -------------------------------------------------------
 elementProfiles = {
-    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
-    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
-    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
-    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
-    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
-    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
-    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
+    3:      {"key": "quad4",        "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103:    {"key": "bbarQuadUP",   "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
+    1003:   {"key": "quadUP",       "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
+    10031:  {"key": "ASDLeft",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
+    10032:  {"key": "ASDBottom",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
+    10033:  {"key": "ASDRight",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
+    10034:  {"key": "ASDBottomL",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
+    10035:  {"key": "ASDBottomR",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
+    10:     {"key": "9_4_QuadUP",   "ndm": 2, "needsP": True,  "dofRule": both2and3DOFs},
+    5:      {"key": "brickUP",      "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105:    {"key": "bbarBrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
+    1005:   {"key": "SSPbrickUP",   "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
+    17:     {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
 }
 
 
@@ -1204,11 +1164,6 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         f_.write("\n")
 
         f_.write("constraints Transformation\n")
-        f_.write("# Plain\n")
-        f_.write("# Penalty 1.e18 1.e18\n")
-        f_.write("# Lagrange\n")
-        f_.write("# Transformation\n")
-
         f_.write("numberer RCM\n")
         f_.write("system ProfileSPD\n")
         f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")

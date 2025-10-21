@@ -64,6 +64,30 @@ Curve Loop(6) = {3, 10, -7, -12};
 //+
 Plane Surface(6) = {6};
 //+
-Surface Loop(1) = {1, 5, 3, 2, 6, 4};
+Surface Loop(1) = {1, 2, 3, 4, 5, 6};
 //+
 Volume(1) = {1};
+
+//
+//+
+Transfinite Curve {8, 6, 2, 4} = 2 Using Progression 1;
+//+
+Transfinite Curve {7, 5, 1, 3} = 2 Using Progression 1;
+//+
+Transfinite Curve {12, 10, 9, 11} = 2 Using Progression 1;
+//+
+Transfinite Surface {1};
+//+
+Transfinite Surface {2};
+//+
+Transfinite Surface {3};
+//+
+Transfinite Surface {4};
+//+
+Transfinite Surface {5};
+//+
+Transfinite Surface {6};
+//+
+Transfinite Volume{1};
+//+
+Recombine Surface {1, 2, 3, 4, 5, 6};

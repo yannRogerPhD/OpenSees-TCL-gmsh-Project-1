@@ -4,18 +4,18 @@ from meshHelper import (
     outputFolder, FuzzyFloat, defaultTolerance, _roundFunc, nodesNearX, nodesNearY, nodesNearZ,  # noqa: F401
     selectNodes, sortNodesByX, sortNodesByY, sortNodesByZ, writeFixities, writeEqualDOFs, writeNodesTcl,  # noqa: F401
     writeSeparatedNodeFiles, writeElementsTcl, writeMainTclGlobal, parseElementsFromMsh, parseNodesFromMsh,
-    detectMaxPhyGroup, getBoundaryNodesFromMsh,  # noqa: F401
+    detectMaxPhyGroup, getBoundaryNodesFromMsh, writeSeparatedFixities,  # noqa: F401
     only2DOFs, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs, elementProfiles  # noqa: F401
 )
 
 # noqa: F401
-meshFile = "model5.msh"
+meshFile = "model.msh"
 
 # basic geometry setup
-transX, transY, transZ = 7, 5, 0
-xMin, xMax = 0.0, 0.5
-yMin, yMax = 0.0, 0.5
-zMin, zMax = 0.0, 0.0
+transX, transY, transZ = 2, 2, 2
+xMin, xMax = 0.0, 1.0
+yMin, yMax = 0.0, 1.0
+zMin, zMax = 0.0, 1.0
 
 # time series in both directions
 tsX = 1
@@ -28,7 +28,6 @@ thickZ = (zMax - zMin) / (transZ - 1)
 
 # prepare output folder once
 outDir = outputFolder(meshFile)
-
 
 sspBrickGrp, bbarQuadUPGrp, quadUPGrp, bbarBrickGrp = {}, {}, {}, {}
 # sspBrickGrp = {1, 2, 3}, bbarBrickGrp = {} is for volumes instead
@@ -67,7 +66,7 @@ for el in elements:
         elif el["group"] in quadUPGrp:
             el["type"] = 1003  # 2D quadUP
 
-    # 2D ASD absorbing boundaries
+        # 2D ASD absorbing boundaries
         elif el["group"] in ASDLeftGrp:
             el["type"] = 10031
         elif el["group"] in ASDBottomGrp:
@@ -177,7 +176,6 @@ print(f"!! OpenSees model header: ndm={ndmGlobal}, ndf={ndfGlobal} "
 nodeCoords = parseNodesFromMsh(meshFile)
 print(f"✅ Parsed {len(nodeCoords)} nodes from {meshFile}")
 
-
 # ============================================================
 # Write main TCL files
 # ============================================================
@@ -219,7 +217,7 @@ print("✅ Essential outputs successfully written.\n")
 # leftNodes = sortNodesByY(nodesNearX(0.0, nodeCoords), nodeCoords)
 # rightNodes = sortNodesByY(nodesNearX(1.0, nodeCoords), nodeCoords)
 # nodePairs = list(zip(leftNodes, rightNodes))
-# writeEqualDOFs("equalDOFsSides.tcl", nodePairs, [1,2],
+# writeEqualDOFs("equalDOFsSides.tcl", nodePairs, [1, 2],
 #                "Left–Right equalDOFs for u,v", outputDir=outDir)
 
 
@@ -256,7 +254,17 @@ if __name__ == "__main__":
         tsY=tsY
     )
 
-phyGroupID = 2
+phyGroupID = 1
 boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=2)  # for example
 boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)
 print(f"Boundary nodes: {boundaryNodes}")
+
+fixValuesPerDOF = {
+    2: [1, 1],  # u,v fixed
+    3: [1, 1, 1],  # u,v,p fixed
+    4: [1, 1, 1, 1]  # u,v,w,p fixed
+}
+
+# write for the chosen subset
+writeSeparatedFixities(boundaryNodes, nodeDOFs, fixValuesPerDOF,
+                       outputDir=outDir, filePrefix="fixity_bottom")

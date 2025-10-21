@@ -210,7 +210,7 @@ print("✅ Essential outputs successfully written.\n")
 # Example 1 — Define bottom fixities
 # ------------------------------------------------------------
 # bottomNodes = sortNodesByX(nodesNearY(0.0, nodeCoords), nodeCoords)
-# writeFixities("fixityBottom.tcl", bottomNodes, [1,1,1],
+# writeFixities("fixityBottom.tcl", bottomNodes, [1, 1, 1],
 #               "Bottom boundary fixities (u,v,p fixed)", outputDir=outDir)
 
 
@@ -219,7 +219,7 @@ print("✅ Essential outputs successfully written.\n")
 # leftNodes = sortNodesByY(nodesNearX(0.0, nodeCoords), nodeCoords)
 # rightNodes = sortNodesByY(nodesNearX(1.0, nodeCoords), nodeCoords)
 # nodePairs = list(zip(leftNodes, rightNodes))
-# writeEqualDOFs("equalDOFsSides.tcl", nodePairs, [1,2],
+# writeEqualDOFs("equalDOFsSides.tcl", nodePairs, [1, 2],
 #                "Left–Right equalDOFs for u,v", outputDir=outDir)
 
 
