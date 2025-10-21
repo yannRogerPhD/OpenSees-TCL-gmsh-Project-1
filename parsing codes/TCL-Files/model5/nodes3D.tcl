@@ -1,4 +1,4 @@
-# ------- Node definitions (3D) -------
+# !!!!!!!!!!!!! Node definitions (3D) !!!!!!!!!!!!!
 
 node 1      0.000000 0.000000 0.000000    # 4 DOFs (u,v,w,p)
 node 2      1.000000 0.000000 0.000000    # 4 DOFs (u,v,w,p)

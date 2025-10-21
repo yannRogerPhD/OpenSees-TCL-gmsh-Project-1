@@ -30,7 +30,9 @@ def outputFolder(meshFile_):
 
 
 class FuzzyFloat(float):
-    """A float that compares equal within tolerance."""
+    """
+    A float that compares equal within tolerance
+    """
     __slots__ = ("tol",)
 
     def __new__(cls, value, tol):
@@ -220,7 +222,7 @@ def writeNodesTcl(nodeCoords_, ndmGlobal_, nodeDOFs_=None, filePrefix="nodes", o
         outputDir, f"{filePrefix}{'3D' if ndmGlobal_ == 3 else '2D'}.tcl")
 
     with open(fileName, "w") as f__:
-        f__.write(f"# ------- Node definitions ({'3D' if ndmGlobal_ == 3 else '2D'}) -------\n\n")
+        f__.write(f"# !!!!!!!!!!!!! Node definitions ({'3D' if ndmGlobal_ == 3 else '2D'}) !!!!!!!!!!!!!\n\n")
 
         for n, coords in sorted(nodeCoords_.items()):
             # write node line depending on dimension
@@ -350,7 +352,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
         with open(fileName, "w") as f__:
             # !!!!!!!!! 2D cases !!!!!!!!!
 
-            f__.write(f"# ----- {profile['key']} elements -----\n\n")
+            f__.write(f"# !!!!!!!!!!! {profile['key']} elements !!!!!!!!!!!\n\n")
 
             for el in [e for e in elements_ if e["type"] == eType_]:
                 phy = el["group"]
@@ -915,20 +917,39 @@ def parseElementsFromMsh(meshFile):
     return elements
 
 
-def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None):
+def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None, dim=None):
     """
-    Returns the nodes belonging to the 'before last' element type in the mesh.
-    Optionally filters by a physical group ID.
+    Returns the nodes belonging to elements of a specified geometric dimension
+    (1=line, 2=surface, 3=volume); If no dimension is given, defaults to the
+    'before last' element type (for backward compatibility).
 
     Args:
         meshFile_ (str): path to .msh file
         phyGroupID (int, optional): if given, restricts nodes to this physical group
+        dim (int, optional): geometric dimension to extract (1=line, 2=surface, 3=volume)
 
     Returns:
-        set[int]: node tags associated with the before-last element type
+        set[int]: node tags associated with the chosen element type(s)
     """
 
-    # Step 1. Find distinct consecutive element types
+    # !!! Map common element types to their geometric dimensions !!!
+    eleType_to_dim = {
+        1: 1,  # 2-node line
+        2: 2,  # 3-node triangle
+        3: 2,  # 4-node quadrilateral
+        4: 3,  # 4-node tetrahedron
+        5: 3,  # 8-node hexahedron
+        6: 3,  # 6-node prism
+        7: 3,  # 5-node pyramid
+        8: 1,  # 3-node quadratic line
+        9: 2,  # 6-node quadratic triangle
+        10: 2,  # 9-node quadratic quad
+        11: 3,  # 10-node quadratic tetra
+        16: 2,  # 8-node serendipity quad
+        17: 3,  # 20-node serendipity hex
+    }
+
+    # !!! Step 1. Collect element types from the mesh !!!
     eleTypesRaw = []
     with open(meshFile_) as f_:
         lines_ = f_.readlines()
@@ -957,9 +978,18 @@ def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None):
     if not distinctTypes:
         raise RuntimeError(f"No elements found in {meshFile_}")
 
-    eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
+    # !!! Step 2. Determine which element types to target !!!
+    if dim is not None:
+        # Filter element types by requested dimension
+        targetTypes = [t for t in distinctTypes if eleType_to_dim.get(t) == dim]
+        if not targetTypes:
+            raise ValueError(f"No elements of dimension {dim} found in {meshFile_}")
+    else:
+        # Default behavior: before-last distinct type
+        eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
+        targetTypes = [eleTypeBL]
 
-    # Step 2. Collect nodes from elements of that type
+    # !!! Step 3. Collect nodes from matching elements !!!
     boundaryNodes = set()
     with open(meshFile_) as f_:
         lines_ = f_.readlines()
@@ -977,7 +1007,7 @@ def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None):
                     try:
                         eleType = int(parts_[1])
                         phyGroup = int(parts_[4])
-                        if eleType == eleTypeBL and (phyGroupID is None or phyGroup == phyGroupID):
+                        if eleType in targetTypes and (phyGroupID is None or phyGroup == phyGroupID):
                             nodesB = [int(n) for n in parts_[5:]]
                             boundaryNodes.update(nodesB)
                     except ValueError:

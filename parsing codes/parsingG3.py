@@ -257,6 +257,6 @@ if __name__ == "__main__":
     )
 
 phyGroupID = 2
-boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID)  # for example
+boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=2)  # for example
 boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)
 print(f"Boundary nodes: {boundaryNodes}")
