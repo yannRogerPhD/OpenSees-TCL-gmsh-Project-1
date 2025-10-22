@@ -6,12 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex2/meshHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex2/meshHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex2/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex2/model.geo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex2/model.msh" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex2/model.msh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex2/parsingG3.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex2/parsingG3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/meshHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/meshHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsing codes/parsingG3.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsing codes/parsingG3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,29 +42,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.anaVSnum.executor": "Run",
-    "Python.defMyPlotStyle.executor": "Run",
-    "Python.getInfoG.executor": "Run",
-    "Python.materials.executor": "Run",
-    "Python.meshHelper.executor": "Run",
-    "Python.parsingCode.executor": "Run",
-    "Python.parsingG.executor": "Run",
-    "Python.parsingG3.executor": "Run",
-    "Python.plotRes.executor": "Run",
-    "Python.plotRicker.executor": "Run",
-    "Python.reconstruct.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.anaVSnum.executor&quot;: &quot;Run&quot;,
+    &quot;Python.defMyPlotStyle.executor&quot;: &quot;Run&quot;,
+    &quot;Python.getInfoG.executor&quot;: &quot;Run&quot;,
+    &quot;Python.materials.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parsingCode.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parsingG.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plotRes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plotRicker.executor&quot;: &quot;Run&quot;,
+    &quot;Python.reconstruct.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/yannroger-ft/PycharmProjects/OpenSees-TCL-gmsh-Project-1&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/parsing codes" />
@@ -314,39 +306,7 @@
       <option name="project" value="LOCAL" />
       <updated>1761051049511</updated>
     </task>
-    <task id="LOCAL-00028" summary="!!">
-      <option name="closed" value="true" />
-      <created>1761053754798</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1761053754798</updated>
-    </task>
-    <task id="LOCAL-00029" summary="!!">
-      <option name="closed" value="true" />
-      <created>1761053779748</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1761053779748</updated>
-    </task>
-    <task id="LOCAL-00030" summary="!!">
-      <option name="closed" value="true" />
-      <created>1761060679051</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1761060679051</updated>
-    </task>
-    <task id="LOCAL-00031" summary="!!">
-      <option name="closed" value="true" />
-      <created>1761060688257</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1761060688257</updated>
-    </task>
-    <option name="localTasksCounter" value="32" />
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
