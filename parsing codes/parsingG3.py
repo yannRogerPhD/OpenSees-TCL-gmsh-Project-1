@@ -253,7 +253,12 @@ if __name__ == "__main__":
         thickY=thickY,
         thickZ=thickZ,
         tsX=tsX,
-        tsY=tsY
+        tsY=tsY,
+        damp=0.02,
+        fLower=0.2,
+        fHigher=20.0,
+        gamma=0.5,
+        beta=0.25
     )
 
 phyGroupID = 2

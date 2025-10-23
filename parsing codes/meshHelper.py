@@ -890,19 +890,19 @@ def twentyEightBrickDOFs(ns_):
 # ELEMENT PROFILE MAP (GMSH element type → metadata)
 # -------------------------------------------------------
 elementProfiles = {
-    3:     {"key": "quad4",        "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103:   {"key": "bbarQuadUP",   "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
-    1003:  {"key": "quadUP",       "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
-    10031: {"key": "ASDLeft",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
-    10032: {"key": "ASDBottom",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
-    10033: {"key": "ASDRight",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
-    10034: {"key": "ASDBottomL",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
-    10:    {"key": "9_4_QuadUP",   "ndm": 2, "needsP": True,  "dofRule": both2and3DOFs},
-    5:     {"key": "brickUP",      "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105:   {"key": "bbarBrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
-    1005:  {"key": "SSPbrickUP",   "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
-    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
+    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
+    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
+    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
+    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
+    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
+    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
+    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
+    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
+    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
 }
 
 
@@ -1143,7 +1143,10 @@ def detectMaxPhyGroup(meshFile):
     return maxPhyGroup
 
 
-def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, orderedSections=None):
+def writeMainTclGlobal(tclRootDir, modelName,
+                       thickX, thickY, thickZ, tsX, tsY,
+                       damp, fLower, fHigher, gamma, beta,
+                       orderedSections=None):
     """
     Create a global main.tcl in TCL-Files/ that sources the subfiles
     inside the model-specific folder (e.g., model4/).
@@ -1156,12 +1159,23 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         thickZ (float): Z-direction thickness value.
         tsX (int): timeSeries in x-direction
         tsY (int): timeSeries in y-direction
+        damp (float): damping value considered
+        fLower (float): lower Rayleigh frequency considered
+        fHigher (float): higher Rayleigh frequency considered
+        gamma (float): Rayleigh gamma coefficient
+        beta (float): Rayleigh beta coefficient
         orderedSections (list[str], optional): Custom ordering of sections.
             Default order: ['modelHeader', 'nodes', 'elements', 'fixity', 'equalDOF'].
     """
     tol = 1.0e-5
     maxNumIter = 25
     printFlag = 1
+
+    omega1 = 2 * np.pi * fLower
+    omega2 = 2 * np.pi * fHigher
+
+    a0 = 2 * damp * omega1 * omega2 / (omega1 + omega2)
+    a1 = 2 * damp / (omega1 + omega2)
 
     os.makedirs(tclRootDir, exist_ok=True)
     modelDir = os.path.join(tclRootDir, modelName)
@@ -1198,7 +1212,12 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         f_.write(f"set tsY {tsY}\n")
         f_.write(f"set thickX {round(thickX, 6)}\n")
         f_.write(f"set thickY {round(thickY, 6)}\n")
-        f_.write(f"set thickZ {round(thickZ, 6)}\n\n")
+        f_.write(f"set thickZ {round(thickZ, 6)}\n")
+
+        f_.write(f"set a0 {round(a0, 6)}\n")
+        f_.write(f"set a1 {round(a1, 6)}\n")
+        f_.write(f"set gamma {gamma}\n")
+        f_.write(f"set beta {beta}\n")
 
         f_.write(f"# timeSeries Path $tsX - filePath 'vx_record.txt' - factor 1.0\n")
         f_.write(f"# timeSeries Path $tsY - filePath 'vy_record.txt' - factor 1.0\n\n")
@@ -1228,7 +1247,40 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         f_.write("# UmfPack\n")
         f_.write("# SparseSPD\n")
 
-        f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        f_.write(f"test NormDispIncr {tol} {maxNumIter} {printFlag}\n")
+
+        f_.write(f"algorithm Newton\n")
+        f_.write("# Linear\n")
+        f_.write("# Newton\n")
+        f_.write("# NewtonLineSearch $ratio\n")
+        f_.write("# ModifiedNewton\n")
+        f_.write("# KrylovNewton\n")
+        f_.write("# BFGS $count\n")
+        f_.write("# Broyden $count\n")
+
+        f_.write("integrator LoadControl 1.0\n")
+        f_.write("analysis Static\n\n")
+
+        f_.write("\n\n\n\n")
+
+        f_.write("constraints Transformation\n")
+        f_.write("# Plain\n")
+        f_.write("# Penalty 1.e18 1.e18\n")
+        f_.write("# Lagrange\n")
+        f_.write("# Transformation\n")
+
+        f_.write("numberer RCM\n")
+        f_.write("# Plain\n")
+
+        f_.write("system ProfileSPD\n")
+        f_.write("# BandGeneral\n")
+        f_.write("# BandSPD\n")
+        f_.write("# ProfileSPD\n")
+        f_.write("# SparseGeneral\n")
+        f_.write("# UmfPack\n")
+        f_.write("# SparseSPD\n")
+
+        f_.write(f"test NormDispIncr {tol} {maxNumIter} {printFlag}\n")
 
         f_.write(f"algorithm Newton\n")
         f_.write("# Linear\n")
@@ -1269,6 +1321,7 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         #
 
         # f_.write(f"test NormUnbalance {tol} {maxNumIter} {printFlag}\n")
+        # - NormUnbalance
         # - NormDispIncr
         # - EnergyIncr
 
