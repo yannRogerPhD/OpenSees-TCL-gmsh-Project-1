@@ -22,8 +22,8 @@ tsX = 1
 tsY = 2
 
 # compute the thickness increments
-thickX = (xMax - xMin) / (transX - 1)
-thickY = (yMax - yMin) / (transY - 1)
+thickX = (xMax - xMin) / (transY - 1)
+thickY = (yMax - yMin) / (transX - 1)
 thickZ = (zMax - zMin) / (transZ - 1)
 
 # prepare output folder once
