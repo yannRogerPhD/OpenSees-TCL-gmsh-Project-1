@@ -882,19 +882,19 @@ def twentyEightBrickDOFs(ns_):
 # ELEMENT PROFILE MAP (GMSH element type → metadata)
 # -------------------------------------------------------
 elementProfiles = {
-    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
-    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
-    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
-    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
-    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
-    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
-    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
+    3:     {"key": "quad4",        "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103:   {"key": "bbarQuadUP",   "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
+    1003:  {"key": "quadUP",       "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
+    10031: {"key": "ASDLeft",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
+    10032: {"key": "ASDBottom",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
+    10033: {"key": "ASDRight",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
+    10034: {"key": "ASDBottomL",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
+    10035: {"key": "ASDBottomR",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
+    10:    {"key": "9_4_QuadUP",   "ndm": 2, "needsP": True,  "dofRule": both2and3DOFs},
+    5:     {"key": "brickUP",      "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105:   {"key": "bbarBrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
+    1005:  {"key": "SSPbrickUP",   "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
+    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
 }
 
 
