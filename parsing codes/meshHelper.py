@@ -1187,7 +1187,7 @@ def writeMainTclGlobal(tclRootDir, modelName, thickX, thickY, thickZ, tsX, tsY, 
         # f_.write(f"puts '==== Running main.tcl for {modelName} ===='\n\n')
 
         f_.write(f"set tsX {tsX}\n")
-        f_.write(f"set tsY {tsY} 2\n")
+        f_.write(f"set tsY {tsY}\n")
         f_.write(f"set thickX {round(thickX, 6)}\n")
         f_.write(f"set thickY {round(thickY, 6)}\n")
         f_.write(f"set thickZ {round(thickZ, 6)}\n\n")
