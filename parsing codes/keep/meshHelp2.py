@@ -333,31 +333,23 @@ def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
             fHeader.write(f"model BasicBuilder -ndm {ndm} -ndf {ndf}\n")
         written.append(modelHeader)
 
-        # build node lines first
-        nodeLines = []
-        for n in sorted(nodeList):
-            x_, y_, z_ = nodeCoords_.get(n, (0.0, 0.0, 0.0))
-            if ndm == 2:
-                line = f"node {n:<6} {x_:.6f} {y_:.6f}"
-            else:
-                line = f"node {n:<6} {x_:.6f} {y_:.6f} {z_:.6f}"
-            nodeLines.append(line)
-
-        maxLen = max(len(line) for line in nodeLines)
-
-        # write node definitions with aligned comments
+        # write node definitions
         with open(fileName, "w") as f__:
             f__.write(f"# !!!!!!!!!!!!!!!!!!! Nodes with {dofCountT} DOFs !!!!!!!!!!!!!!!!!!!\n\n")
+            for n in sorted(nodeList):
+                x_, y_, z_ = nodeCoords_.get(n, (0.0, 0.0, 0.0))
+                if ndm == 2:
+                    f__.write(f"node {n:<6} {x_:.6f} {y_:.6f}")
+                else:
+                    f__.write(f"node {n:<6} {x_:.6f} {y_:.6f} {z_:.6f}")
 
-            for line, n in zip(nodeLines, sorted(nodeList)):
-                label = {
-                    2: "(u,v)",
-                    3: "(u,v,p)" if ndm == 2 else "(u,v,w)",
-                    4: "(u,v,w,p)"
-                }.get(dofCountT, "")
+                # optional DOF comment
+                label = {2: "(u,v)",
+                         3: "(u,v,p)" if ndm == 2 else "(u,v,w)",
+                         4: "(u,v,w,p)"
+                         }.get(dofCountT, "")
 
-                comment = f"# {dofCountT} DOFs {label}"
-                f__.write(f"{line.ljust(maxLen + 4)}{comment}\n")
+                f__.write(f"    # {dofCountT} DOFs {label}\n")
 
         written.append(fileName)
 
