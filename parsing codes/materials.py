@@ -421,28 +421,8 @@ paramsElastic = {
     "rho": 2.0e3  # Density (optional)
 }
 
-"""
-with open("materials_pimy_test.tcl", "w") as f:
-    write_material_def("PressureIndependMultiYield", paramsPIMY, f, MATERIAL_TPL)
 
-with open("materials_pdmy_test.tcl", "w") as f:
-    write_material_def("PressureDependMultiYield", paramsPDMY, f, MATERIAL_TPL)
-
-with open("materials_pdmy02_test.tcl", "w") as f:
-    write_material_def("PressureDependMultiYield02", paramsPDMY02, f, MATERIAL_TPL)
-
-with open("materials_pdmy03_test.tcl", "w") as f:
-    write_material_def("PressureDependMultiYield03", paramsPDMY03, f, MATERIAL_TPL)
-
-with open("materials_fsp_test.tcl", "w") as f:
-    write_material_def("FluidSolidPorousMaterial", paramsFSP, f, MATERIAL_TPL)
-
-with open("materials_elastic_test.tcl", "w") as f:
-    write_material_def("ElasticIsotropic", paramsElastic, f, MATERIAL_TPL)
-"""
-
-
-def write_materials(materials, registry):
+def writeMaterials(materials, registry):
     """
     Write one or more material definitions to file(s).
 
@@ -462,6 +442,15 @@ def write_materials(materials, registry):
             Writes .tcl material definition files to disk. Prints success messages
             or errors to stderr.
     """
+    SHORT_NAMES = {
+        "PressureIndependMultiYield": "matPIMY",
+        "PressureDependMultiYield": "matPDMY",
+        "PressureDependMultiYield02": "matPDMY02",
+        "PressureDependMultiYield03": "matPDMY03",
+        "FluidSolidPorousMaterial": "matFSP",
+        "ElasticIsotropic": "matELAS",
+    }
+
     if not materials:
         print("No materials provided.", file=sys.stderr)
         return
@@ -473,7 +462,9 @@ def write_materials(materials, registry):
         materials = list(materials.items())
 
     for key, params in materials:
-        outName = f"material_{key.lower()}_test.tcl"
+        short = SHORT_NAMES.get(key, key[:6])  # fallback if not in dict
+        # outName = f"material_{key.lower()}_test.tcl"
+        outName = f"{short}.tcl"
         with open(outName, "w") as f:
             write_material_def(key, params, f, registry)
         print(f"Wrote {outName} successfully.")
@@ -504,9 +495,9 @@ paramsPIMYex1 = {
     "peakShearStra": gammaPeakEx1,
 }
 
-write_materials([
-    # ("PressureIndependMultiYield", paramsPIMYex1),
-    # ("PressureDependMultiYield", paramsPDMY),
-    # ("PressureDependMultiYield02", paramsPDMY02),
-    # ("ElasticIsotropic", paramsElastic),
-], MATERIAL_TPL)
+# writeMaterials([
+#     # ("PressureIndependMultiYield", paramsPIMYex1),
+#     # ("PressureDependMultiYield", paramsPDMY),
+#     # ("PressureDependMultiYield02", paramsPDMY02),
+#     # ("ElasticIsotropic", paramsElastic),
+# ], MATERIAL_TPL)
