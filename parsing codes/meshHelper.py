@@ -232,7 +232,7 @@ def writeEqualDOFs(fileName, nodePairs, dofS, header="EqualDOF pairs", outputDir
     with open(fullPath, 'w') as f_:
         f_.write(f"# {header}\n\n")
         for i, j in nodePairs:
-            f_.write(f"equalDOF {i} {j} {' '.join(map(str, dofS))}\n")
+            f_.write(f"equalDOF  {i:<4} {j:<4}  {' '.join(map(str, dofS))}\n")
     print(f"✅ Wrote {fileName} ({len(nodePairs)} pairs)")
 
 
