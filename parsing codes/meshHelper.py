@@ -1143,6 +1143,10 @@ def detectMaxPhyGroup(meshFile):
     return maxPhyGroup
 
 
+def getElementsTagByType(elements_, targetTypes):
+    return [el["id"] for el in elements_ if el["type"] in targetTypes]
+
+
 def writeMainTclGlobal(tclRootDir, modelName,
                        thickX, thickY, thickZ, tsX, tsY,
                        damp, fLower, fHigher, gamma, beta,

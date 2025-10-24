@@ -265,3 +265,11 @@ phyGroupID = 2
 boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=2)  # for example
 boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)
 print(f"Boundary nodes: {boundaryNodes}")
+
+# leftASDElements = [el["id"] for el in elements if el["type"] == 10031]
+#
+# outputPath = os.path.join(outDir, 'leftASDUpdate.tcl')
+#
+# with open(outputPath, 'w') as f:
+#     for i in leftASDElements:
+#         f.write(f"setParameter -val 1 -ele {i} stage\n")
