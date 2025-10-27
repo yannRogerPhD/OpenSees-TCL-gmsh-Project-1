@@ -24,7 +24,7 @@ def outputFolder(meshFile_):
     baseName = os.path.splitext(os.path.basename(meshFile_))[0]
     outDir_ = os.path.join("TCL-Files", baseName)
     os.makedirs(outDir_, exist_ok=True)
-    print(f"📁 Output directory prepared: {outDir_}")
+    # print(f"📁 Output directory prepared: {outDir_}")
     return outDir_
 
 
