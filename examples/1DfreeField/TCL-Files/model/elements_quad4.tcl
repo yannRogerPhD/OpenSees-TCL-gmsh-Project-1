@@ -1,0 +1,31 @@
+# !!!!!!!!!!! quad4 elements !!!!!!!!!!!
+
+element quad 70 1 2 7 35 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 71 35 7 8 36 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 72 36 8 9 37 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 73 37 9 10 38 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 74 38 10 11 39 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 75 39 11 12 40 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 76 40 12 13 41 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 77 41 13 14 42 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 78 42 14 15 43 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 79 43 15 16 44 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 80 44 16 17 45 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 81 45 17 18 46 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 82 46 18 19 47 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 83 47 19 20 48 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 84 48 20 21 49 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 85 49 21 22 50 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 86 50 22 23 51 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 87 51 23 24 52 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 88 52 24 25 53 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 89 53 25 26 54 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 90 54 26 27 55 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 91 55 27 28 56 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 92 56 28 29 57 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 93 57 29 30 58 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 94 58 30 31 59 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 95 59 31 32 60 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 96 60 32 33 61 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 97 61 33 34 62 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
+element quad 98 62 34 3 4 1.0 PlaneStrain 1 0.0 0.0 -0.0000 -9.8060
