@@ -4,7 +4,7 @@ hSoil = DefineNumber[ 30.0, Name "Parameters/hSoil" ];
 //+
 thickX = DefineNumber[ 0.25, Name "Parameters/thickX" ];
 //+
-thickASD = DefineNumber[ 5, Name "Parameters/thickX" ];
+thickASD = DefineNumber[ 5, Name "Parameters/thickASD" ];
 //+
 transX = DefineNumber[ 30, Name "Parameters/transX" ];
 //+
@@ -42,7 +42,7 @@ Curve Loop(2) = {3, 4, -1, -6};
 //+
 Plane Surface(2) = {2};
 //+
-Transfinite Curve {7, 5} = 30 Using Progression 1;
+Transfinite Curve {7, 5} = transX Using Progression 1;
 //+
 Transfinite Curve {2, 1, 3} = 2 Using Progression 1;
 //+

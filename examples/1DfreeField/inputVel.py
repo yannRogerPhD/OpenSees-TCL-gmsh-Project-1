@@ -6,7 +6,7 @@ plt.style.use("MyLaTeXPlotStyle")
 dt = 0.001
 tMax = 10.0
 t0 = 2.0
-fc = 1.0
+fc = 2.0
 
 # tWindowPulse = (1 / fc) * 2
 
@@ -25,4 +25,4 @@ plt.xlabel("time (s)")
 plt.ylabel("outcrop velocity (m/s)")
 plt.show()
 
-np.savetxt("vel.out", vel, fmt="%.6e")
+np.savetxt("velInput.out", vel, fmt="%.6e")

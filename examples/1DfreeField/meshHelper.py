@@ -490,12 +490,15 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     # 2D plan strain, we rename to OpenSees "ASDAbsorbingBoundary2D"
                     keyOut = "ASDAbsorbingBoundary2D"
 
-                    E_ASD = 3.0e9
+                    # E_ASD = 3.0e9
                     poissASD = 0.3
-                    G_ASD = E_ASD / (2.0 * (1.0 + poissASD))
-                    thicknessASD = 1.0
+                    # G_ASD = E_ASD / (2.0 * (1.0 + poissASD))
 
-                    rhoASD = 2100.0
+                    rhoASD = 2000.0
+                    VsASD = 1010
+                    G_ASD = rhoASD * (VsASD ** 2)
+
+                    thicknessASD = 1.0
 
                     bType = "B"
 

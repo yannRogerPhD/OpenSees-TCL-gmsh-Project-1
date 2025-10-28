@@ -4,7 +4,7 @@ from scipy.fft import fft, ifft
 
 plt.style.use("MyLaTeXPlotStyle")
 
-fileName = "accel.out"
+fileName = "accelTop.out"
 
 nDOF = 2
 
