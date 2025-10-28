@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!">
-      <change afterPath="$PROJECT_DIR$/examples/1DfreeField/anaVSnum.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/1DfreeField/inputVel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/1DfreeField/main.tcl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/1DfreeField/model.geo" beforeDir="false" afterPath="$PROJECT_DIR$/examples/1DfreeField/model.geo" afterDir="false" />
-    </list>
+    <list default="true" id="25374656-14a8-4bbe-b9f5-ce62bbaa1661" name="Changes" comment="!!" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +19,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -57,6 +52,7 @@
     "Python.getInfoG.executor": "Run",
     "Python.inputVel.executor": "Run",
     "Python.materials.executor": "Run",
+    "Python.meshHelper.executor": "Run",
     "Python.parsingCode.executor": "Run",
     "Python.parsingG.executor": "Run",
     "Python.parsingG3.executor": "Run",
@@ -324,7 +320,31 @@
       <option name="project" value="LOCAL" />
       <updated>1761105207667</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="successfully verified 1D ground motion using ASDAbsorbingBoundary element">
+      <option name="closed" value="true" />
+      <created>1761613412508</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1761613412508</updated>
+    </task>
+    <task id="LOCAL-00030" summary="cleaned redundant model header writing">
+      <option name="closed" value="true" />
+      <created>1761623531149</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1761623531149</updated>
+    </task>
+    <task id="LOCAL-00031" summary="!!">
+      <option name="closed" value="true" />
+      <created>1761624993501</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1761624993501</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -343,6 +363,8 @@
     <MESSAGE value="cleaning" />
     <MESSAGE value="new plotting function!" />
     <MESSAGE value="!! parsing code optimal !!" />
+    <MESSAGE value="successfully verified 1D ground motion using ASDAbsorbingBoundary element" />
+    <MESSAGE value="cleaned redundant model header writing" />
     <MESSAGE value="!!" />
     <option name="LAST_COMMIT_MESSAGE" value="!!" />
   </component>

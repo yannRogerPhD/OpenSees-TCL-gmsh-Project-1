@@ -2,11 +2,6 @@ import os
 import numpy as np
 
 """
-More to do:
-    (1) consider -fy (and consequently -fz) for ASDAbsorbingBoundary 
-    (2) test all combinations
-    (3) consider -fy (set tsY 0) and test again the analytical verification to see if we can keep -fy to be general
-    
 Custom elementType remapping.
     - !! For ex: Gmsh uses type=3 for all 4-node quads, but we want to distinguish "bbarQuadUP" using our own ID (103)
         - !! change "bbarGroups" (line 10) to actual group IDs (numbers associated to physical surfaces) from Gmsh
@@ -138,26 +133,6 @@ def sortNodesByX(nodes, nodeCoords):
 def sortNodesByY(nodes, nodeCoords):
     # return nodes sorted by their y-coordinate
     return sorted(nodes, key=lambda n: nodeCoords[n][1])
-
-
-def reorderQuadNodes(node_ids, coords):
-    # Extract coordinates
-    pts = [(nid, *coords[nid]) for nid in node_ids]
-
-    # Sort nodes by y (ascending)
-    pts.sort(key=lambda p: p[2])
-
-    # Split into bottom (2 lowest y) and top (2 highest y)
-    bottom = pts[:2]
-    top = pts[2:]
-
-    # Sort each pair by x
-    bottom.sort(key=lambda p: p[1])
-    top.sort(key=lambda p: p[1])
-
-    # Build ordered list: BL, BR, TR, TL
-    ordered = [bottom[0][0], bottom[1][0], top[1][0], top[0][0]]
-    return ordered
 
 
 def sortNodesByZ(nodes, nodeCoords):
@@ -732,11 +707,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bYBrickUP = gy
                     bZBrickUP = gz
 
-                    nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodes = " ".join(str(n) for n in nodesF)
-
                     f__.write(
                         f"element "
                         f"{key} "
@@ -778,11 +748,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bYBbarBrickUP = gy
                     bZBbarBrickUP = gz
 
-                    nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodes = " ".join(str(n) for n in nodesF)
-
                     f__.write(
                         f"element "
                         f"{key} "
@@ -823,11 +788,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     gy = 0.0
                     gz = - gVal_ * np.cos(alphaVal)
 
-                    nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodes = " ".join(str(n) for n in nodesF)
-
                     permXSSPbrickUP = {i: permXSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
                     permYSSPbrickUP = {i: permYSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
                     permZSSPbrickUP = {i: permZSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
@@ -849,35 +809,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                         f"{gy} "
                         f"{gz}\n"
                     )
-
-                elif key.startswith("ASD3D"):
-
-                    keyOut = "ASDAbsorbingBoundary3D"
-
-                    E_ASD = 3.0e9
-                    poissASD = 0.3
-
-                    G_ASD = E_ASD / (2.0 * (1.0 + poissASD))
-                    rhoASD = 2100.0
-
-                    bType = key.replace("ASD3D", "")
-
-                    nodeList = el["nodes"]
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-
-                    nodes = " ".join(str(n) for n in nodesF)
-
-                    f__.write(f"element {keyOut} {el['id']} {nodes} {G_ASD} {poissASD} {rhoASD} {bType}")
-
-                    if "B" in bType:
-                        f__.write(" -fx $tsX")
-                    if "F" in bType or "K" in bType:
-                        f__.write(" -fy $tsY")
-                    if "T" in bType:
-                        f__.write(" -fz $tsZ")
-
-                    f__.write("\n")
 
                 elif key == "20_8_BrickUP":  # OK VERIFIED
                     porosity = {i: 1.0 for i in mainSoilTags_}
@@ -906,14 +837,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bX_20_8_BrickUP = gx
                     bY_20_8_BrickUP = gy
                     bZ_20_8_BrickUP = gz
-
-                    nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0],
-                              nodeList[12], nodeList[18], nodeList[14], nodeList[11],
-                              nodeList[10], nodeList[17], nodeList[15], nodeList[9],
-                              nodeList[8], nodeList[16], nodeList[19], nodeList[13]]
-                    nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
                         f"element "
@@ -970,39 +893,15 @@ elementProfiles = {
     3:     {"key": "quad4",        "ndm": 2, "needsP": False, "dofRule": only2DOFs},
     103:   {"key": "bbarQuadUP",   "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
     1003:  {"key": "quadUP",       "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
-    # !!! 2D boundary absorbing START !!!
     10031: {"key": "ASDLeft",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
     10032: {"key": "ASDBottom",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
     10033: {"key": "ASDRight",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
     10034: {"key": "ASDBottomL",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
     10035: {"key": "ASDBottomR",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
-    # !!! 2D boundary absorbing END !!!
     10:    {"key": "9_4_QuadUP",   "ndm": 2, "needsP": True,  "dofRule": both2and3DOFs},
     5:     {"key": "brickUP",      "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
     105:   {"key": "bbarBrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
     1005:  {"key": "SSPbrickUP",   "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
-    # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10052: {"key": "ASD3DR",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10053: {"key": "ASD3DK",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10054: {"key": "ASD3DF",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10055: {"key": "ASD3DBL",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10056: {"key": "ASD3DBR",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10057: {"key": "ASD3DBK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10058: {"key": "ASD3DBF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10059: {"key": "ASD3DLK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10060: {"key": "ASD3DBLK",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10061: {"key": "ASD3DRK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10062: {"key": "ASD3DBRK",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10063: {"key": "ASD3DLF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10064: {"key": "ASD3DBLF",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10065: {"key": "ASD3DRF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10066: {"key": "ASD3DBRF",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10067: {"key": "ASD3DB",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # !!! 3D boundary absorbing END !!!
     17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
 }
 
@@ -1236,10 +1135,7 @@ def detectMaxPhyGroup(meshFile):
                     elementType = int(parts[1])
                     phyGroup = int(parts[4])
                     # include both 2D and 3D element types
-                    if elementType in (3, 103, 1003, 10031, 10032, 10033, 10034, 10035, 10,
-                                       5, 105, 1005, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058, 10059,
-                                       10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067,
-                                       17):
+                    if elementType in (3, 5, 10, 17, 105, 1005, 103, 1003, 10031, 10032, 10033, 10034, 10035):
                         if phyGroup > maxPhyGroup:
                             maxPhyGroup = phyGroup
                 except (ValueError, IndexError):
