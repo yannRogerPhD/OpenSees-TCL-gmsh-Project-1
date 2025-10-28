@@ -595,7 +595,22 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "quadUP":  # OK VERIFIED
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+
+                    # porosity = {i: 1.0 for i in mainSoilTags_}
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 4 and 5" will have customized porosity (perhaps different from 1.0)
+                    #
+                    porosityCustom = {
+                        4: 1.09,
+                        5: 1.05
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     # thickness, bulk, fluid mass per physical group
@@ -634,7 +649,21 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "bbarQuadUP":  # OK VERIFIED
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 2 and Plane 3)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     thicknessBbarQuadUP = {i: 1.0 for i in mainSoilTags_}
@@ -671,7 +700,21 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "9_4_QuadUP":  # OK VERIFIED
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     thickness9_4_QuadUP = {i: 1.0 for i in mainSoilTags_}
@@ -708,7 +751,20 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                 elif key == "brickUP":  # OK VERIFIED
                     # !!!!!!!!! 3D cases !!!!!!!!!
 
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     bulkBrickUP = {i: Bf / porosity[i] for i in mainSoilTags_}
@@ -754,7 +810,21 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     )
 
                 elif key == "bbarBrickUP":  # OK VERIFIED
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     bulkBbarBrickUP = {i: Bf / porosity[i] for i in mainSoilTags_}
@@ -804,7 +874,20 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     # best and largely stabilized for a dynamic-only,
                     # single-point, high-performance version of brickUP
 
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     bulkSSPbrickUP = {i: Bf / porosity[i] for i in mainSoilTags_}  # fluid bulk modulus
@@ -880,7 +963,20 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     f__.write("\n")
 
                 elif key == "20_8_BrickUP":  # OK VERIFIED
-                    porosity = {i: 1.0 for i in mainSoilTags_}
+                    # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
+                    # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
+
+                    porosityCustom = {
+                        2: 1.01,
+                        3: 1.02
+                    }
+
+                    # ensure all other groups get default 1.0 if not explicitly listed
+                    # Build the full porosity map (default 1.0 if not listed)
+                    porosity = {}
+                    for i in mainSoilTags_:
+                        porosity[i] = float(porosityCustom.get(int(i), 1.0))
+
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
                     bulk_20_8_BrickUP = {i: Bf / porosity[i] for i in mainSoilTags_}
