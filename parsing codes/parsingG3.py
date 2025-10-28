@@ -160,18 +160,6 @@ print(f"  3-DOF nodes: {len(threeDOFNodes)}")
 print(f"  4-DOF nodes: {len(fourDOFNodes)}")
 
 # -------------------------------------------------------
-# Write the header file
-# -------------------------------------------------------
-headerPath = os.path.join(outDir, "modelHeader.tcl")
-with open(headerPath, "w") as f:
-    f.write(f"model BasicBuilder -ndm {ndmGlobal} -ndf {ndfGlobal}\n")
-print(f"✅ modelHeader.tcl written at: {headerPath}")
-
-print(f"!! OpenSees model header: ndm={ndmGlobal}, ndf={ndfGlobal} "
-      f"({', '.join(elementProfiles[t]['key'] for t in usedProfiles)})\n")
-# print("✅ modelHeader.tcl written.")
-
-# -------------------------------------------------------
 # Read node coordinates from Gmsh
 # -------------------------------------------------------
 nodeCoords = parseNodesFromMsh(meshFile)
