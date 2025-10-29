@@ -11,6 +11,8 @@ The examples and methodology are based on resources from:
 
 ## Note about gmsh
 
+In case we want two volumes to share a single, continuous interface so the mesh is conformal across that face.
+
 ```bash
 SetFactory("OpenCASCADE");
 
@@ -19,7 +21,7 @@ SetFactory("OpenCASCADE");
 // and Surface{11} in the other
 
 Coherence; // merges duplicate points/curves/surfaces so both volumes share one face
-
+```
 
 ## Version Control Tip
 
@@ -28,3 +30,4 @@ If you encounter conflicts when trying to pull changes (especially related to ID
 ```bash
 rm -rf .idea/
 git pull origin master
+```
