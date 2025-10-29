@@ -9,6 +9,17 @@ This gitHub page aims to illustrate the practical use of **OpenSees TCL** in com
 The examples and methodology are based on resources from:  
 [http://soilquake.net/opensees/version2.1/index.htm](http://soilquake.net/opensees/version2.1/index.htm)
 
+## Note about gmsh
+
+```bash
+SetFactory("OpenCASCADE");
+
+// ... build your two volumes; they currently have coincident faces
+// e.g., Volume{v1}; Volume{v2}; and the interface appears as Surface{10} in one
+// and Surface{11} in the other
+
+Coherence; // merges duplicate points/curves/surfaces so both volumes share one face
+
 
 ## Version Control Tip
 
