@@ -1,13 +1,11 @@
 # ============================================================
-# mainInit.tcl for model5
+# mainInit.tcl for modelBeam
 # ============================================================
 
-set tsX 1
-set tsY 2 2
-set thickX 0.083333
-set thickY 0.125
-set thickZ -0.0
-
+set a0 0.049768
+set a1 0.000315
+set gamma 0.5
+set beta 0.25
 # timeSeries Path $tsX - filePath 'vx_record.txt' - factor 1.0
 # timeSeries Path $tsY - filePath 'vy_record.txt' - factor 1.0
 
@@ -16,10 +14,58 @@ wipe
 model BasicBuilder -ndm 2 -ndf 3
 
 constraints Transformation
+# Plain
+# Penalty 1.e18 1.e18
+# Lagrange
+# Transformation
 numberer RCM
+# Plain
 system ProfileSPD
-test NormUnbalance 1e-05 25 1
+# BandGeneral
+# BandSPD
+# ProfileSPD
+# SparseGeneral
+# UmfPack
+# SparseSPD
+test NormDispIncr 1e-05 25 1
 algorithm Newton
+# Linear
+# Newton
+# NewtonLineSearch $ratio
+# ModifiedNewton
+# KrylovNewton
+# BFGS $count
+# Broyden $count
+integrator LoadControl 1.0
+analysis Static
+
+
+
+
+
+constraints Transformation
+# Plain
+# Penalty 1.e18 1.e18
+# Lagrange
+# Transformation
+numberer RCM
+# Plain
+system ProfileSPD
+# BandGeneral
+# BandSPD
+# ProfileSPD
+# SparseGeneral
+# UmfPack
+# SparseSPD
+test NormDispIncr 1e-05 25 1
+algorithm Newton
+# Linear
+# Newton
+# NewtonLineSearch $ratio
+# ModifiedNewton
+# KrylovNewton
+# BFGS $count
+# Broyden $count
 integrator LoadControl 1.0
 analysis Static
 

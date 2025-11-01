@@ -43,8 +43,19 @@ omega = 2 * np.pi * fVals
 arg = omega * h / cs
 T_noDamp = 1.0 / np.sqrt(np.cos(arg) ** 2 + (alpha ** 2) * np.sin(arg) ** 2)
 
-plt.plot(fVals, T_noDamp, label="Analytical (damp = 0.0%)", ls="--", lw=2, alpha=0.7)
-plt.plot(fVals, numTF, label="Numerical", lw=2, alpha=0.7)
-plt.xlim(0.1, 7.0)
-plt.ylim(0, 5)
+# plt.plot(fVals, T_noDamp, label="analytical (no damping)", ls="--", lw=2, alpha=0.7)
+# plt.plot(fVals, numTF, label="Numerical", lw=2, alpha=0.7)
+plt.plot(fVals, T_noDamp, label="analytical (no damping)", ls="--", lw=3, alpha=0.75, color='black')
+plt.plot(fVals, numTF, label='OpenSees (no damping)', lw=2, alpha=0.9, color='orange')
+plt.xlim(0.101, 7.0)
+plt.ylim(0, 5.1)
+plt.legend(fontsize=10, loc='upper center', bbox_to_anchor=(0.555, 1.0))
+plt.xlabel("time (s)", fontsize=15)
+plt.ylabel("outcrop velocity (m/s)", fontsize=15)
+plt.tick_params(axis='both', which='major', labelsize=15)
+ax = plt.gca()
+for spine in ax.spines.values():
+    spine.set_linewidth(0.85)  # Default is usually 1.0-1.5
+plt.grid(False)
+# plt.savefig("plot_name.pdf", bbox_inches='tight')
 plt.show()
