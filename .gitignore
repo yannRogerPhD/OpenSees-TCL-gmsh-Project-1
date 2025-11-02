@@ -27,3 +27,8 @@ venv/
 *.tcl~
 *.rec
 
+# Python bytecode 
+__pycache__/
+*.pyc
+
+
