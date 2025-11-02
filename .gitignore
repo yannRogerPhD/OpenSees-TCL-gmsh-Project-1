@@ -1,0 +1,29 @@
+# IDE files 
+.idea/*
+!.idea/misc.xml
+!.idea/modules.xml
+!*.iml
+
+# Python virtual environments
+.venv/
+env/
+venv/
+
+# Simulation outputs
+*.out
+*.log
+*.dat
+*.txt
+*.csv
+*.xml
+*.json
+
+# Temporary or system files
+*.tmp
+*.bak
+.DS_Store
+
+# OpenSees or analysis scratch files 
+*.tcl~
+*.rec
+
