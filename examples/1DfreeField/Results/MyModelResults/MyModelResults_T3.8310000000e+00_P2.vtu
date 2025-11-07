@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="1.0" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">
+  <UnstructuredGrid>
+    <Piece NumberOfPoints="4" NumberOfCells="1">
+      <Points>
+        <DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii">
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          2.5000000000e-01 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 -5.0000000000e+00 0.0000000000e+00 
+          2.5000000000e-01 -5.0000000000e+00 0.0000000000e+00 
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type="Int64" Name="connectivity" format="ascii">
+          2 3 1 0 
+        </DataArray>
+        <DataArray type="Int64" Name="offsets" format="ascii">
+          4
+        </DataArray>
+        <DataArray type="Int64" Name="types" format="ascii">
+          9
+        </DataArray>
+      </Cells>
+      <PointData>
+        <DataArray type="Int64" Name="NodeTag" format="ascii">
+          1
+          2
+          5
+          6
+        </DataArray>
+        <DataArray type="Float64" Name="Velocity" NumberOfComponents="3" format="ascii">
+          -3.1027868658e-04 -7.7934630885e-05 0.0000000000e+00 
+          -3.1027868658e-04 -7.7934630885e-05 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="Displacement" NumberOfComponents="3" format="ascii">
+          7.8273942639e-04 -2.9709398426e-04 0.0000000000e+00 
+          7.8273942639e-04 -2.9709398426e-04 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="Acceleration" NumberOfComponents="3" format="ascii">
+          -1.1588010819e-01 -4.1591764621e-06 0.0000000000e+00 
+          -1.1588010819e-01 -4.1591764621e-06 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+        </DataArray>
+        <DataArray type="Float64" Name="Reaction" NumberOfComponents="3" format="ascii">
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+          0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+        </DataArray>
+      </PointData>
+      <CellData>
+        <DataArray type="Int64" Name="ElementTag" format="ascii">
+          129
+        </DataArray>
+      </CellData>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>
