@@ -2,6 +2,8 @@ set tsX 1
 set dt 0.001
 
 wipe
+print version
+
 model BasicBuilder -ndm 2 -ndf 2
 
 timeSeries Path $tsX -dt $dt -filePath velInput.out -factor 0.50
@@ -38,12 +40,18 @@ recorder Node -file accelBot.out -time -dT $dt -node $botNode -dof 1 2 accel
 recorder Node -file velTop.out -time -dT $dt -node $topNode -dof 1 2 vel
 recorder Node -file velBot.out -time -dT $dt -node $botNode -dof 1 2 vel
 
+recorder PVD Results/MyModelResults -dT 0.1 \
+    -node all -dof 1 2 disp vel accel reaction \
+    -ele all forces
+
+
+
 constraints Transformation
 numberer RCM
 algorithm Newton
 integrator Newmark 0.5 0.25
 system BandGeneral
-test NormDispIncr 0.001 35 1
+test NormDispIncr 0.001 35 0
 analysis Transient
 
 analyze 10000 $dt
