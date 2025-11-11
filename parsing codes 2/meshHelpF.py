@@ -30,6 +30,230 @@ def sortNodesByZ(nodes, nodeCoords):
     return sorted(nodes, key=lambda n: nodeCoords[n][2])
 
 
+# inside meshHelpF.py
+def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
+    gmsh3DTypes = {
+        5, 17
+    }
+    other3DDerivatives = {
+        105, 1005, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058, 10059,
+        10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
+    }
+
+    gmsh2DTypes = {
+        1, 3, 10
+    }
+    other2DDerivatives = {
+        103, 1003, 10031, 10032, 10033, 10034, 10035
+    }
+
+    # Correct: use union ("|"), NOT 'or'
+    has3D = any(el["type"] in (gmsh3DTypes | other3DDerivatives) for el in elements)
+
+    if has3D:
+        filtered = \
+            [
+                el for el in elements
+                if el["type"] in (gmsh3DTypes | other3DDerivatives)
+                or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
+            ]
+        print("Detected 3D mesh --> ignoring surface elements (type 3)...")
+
+    else:
+        filtered = \
+            [
+                el for el in elements
+                if el["type"] in (gmsh2DTypes | other2DDerivatives)
+                and (el["type"] != 1 or el["group"] in beam2DGrp)
+            ]
+        print("Detected 2D mesh --> keeping quads and beam line groups only...")
+
+    return filtered, has3D
+
+
+# inside meshHelpF.py
+def remapElementTypes(elements, groupSets):
+    """
+    Applies type remapping rules to elements based on their physical group.
+    groupSets: dict of named sets like bbarQuadUPGrp, quadUPGrp, etc.
+    """
+    for el in elements:
+        t, g = el["type"], el["group"]
+
+        # Beam remapping
+        if t == 1:
+            if g in groupSets["beam2DGrp"]:
+                el["type"] = 1
+            elif g in groupSets["beam3DGrp"]:
+                el["type"] = 101
+            else:
+                continue
+
+        # 2D types
+        elif t == 3:
+            mapping2D = {
+                "bbarQuadUPGrp": 103,
+                "quadUPGrp": 1003,
+                "ASDLeftGrp": 10031,
+                "ASDBottomGrp": 10032,
+                "ASDRightGrp": 10033,
+                "ASDBottomLeftGrp": 10034,
+                "ASDBottomRightGrp": 10035,
+            }
+            for name, newType in mapping2D.items():
+                if g in groupSets.get(name, set()):
+                    el["type"] = newType
+                    break
+
+        # 3D types
+        elif t == 5:
+            mapping3D = {
+                "bbarBrickGrp": 105,
+                "sspBrickGrp": 1005,
+                "ASD3DLGrp": 10051, "ASD3DRGrp": 10052, "ASD3DKGrp": 10053, "ASD3DFGrp": 10054,
+                "ASD3DBLGrp": 10055, "ASD3DBRGrp": 10056, "ASD3DBKGrp": 10057, "ASD3DBFGrp": 10058,
+                "ASD3DLKGrp": 10059, "ASD3DBLKGrp": 10060, "ASD3DRKGrp": 10061, "ASD3DBRKGrp": 10062,
+                "ASD3DLFGrp": 10063, "ASD3DBLFGrp": 10064, "ASD3DRFGrp": 10065, "ASD3DBRFGrp": 10066,
+                "ASD3DBGrp": 10067,
+            }
+            for name, newType in mapping3D.items():
+                if g in groupSets.get(name, set()):
+                    el["type"] = newType
+                    break
+    return elements
+
+
+# compact summary of the remapping (2D + 3D)
+def summarizeRemaps(elements):
+    total = len(elements)
+    if total == 0:
+        print("No elements to summarize.")
+        return
+
+    counts = {}
+    for el in elements:
+        t = el["type"]
+        counts[t] = counts.get(t, 0) + 1
+
+    labels = {
+        # 1D beams
+        1: "elasticBeamColumn2D",
+        101: "elasticBeamColumn3D",
+
+        # 2D elements
+        3: "quad (plain 2D)",
+        10: "plane element (generic)",
+        103: "bbarQuadUP",
+        1003: "quadUP",
+        10031: "ASD Left",
+        10032: "ASD Bottom",
+        10033: "ASD Right",
+        10034: "ASD Bottom-Left",
+        10035: "ASD Bottom-Right",
+
+        # 3D elements
+        5: "brick (plain 3D)",
+        105: "bbarBrickUP",
+        1005: "SSPbrickUP",
+        10051: "ASD3DL",
+        10052: "ASD3DR",
+        10053: "ASD3DK",
+        10054: "ASD3DF",
+        10055: "ASD3DBL",
+        10056: "ASD3DBR",
+        10057: "ASD3DBK",
+        10058: "ASD3DBF",
+        10059: "ASD3DLK",
+        10060: "ASD3DBLK",
+        10061: "ASD3DRK",
+        10062: "ASD3DBRK",
+        10063: "ASD3DLF",
+        10064: "ASD3DBLF",
+        10065: "ASD3DRF",
+        10066: "ASD3DBRF",
+        10067: "ASD3DB",
+    }
+
+    print(f"\nSummary of element remaps ({total} total):")
+    for t, label in labels.items():
+        if t in counts:
+            pct = (counts[t] / total) * 100
+            print(f"  {counts[t]:6d} -> {label:25s} ({t:6d})   [{pct:6.2f}%]")
+
+    # Optional: report any unexpected type numbers
+    known = set(labels)
+    leftovers = {t: c for t, c in counts.items() if t not in known}
+    if leftovers:
+        print("\n[Info] Unrecognized or extra types detected:")
+        for t, c in leftovers.items():
+            pct = (c / total) * 100
+            print(f"  {c:6d} elements of type {t:6d}   [{pct:6.2f}%]")
+
+
+def detect_ndm_ndf(elements, elementProfiles_):
+    """
+    Determine ndmGlobal and ndfGlobal based on active element types.
+    """
+    usedProfiles = {el["type"] for el in elements if el["type"] in elementProfiles_}
+    print()
+    print("usedProfiles:", usedProfiles)
+
+    if not usedProfiles:
+        return 2, 2  # default if nothing is mapped
+
+    ndmGlobal = max(elementProfiles_[t]["ndm"] for t in usedProfiles)
+    hasUP = any(elementProfiles_[t]["needsP"] for t in usedProfiles)
+    hasBeam2D = any(elementProfiles_[t]["key"] == "elasticBeamColumn2D" for t in usedProfiles)
+    hasBeam3D = any(elementProfiles_[t]["key"] == "elasticBeamColumn3D" for t in usedProfiles)
+
+    if ndmGlobal == 2:
+        if hasBeam2D or hasUP:
+            ndfGlobal = 3
+        else:
+            ndfGlobal = 2
+    elif ndmGlobal == 3:
+        if hasBeam3D:
+            ndfGlobal = 6
+        elif hasUP:
+            ndfGlobal = 4
+        else:
+            ndfGlobal = 3
+    else:
+        ndmGlobal, ndfGlobal = 2, 2
+
+    return ndmGlobal, ndfGlobal
+
+
+def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
+    """
+    Build dictionaries of DOFs for soil and structure nodes.
+    Returns: nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
+    """
+    nodeDOFs_soil = {}
+    nodeDOFs_struct = {}
+
+    for el in elements:
+        eType = el["type"]
+        if eType not in elementProfiles_:
+            continue
+
+        ruleFunc = elementProfiles_[eType]["dofRule"]
+        dofMap = ruleFunc(el["nodes"])
+
+        # classify as structure or soil by group membership
+        if eType in (1, 101) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
+            target = nodeDOFs_struct
+        else:
+            target = nodeDOFs_soil
+
+        for nodeTag, dofCount in dofMap.items():
+            if nodeTag not in target or dofCount > target[nodeTag]:
+                target[nodeTag] = dofCount
+
+    nodeDOFs = {**nodeDOFs_soil, **nodeDOFs_struct}
+    return nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
+
+
 # -------------------------------------------------------
 # Tcl writing utilities
 # -------------------------------------------------------
@@ -933,49 +1157,51 @@ def twentyEightBrickDOFs(ns_):
 # ELEMENT PROFILE MAP (GMSH element type → metadata)
 # -------------------------------------------------------
 elementProfiles = {
-    # Beam elements (1D structural members)
-    # Gmsh type 1 = 2-node line element
-    1:     {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    101:   {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
+    # BEAM ELEMENTS (1D structural members)
+    # GMSH TYPE 1 = 2-node line element
+    1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
+    101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
-    3:     {"key": "quad4",        "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103:   {"key": "bbarQuadUP",   "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
-    1003:  {"key": "quadUP",       "ndm": 2, "needsP": True,  "dofRule": threeDOFs},
+    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
     # !!! 2D boundary absorbing START !!!
-    10031: {"key": "ASDLeft",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
-    10032: {"key": "ASDBottom",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
-    10033: {"key": "ASDRight",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
-    10034: {"key": "ASDBottomL",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
+    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
+    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
+    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
+    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
+    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
-    10:    {"key": "9_4_QuadUP",   "ndm": 2, "needsP": True,  "dofRule": both2and3DOFs},
-    5:     {"key": "brickUP",      "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105:   {"key": "bbarBrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
-    1005:  {"key": "SSPbrickUP",   "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
+    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
+
+    # !!!
+    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
+    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
     # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10052: {"key": "ASD3DR",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10053: {"key": "ASD3DK",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10054: {"key": "ASD3DF",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10055: {"key": "ASD3DBL",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10056: {"key": "ASD3DBR",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10057: {"key": "ASD3DBK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10058: {"key": "ASD3DBF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10059: {"key": "ASD3DLK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10060: {"key": "ASD3DBLK",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10061: {"key": "ASD3DRK",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10062: {"key": "ASD3DBRK",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10063: {"key": "ASD3DLF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10064: {"key": "ASD3DBLF",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10065: {"key": "ASD3DRF",      "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10066: {"key": "ASD3DBRF",     "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10067: {"key": "ASD3DB",       "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10051: {"key": "ASD3DL", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10052: {"key": "ASD3DR", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10053: {"key": "ASD3DK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10054: {"key": "ASD3DF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10055: {"key": "ASD3DBL", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10056: {"key": "ASD3DBR", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10057: {"key": "ASD3DBK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10058: {"key": "ASD3DBF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10059: {"key": "ASD3DLK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10060: {"key": "ASD3DBLK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10061: {"key": "ASD3DRK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10062: {"key": "ASD3DBRK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10063: {"key": "ASD3DLF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10064: {"key": "ASD3DBLF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10065: {"key": "ASD3DRF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10066: {"key": "ASD3DBRF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10067: {"key": "ASD3DB", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
     # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # !!! 3D boundary absorbing END !!!
-    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
+    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
 }
 
 
@@ -1224,6 +1450,24 @@ def getElementsTagByType(elements_, targetTypes):
     return [el["id"] for el in elements_ if el["type"] in targetTypes]
 
 
+def classifyChosenNodesByDOF(nodeList, nodeDOFs):
+    """
+    Classify an existing list of nodes according to their DOF count.
+
+    nodeList : list of node tags (e.g. from getBoundaryNodesFromMsh)
+    nodeDOFs : dict {nodeTag: dofCount}
+
+    Returns dict {dofCount: [nodeTags]}
+    """
+    groups = {}
+    for node in nodeList:
+        dof = nodeDOFs.get(node)
+        if dof is None:
+            continue
+        groups.setdefault(dof, []).append(node)
+    return groups
+
+
 def writeMainTclGlobal(tclRootDir, modelName,
                        damp, fLower, fHigher, gamma, beta,
                        orderedSections=None):
@@ -1422,7 +1666,7 @@ def writeMainTclGlobal(tclRootDir, modelName,
 
         # f_.write(f' puts "==== {modelName} TCL model loaded successfully ===="\n')
 
-    print(f"✅ Global main.tcl written at: {mainPath}")
-    print("   Contains source calls for:")
+    print(f"Global main.tcl written at: {mainPath}")
+    print("Contains source calls for:")
     for f_ in orderedFiles:
         print(f"   • {modelName}/{f_}")

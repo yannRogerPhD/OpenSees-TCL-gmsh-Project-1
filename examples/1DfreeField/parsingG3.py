@@ -280,7 +280,7 @@ rightNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=5, dim=1)
 leftNodes = list(sortNodesByY(leftNodes, nodeCoords))
 rightNodes = list(sortNodesByY(rightNodes, nodeCoords))
 # print(sortNodesByY(leftNodes, nodeCoords))
-# print(sortNodesByY(ritghNodes, nodeCoords))
+# print(sortNodesByY(rightNodes, nodeCoords))
 
 outputPath = os.path.join(outDir, 'equalDOFsLR.tcl')
 
