@@ -15,10 +15,6 @@ Most of the examples as well as the methodology are based on resources from:
 
 In case we want two volumes to share a single, continuous interface so the mesh is conformal across that face.
 
-$$
-\nabla
-$$
-
 
 ```bash
 SetFactory("OpenCASCADE");
