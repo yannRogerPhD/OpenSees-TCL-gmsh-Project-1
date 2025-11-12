@@ -1162,49 +1162,49 @@ def twentyEightBrickDOFs(ns_):
 elementProfiles = {
     # BEAM ELEMENTS (1D structural members)
     # GMSH TYPE 1 = 2-node line element
-    1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
+    1:      {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
+    101:    {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
-    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    3:      {"key": "quad4",        "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},
+    103:    {"key": "bbarQuadUP",   "ndm": 2,  "needsP": True,   "dofRule": threeDOFs},
+    1003:   {"key": "quadUP",       "ndm": 2,  "needsP": True,   "dofRule": threeDOFs},
     # !!! 2D boundary absorbing START !!!
-    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Left
-    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom
-    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Right
-    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # For ASDBoundary Bottom right
+    10031:  {"key": "ASDLeft",      "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Left
+    10032:  {"key": "ASDBottom",    "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom
+    10033:  {"key": "ASDRight",     "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Right
+    10034:  {"key": "ASDBottomL",   "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom left
+    10035:  {"key": "ASDBottomR",   "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
-    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
+    10:     {"key": "9_4_QuadUP",   "ndm": 2,  "needsP": True,   "dofRule": both2and3DOFs},
 
     # !!!
-    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for large 3D dynamic pbs
+    5:      {"key": "brickUP",      "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105:    {"key": "bbarBrickUP",  "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},
+    1005:   {"key": "SSPbrickUP",   "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
     # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10052: {"key": "ASD3DR", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10053: {"key": "ASD3DK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10054: {"key": "ASD3DF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10055: {"key": "ASD3DBL", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10056: {"key": "ASD3DBR", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10057: {"key": "ASD3DBK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10058: {"key": "ASD3DBF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10059: {"key": "ASD3DLK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10060: {"key": "ASD3DBLK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10061: {"key": "ASD3DRK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10062: {"key": "ASD3DBRK", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10063: {"key": "ASD3DLF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10064: {"key": "ASD3DBLF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10065: {"key": "ASD3DRF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10066: {"key": "ASD3DBRF", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
-    10067: {"key": "ASD3DB", "ndm": 3, "needsP": False, "dofRule": fourDOFs3D},
+    10051:  {"key": "ASD3DL",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10052:  {"key": "ASD3DR",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10053:  {"key": "ASD3DK",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10054:  {"key": "ASD3DF",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10055:  {"key": "ASD3DBL",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10056:  {"key": "ASD3DBR",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10057:  {"key": "ASD3DBK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10058:  {"key": "ASD3DBF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10059:  {"key": "ASD3DLK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10060:  {"key": "ASD3DBLK",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10061:  {"key": "ASD3DRK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10062:  {"key": "ASD3DBRK",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10063:  {"key": "ASD3DLF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10064:  {"key": "ASD3DBLF",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10065:  {"key": "ASD3DRF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10066:  {"key": "ASD3DBRF",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10067:  {"key": "ASD3DB",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
     # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # !!! 3D boundary absorbing END !!!
-    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
+    17: {"key": "20_8_BrickUP",     "ndm": 3,  "needsP": True,   "dofRule": twentyEightBrickDOFs},
 }
 
 
