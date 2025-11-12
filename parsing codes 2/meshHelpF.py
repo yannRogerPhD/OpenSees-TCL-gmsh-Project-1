@@ -1018,6 +1018,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     PermX_20_8_BrickUP = 5.0e-4
                     PermY_20_8_BrickUP = 5.0e-4
                     PermZ_20_8_BrickUP = 5.0e-4
+
                     # alpha_ = 4 # in degrees already! always convert in degrees
                     PermX_20_8_BrickUP = {i: PermX_20_8_BrickUP / (gVal_ * fMass_20_8_BrickUP[i]) for i in
                                           mainSoilTags_}
@@ -1037,11 +1038,13 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bZ_20_8_BrickUP = gz
 
                     nodeList = el["nodes"]  # actual list of integers from the mesh
+
                     nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                               nodeList[4], nodeList[7], nodeList[3], nodeList[0],
                               nodeList[12], nodeList[18], nodeList[14], nodeList[11],
                               nodeList[10], nodeList[17], nodeList[15], nodeList[9],
                               nodeList[8], nodeList[16], nodeList[19], nodeList[13]]
+
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -1466,6 +1469,76 @@ def classifyChosenNodesByDOF(nodeList, nodeDOFs):
             continue
         groups.setdefault(dof, []).append(node)
     return groups
+
+
+class FuzzyFloat(float):
+    """
+    A float that compares equal within tolerance
+    """
+    __slots__ = ("tol",)
+
+    def __new__(cls, value, tol):
+        obj = float.__new__(cls, value)
+        obj.tol = tol
+        return obj
+
+    def __eq__(self, other):
+        return abs(float(self) - float(other)) < self.tol
+
+    def __lt__(self, other):
+        return float(self) < float(other) - self.tol
+
+    def __le__(self, other):
+        return float(self) <= float(other) + self.tol
+
+    def __gt__(self, other):
+        return float(self) > float(other) + self.tol
+
+    def __ge__(self, other):
+        return float(self) >= float(other) - self.tol
+
+
+def _roundFunc(x_, tol=defaultTolerance):
+    # round a coordinate to the decimal precision implied by the tolerance
+    return round(x_, int(abs(np.log10(tol))))
+
+
+# -------------------------------------------------------
+# Node selection helper functions (using coordinates)
+# -------------------------------------------------------
+def selectNodes(condition, nodeCoords, tol=defaultTolerance, debug=False):
+    """
+    Select nodes satisfying a user-defined Boolean condition on (x, y, z).
+
+    Args:
+        condition: callable (x, y, z) -> bool
+        nodeCoords (dict): mapping nodeTag -> (x, y, z)
+        tol: numerical tolerance for coordinate rounding
+        debug: if True, prints the number of matched nodes
+
+    Returns:
+        list of node IDs satisfying the condition.
+
+    Example:
+        selectNodes(lambda x, y, z: x == 0.083333 and y < 0.25)
+    """
+    selected = []
+    for n, (x_, y_, z_) in nodeCoords.items():
+        xR = _roundFunc(x_, tol)
+        yR = _roundFunc(y_, tol)
+        zR = _roundFunc(z_, tol)
+        xF = FuzzyFloat(xR, tol)
+        yF = FuzzyFloat(yR, tol)
+        zF = FuzzyFloat(zR, tol)
+        try:
+            if condition(xF, yF, zF):
+                selected.append(n)
+        except (ValueError, TypeError):
+            continue
+
+    if debug:
+        print(f"Matched {len(selected)} nodes for condition {condition}")
+    return selected
 
 
 def writeMainTclGlobal(tclRootDir, modelName,

@@ -3,7 +3,8 @@ import os
 from meshHelpF import (detectMaxPhyGroup, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs,  # noqa: F401
     sortNodesByX, sortNodesByY, sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles, writeElementsTcl, outputFolder,
     only2DOFs, parseElementsFromMsh, parseNodesFromMsh, getBoundaryNodesFromMsh, writeMainTclGlobal, elementProfiles,
-    filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF)
+    filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF,
+    FuzzyFloat, selectNodes)
 
 # noqa: F401
 meshFile = "mod2.msh"
@@ -117,17 +118,22 @@ if nodeDOFs_struct:
 
 # writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
 
+# !!!!----
 # select some particular group of nodes
 phyGroupID = 29
 boundaryNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=1)  # for example
 boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)
 # print(f"Test nodes: {sortNodesByX(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords), nodeCoords), nodeCoords)}")
+# !!!!----
 
+# !!!!----
 # select some particular group of nodes w.r.t. the DOF
 dofOfSelectedNodes = 3
 selectNodesDOF = classifyChosenNodesByDOF(boundaryNodes, nodeDOFs)
 boundaryNodes3DOFs = selectNodesDOF.get(dofOfSelectedNodes, [])
+# !!!!----
 
+# !!!!----
 # leftASDElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
 # ASD3DElements = [el["id"] for el in elements
 #                  if el["type"] in
@@ -139,3 +145,20 @@ boundaryNodes3DOFs = selectNodesDOF.get(dofOfSelectedNodes, [])
 # with open(outputPath, 'w') as f:
 #     for i in leftASDElements:
 #         f.write(f"setParameter -val 1 -ele {i} stage\n")
+# !!!!----
+
+# !!!!----
+tryNodes = selectNodes(lambda x, y, z: x == 0.125, nodeCoords)
+# !!!!----
+
+# !!!!----
+leftNodesT = getBoundaryNodesFromMsh(meshFile, phyGroupID=4, dim=1)
+nodesDOFsLeftNodesT = classifyChosenNodesByDOF(leftNodesT, nodeDOFs)
+# now extract 3-DOFs nodes
+nodes3DOFsLeftNodesT = nodesDOFsLeftNodesT.get(3, [])
+# print(nodes3DOFsLeftNodesT)
+
+# now extract 2-DOFs nodes
+nodes2DOFsLeftNodesT = nodesDOFsLeftNodesT.get(2, [])
+# print(nodes2DOFsLeftNodesT)
+# !!!!----

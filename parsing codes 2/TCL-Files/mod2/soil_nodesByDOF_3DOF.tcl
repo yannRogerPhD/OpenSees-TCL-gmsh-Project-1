@@ -1,0 +1,17 @@
+# !!!!!!!!!!!!!!!!!!! Nodes with 3 DOFs !!!!!!!!!!!!!!!!!!!
+
+node 1      0.000000 0.000000    # 3 DOFs (u,v,rz)
+node 2      1.000000 0.000000    # 3 DOFs (u,v,rz)
+node 3      1.000000 1.000000    # 3 DOFs (u,v,rz)
+node 4      0.000000 1.000000    # 3 DOFs (u,v,rz)
+node 5      0.250000 0.000000    # 3 DOFs (u,v,rz)
+node 6      0.500000 0.000000    # 3 DOFs (u,v,rz)
+node 7      0.750000 0.000000    # 3 DOFs (u,v,rz)
+node 12     1.000000 0.500000    # 3 DOFs (u,v,rz)
+node 15     0.250000 1.000000    # 3 DOFs (u,v,rz)
+node 16     0.500000 1.000000    # 3 DOFs (u,v,rz)
+node 17     0.750000 1.000000    # 3 DOFs (u,v,rz)
+node 22     0.000000 0.500000    # 3 DOFs (u,v,rz)
+node 25     0.250000 0.500000    # 3 DOFs (u,v,rz)
+node 26     0.500000 0.500000    # 3 DOFs (u,v,rz)
+node 27     0.750000 0.500000    # 3 DOFs (u,v,rz)
