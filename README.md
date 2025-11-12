@@ -1,17 +1,24 @@
-# OpenSees + Gmsh Example Models
+# OpenSees TCL + Gmsh (Pre-Processor) Application Models
 
-This gitHub page aims to illustrate the practical use of **OpenSees TCL** in combination with **Gmsh** to perform:
+This GitHub page aims to primarily illustrate the practical use of **OpenSees TCL** in combination with **Gmsh** to perform:
 
-- General geotechnical and structural simulations using **OpenSees Tcl**
-- Soil-structure interaction (SSI) modeling  
-- Site response analyses  
+- General geotechnical and structural simulations using **OpenSees TCL**
+- Soil-structure interaction (SSI) modeling, with particular attention paid to:  
+  - the modeling of soil-structure interface contact, and
+  - precisely accounting for absorbing boundary conditions due to soil-domain truncation
+- Soil Response Analyses (SRAs)
 
-The examples and methodology are based on resources from:  
+Most of the examples as well as the methodology are based on resources from:  
 [http://soilquake.net/opensees/version2.1/index.htm](http://soilquake.net/opensees/version2.1/index.htm)
 
-## Note about gmsh
+## Notes about gmsh
 
 In case we want two volumes to share a single, continuous interface so the mesh is conformal across that face.
+
+$$
+\nabla
+$$
+
 
 ```bash
 SetFactory("OpenCASCADE");
@@ -21,6 +28,8 @@ SetFactory("OpenCASCADE");
 // and Surface{11} in the other
 
 Coherence; // merges duplicate points/curves/surfaces so both volumes share one face
+// Or use Boolean Fragments
+BooleanFragments{{ Volume{{1:{end}}}; Delete; }}{{}
 ```
 
 ## Version Control Tip
