@@ -1503,9 +1503,9 @@ def _roundFunc(x_, tol=defaultTolerance):
     return round(x_, int(abs(np.log10(tol))))
 
 
-# -------------------------------------------------------
+# -------------------------------------------------------------------------
 # Node selection helper functions (using coordinates)
-# -------------------------------------------------------
+# -------------------------------------------------------------------------
 def selectNodes(condition, nodeCoords, tol=defaultTolerance, debug=False):
     """
     Select nodes satisfying a user-defined Boolean condition on (x, y, z).
