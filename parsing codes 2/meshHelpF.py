@@ -137,14 +137,14 @@ def summarizeRemaps(elements):
 
     labels = {
         # 1D beams
-        1: "elasticBeamColumn2D",
-        101: "elasticBeamColumn3D",
+        1:     "elasticBeamColumn2D",
+        101:   "elasticBeamColumn3D",
 
         # 2D elements
-        3: "quad (plain 2D)",
-        10: "plane element (generic)",
-        103: "bbarQuadUP",
-        1003: "quadUP",
+        3:     "quad (plain 2D)",
+        10:    "plane element (generic)",
+        103:   "bbarQuadUP",
+        1003:  "quadUP",
         10031: "ASD Left",
         10032: "ASD Bottom",
         10033: "ASD Right",
@@ -152,9 +152,9 @@ def summarizeRemaps(elements):
         10035: "ASD Bottom-Right",
 
         # 3D elements
-        5: "brick (plain 3D)",
-        105: "bbarBrickUP",
-        1005: "SSPbrickUP",
+        5:     "brick (plain 3D)",
+        105:   "bbarBrickUP",
+        1005:  "SSPbrickUP",
         10051: "ASD3DL",
         10052: "ASD3DR",
         10053: "ASD3DK",
@@ -178,7 +178,7 @@ def summarizeRemaps(elements):
     for t, label in labels.items():
         if t in counts:
             pct = (counts[t] / total) * 100
-            print(f"  {counts[t]:6d} -> {label:25s} ({t:6d})   [{pct:6.2f}%]")
+            print(f"  {counts[t]:6d} --> {label:25s} ({t:6d})   [{pct:6.2f}%]")
 
     # Optional: report any unexpected type numbers
     known = set(labels)
@@ -268,9 +268,9 @@ def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
     e.g. '# 3 DOFs (u,v,p)'
 
     Parameters:
-        nodeCoordS (dict): mapping nodeTag -> (x, y, z)
+        nodeCoordS (dict): mapping nodeTag --> (x, y, z)
         ndmGLOBAL (int): number of spatial dimensions (2 or 3)
-        nodeDOFS (dict, optional): mapping nodeTag -> DOF count
+        nodeDOFS (dict, optional): mapping nodeTag --> DOF count
         filePrefix (str): output file prefix (default "nodes")
         outputDir (str): folder where file is written
         elements
@@ -350,8 +350,8 @@ def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
     Automatically handles correct ndm/ndf for each group
 
     Parameters:
-        nodeCoords_ (dict): mapping nodeTag -> (x, y, z)
-        nodeDOFs_ (dict): mapping nodeTag -> DOF count
+        nodeCoords_ (dict): mapping nodeTag --> (x, y, z)
+        nodeDOFs_ (dict): mapping nodeTag --> DOF count
         ndmGlobal_ (int): spatial dimension (2 or 3)
         filePrefix (str): output file prefix (default "nodesByDOF")
         outputDir (str): directory for written files
@@ -443,7 +443,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
     Parameters:
         elements_ (list[dict]): each with keys: 'id', 'type', 'group', 'nodes'
-        profiles_ (dict[int, dict]): element type -> profile dict
+        profiles_ (dict[int, dict]): element type --> profile dict
         mainSoilTags_ (dict[int, int]): per-physical-group soil tag mapping
         gVal_ (float): gravity magnitude used in body force terms
         filePrefix (str): filename prefix (default: "elements_")
@@ -1511,8 +1511,8 @@ def selectNodes(condition, nodeCoords, tol=defaultTolerance, debug=False):
     Select nodes satisfying a user-defined Boolean condition on (x, y, z).
 
     Args:
-        condition: callable (x, y, z) -> bool
-        nodeCoords (dict): mapping nodeTag -> (x, y, z)
+        condition: callable (x, y, z) --> bool
+        nodeCoords (dict): mapping nodeTag --> (x, y, z)
         tol: numerical tolerance for coordinate rounding
         debug: if True, prints the number of matched nodes
 

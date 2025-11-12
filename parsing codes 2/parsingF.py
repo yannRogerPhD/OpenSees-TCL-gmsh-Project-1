@@ -1,17 +1,14 @@
 import os
-
 from meshHelpF import (detectMaxPhyGroup, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs,  # noqa: F401
     sortNodesByX, sortNodesByY, sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles, writeElementsTcl, outputFolder,
     only2DOFs, parseElementsFromMsh, parseNodesFromMsh, getBoundaryNodesFromMsh, writeMainTclGlobal, elementProfiles,
     filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF,
     FuzzyFloat, selectNodes)
 
-# noqa: F401
 meshFile = "mod2.msh"
-
 outDir = outputFolder(meshFile)
 
-beam2DGrp = {5}  # physical groups for 2D beam elements
+beam2DGrp = {50}  # physical groups for 2D beam elements
 beam3DGrp = {}  # physical groups for 3D beam elements
 
 sspBrickGrp = {}
@@ -20,45 +17,31 @@ quadUPGrp = {}
 bbarBrickGrp = {}
 # sspBrickGrp = {1, 2, 3}, bbarBrickGrp = {} is for volumes instead
 
-ASDLeftGrp = {}
-ASDRightGrp = {}
+ASDLeftGrp, ASDRightGrp = {}, {}
 ASDBottomGrp = {}
-ASDBottomLeftGrp = {}
-ASDBottomRightGrp = {}
+ASDBottomLeftGrp, ASDBottomRightGrp = {}, {}
 
 lastVolume = 100
 ASD3DBGrp = {lastVolume}
-ASD3DLGrp = {lastVolume + 1}
-ASD3DRGrp = {lastVolume + 2}
-ASD3DFGrp = {lastVolume + 3}
-ASD3DKGrp = {lastVolume + 4}
-ASD3DBLGrp = {lastVolume + 5}
-ASD3DBRGrp = {lastVolume + 6}
-ASD3DBFGrp = {lastVolume + 7}
-ASD3DBKGrp = {lastVolume + 8}
-ASD3DLFGrp = {lastVolume + 9}
-ASD3DLKGrp = {lastVolume + 10}
-ASD3DRFGrp = {lastVolume + 11}
-ASD3DRKGrp = {lastVolume + 12}
-ASD3DBLFGrp = {lastVolume + 13}
-ASD3DBLKGrp = {lastVolume + 14}
-ASD3DBRFGrp = {lastVolume + 15}
-ASD3DBRKGrp = {lastVolume + 16}
+ASD3DLGrp, ASD3DRGrp = {lastVolume + 1}, {lastVolume + 2}
+ASD3DFGrp, ASD3DKGrp = {lastVolume + 3}, {lastVolume + 4}
+ASD3DBLGrp, ASD3DBRGrp = {lastVolume + 5}, {lastVolume + 6}
+ASD3DBFGrp, ASD3DBKGrp = {lastVolume + 7}, {lastVolume + 8}
+ASD3DLFGrp, ASD3DLKGrp = {lastVolume + 9}, {lastVolume + 10}
+ASD3DRFGrp, ASD3DRKGrp = {lastVolume + 11}, {lastVolume + 12}
+ASD3DBLFGrp, ASD3DBLKGrp = {lastVolume + 13}, {lastVolume + 14}
+ASD3DBRFGrp, ASD3DBRKGrp = {lastVolume + 15}, {lastVolume + 16}
 
 gVal = 9.806
 
 maxPhyGroup = detectMaxPhyGroup(meshFile)
-
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}  # auto-build physical group tags based on mesh content
-
 elements = parseElementsFromMsh(meshFile)
 
-# -----------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------
 # Filter out and remap elements based on dimensionality and groups
-# -----------------------------------------------------------------
-
+# -----------------------------------------------------------------------------------------------------------------
 elements, has3D = filterElementsByDIM(elements, beam2DGrp, beam3DGrp)
-
 groupSets = {
     "beam2DGrp": beam2DGrp, "beam3DGrp": beam3DGrp, "bbarQuadUPGrp": bbarQuadUPGrp, "quadUPGrp": quadUPGrp,
     "bbarBrickGrp": bbarBrickGrp, "sspBrickGrp": sspBrickGrp, "ASDLeftGrp": ASDLeftGrp, "ASDBottomGrp": ASDBottomGrp,
@@ -71,12 +54,11 @@ groupSets = {
 }
 
 elements = remapElementTypes(elements, groupSets)
-
 summarizeRemaps(elements)
 
-# -------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 # Detect ndm/ndf and classify node DOFs
-# -------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 ndmGlobal, ndfGlobal = detect_ndm_ndf(elements, elementProfiles)
 nodeDOFs_soil, nodeDOFs_struct, nodeDOFs = classifyNodeDOFs(elements, elementProfiles, beam2DGrp, beam3DGrp)
 
@@ -89,13 +71,11 @@ print(f"  2-DOF nodes: {len(twoDOFNodes)}")
 print(f"  3-DOF nodes: {len(threeDOFNodes)}")
 print(f"  4-DOF nodes: {len(fourDOFNodes)}")
 
-
-# -------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------
 # Read node coordinates from Gmsh
-# -------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------
 nodeCoords = parseNodesFromMsh(meshFile)
 print(f"Parsed {len(nodeCoords)} nodes from {meshFile}")
-
 
 # -----------------------------------------------------------------------------------------------------------------
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Writing Outputs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -105,8 +85,7 @@ os.makedirs(outDir, exist_ok=True)
 writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs, filePrefix="allSoilNodes",
               outputDir=outDir, elements=elements, elementProfileS=elementProfiles)
 
-# NODES
-# Soil nodes
+# soil nodes
 if nodeDOFs_soil:
     # writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs_soil, filePrefix="AllSoilNodes", outputDir=outDir)
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_soil, ndmGlobal, outputDir=outDir, labelPrefix="soil")
