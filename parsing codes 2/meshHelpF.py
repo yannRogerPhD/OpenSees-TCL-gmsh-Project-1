@@ -12,9 +12,9 @@ def outputFolder(meshFilE):
 defaultTolerance = 1e-6
 
 
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 # Node sorting helpers
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 def sortNodesByX(nodes, nodeCoords):
     # return nodes sorted by their x-coordinate
     return sorted(nodes, key=lambda n: nodeCoords[n][0])
@@ -137,14 +137,14 @@ def summarizeRemaps(elements):
 
     labels = {
         # 1D beams
-        1:     "elasticBeamColumn2D",
-        101:   "elasticBeamColumn3D",
+        1: "elasticBeamColumn2D",
+        101: "elasticBeamColumn3D",
 
         # 2D elements
-        3:     "quad (plain 2D)",
-        10:    "plane element (generic)",
-        103:   "bbarQuadUP",
-        1003:  "quadUP",
+        3: "quad (plain 2D)",
+        10: "plane element (generic)",
+        103: "bbarQuadUP",
+        1003: "quadUP",
         10031: "ASD Left",
         10032: "ASD Bottom",
         10033: "ASD Right",
@@ -152,9 +152,9 @@ def summarizeRemaps(elements):
         10035: "ASD Bottom-Right",
 
         # 3D elements
-        5:     "brick (plain 3D)",
-        105:   "bbarBrickUP",
-        1005:  "SSPbrickUP",
+        5: "brick (plain 3D)",
+        105: "bbarBrickUP",
+        1005: "SSPbrickUP",
         10051: "ASD3DL",
         10052: "ASD3DR",
         10053: "ASD3DK",
@@ -254,9 +254,9 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
     return nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
 
 
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 # Tcl writing utilities
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 
 def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
                   filePrefix="nodes", outputDir=".",
@@ -283,9 +283,9 @@ def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
     if nodeDOFS is None:
         nodeDOFS = {}
 
-    # -----------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------
     # Build per-node domain classification from element types
-    # -----------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------
     nodeDomain = {}
     if elements and elementProfileS:
         structureTypes = {1, 101}
@@ -410,7 +410,7 @@ def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
                 elif dofCountT == 3 and ndm == 2:
                     label = "(u,v,rz)"
                 elif dofCountT == 3 and ndm == 3:
-                    label = "(u,v,p)"  # could also be (u,v,w) for solid nodes
+                    label = "(u,v,w)"  # could also be (u,v,w) for solid nodes
                 elif dofCountT == 4:
                     label = "(u,v,w,p)"
                 elif dofCountT == 6:
@@ -822,8 +822,10 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bZBrickUP = gz
 
                     nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
+                    #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -882,8 +884,10 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bZBbarBrickUP = gz
 
                     nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
+                    #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -940,8 +944,10 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     gz = - gVal_ * np.cos(alphaVal)
 
                     nodeList = el["nodes"]  # actual list of integers from the mesh
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
+                    #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     permXSSPbrickUP = {i: permXSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
@@ -979,8 +985,12 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     bType = key.replace("ASD3D", "")
 
                     nodeList = el["nodes"]
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+
+                    # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
+                    #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
+
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
 
                     nodes = " ".join(str(n) for n in nodesF)
 
@@ -1039,11 +1049,17 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
                     nodeList = el["nodes"]  # actual list of integers from the mesh
 
-                    nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
-                              nodeList[4], nodeList[7], nodeList[3], nodeList[0],
-                              nodeList[12], nodeList[18], nodeList[14], nodeList[11],
-                              nodeList[10], nodeList[17], nodeList[15], nodeList[9],
-                              nodeList[8], nodeList[16], nodeList[19], nodeList[13]]
+                    # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
+                    #           nodeList[4], nodeList[7], nodeList[3], nodeList[0],
+                    #           nodeList[12], nodeList[18], nodeList[14], nodeList[11],
+                    #           nodeList[10], nodeList[17], nodeList[15], nodeList[9],
+                    #           nodeList[8], nodeList[16], nodeList[19], nodeList[13]]
+
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],  # OK
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0],  # OK
+                              nodeList[14], nodeList[19], nodeList[15], nodeList[13],  # OK
+                              nodeList[12], nodeList[16], nodeList[10], nodeList[8],  # OK
+                              nodeList[11], nodeList[18], nodeList[17], nodeList[9]]  # OK
 
                     nodes = " ".join(str(n) for n in nodesF)
 
@@ -1118,9 +1134,9 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
     print(f"Wrote element definition files: {', '.join(written)}")
 
 
-# --------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 # DOF rules functions (we define here so the dictionary can use them)
-# --------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 def beam2D_DOFs(ns_):
     # 2D beam nodes: u, v, and rotation θz
     return {n: 3 for n in ns_}
@@ -1146,6 +1162,11 @@ def threeDOFs(ns_):
     return {n: 3 for n in ns_}
 
 
+def threeDOFs3D(ns_):
+    # 3D displacement-only nodes: u, v, w
+    return {n: 3 for n in ns_}
+
+
 def fourDOFs3D(ns_):
     # for BrickUP: u, v, w, p; that is 4 DOFs per node
     return {n: 4 for n in ns_}
@@ -1156,61 +1177,61 @@ def twentyEightBrickDOFs(ns_):
     return {**{n: 4 for n in ns_[:8]}, **{n: 3 for n in ns_[8:]}}
 
 
-# -------------------------------------------------------
-# ELEMENT PROFILE MAP (GMSH element type → metadata)
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
+# ELEMENT PROFILE MAP (GMSH element type --> metadata)
+# --------------------------------------------------------------------------------------------------------------
 elementProfiles = {
     # BEAM ELEMENTS (1D structural members)
     # GMSH TYPE 1 = 2-node line element
-    1:      {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    101:    {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
+    1:     {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
+    101:   {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
-    3:      {"key": "quad4",        "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},
-    103:    {"key": "bbarQuadUP",   "ndm": 2,  "needsP": True,   "dofRule": threeDOFs},
-    1003:   {"key": "quadUP",       "ndm": 2,  "needsP": True,   "dofRule": threeDOFs},
+    3:     {"key": "quad4",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103:   {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    1003:  {"key": "quadUP",     "ndm": 2, "needsP": True, "dofRule": threeDOFs},
     # !!! 2D boundary absorbing START !!!
-    10031:  {"key": "ASDLeft",      "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Left
-    10032:  {"key": "ASDBottom",    "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom
-    10033:  {"key": "ASDRight",     "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Right
-    10034:  {"key": "ASDBottomL",   "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom left
-    10035:  {"key": "ASDBottomR",   "ndm": 2,  "needsP": False,  "dofRule": only2DOFs},  # ASDBoundary Bottom right
+    10031: {"key": "ASDLeft",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
+    10032: {"key": "ASDBottom",  "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
+    10033: {"key": "ASDRight",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
+    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
+    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
-    10:     {"key": "9_4_QuadUP",   "ndm": 2,  "needsP": True,   "dofRule": both2and3DOFs},
+    10:    {"key": "9_4_QuadUP",     "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
 
     # !!!
-    5:      {"key": "brickUP",      "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105:    {"key": "bbarBrickUP",  "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},
-    1005:   {"key": "SSPbrickUP",   "ndm": 3,  "needsP": True,   "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
+    5:     {"key": "brickUP",     "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105:   {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
+    1005:  {"key": "SSPbrickUP",  "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
     # !!! 3D boundary absorbing START !!!
-    10051:  {"key": "ASD3DL",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10052:  {"key": "ASD3DR",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10053:  {"key": "ASD3DK",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10054:  {"key": "ASD3DF",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10055:  {"key": "ASD3DBL",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10056:  {"key": "ASD3DBR",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10057:  {"key": "ASD3DBK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10058:  {"key": "ASD3DBF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10059:  {"key": "ASD3DLK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10060:  {"key": "ASD3DBLK",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10061:  {"key": "ASD3DRK",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10062:  {"key": "ASD3DBRK",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10063:  {"key": "ASD3DLF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10064:  {"key": "ASD3DBLF",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10065:  {"key": "ASD3DRF",      "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10066:  {"key": "ASD3DBRF",     "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
-    10067:  {"key": "ASD3DB",       "ndm": 3,  "needsP": False,  "dofRule": fourDOFs3D},
+    10051: {"key": "ASD3DL",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10052: {"key": "ASD3DR",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10053: {"key": "ASD3DK",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10054: {"key": "ASD3DF",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10055: {"key": "ASD3DBL",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10056: {"key": "ASD3DBR",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10057: {"key": "ASD3DBK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10058: {"key": "ASD3DBF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10059: {"key": "ASD3DLK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10060: {"key": "ASD3DBLK",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10061: {"key": "ASD3DRK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10062: {"key": "ASD3DBRK",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10063: {"key": "ASD3DLF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10064: {"key": "ASD3DBLF",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10065: {"key": "ASD3DRF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10066: {"key": "ASD3DBRF",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10067: {"key": "ASD3DB",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
     # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # !!! 3D boundary absorbing END !!!
-    17: {"key": "20_8_BrickUP",     "ndm": 3,  "needsP": True,   "dofRule": twentyEightBrickDOFs},
+    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
 }
 
 
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 # MESH PARSING UTILITIES
-# -------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------
 def parseElementsFromMsh(meshFile):
     """
     Parse the $Elements section from a Gmsh .msh file.
@@ -1503,9 +1524,9 @@ def _roundFunc(x_, tol=defaultTolerance):
     return round(x_, int(abs(np.log10(tol))))
 
 
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 # Node selection helper functions (using coordinates)
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 def selectNodes(condition, nodeCoords, tol=defaultTolerance, debug=False):
     """
     Select nodes satisfying a user-defined Boolean condition on (x, y, z).

@@ -106,6 +106,21 @@ boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords
 # !!!!----
 
 # !!!!----
+masterNodes = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=4, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=15, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=23, dim=1), nodeCoords)
+slaveNodes1 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=2, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=13, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=21, dim=1), nodeCoords)
+slaveNodes2 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=6, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=16, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=24, dim=1), nodeCoords)
+slaveNodes3 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=8, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=18, dim=1) |
+                           getBoundaryNodesFromMsh(meshFile, phyGroupID=26, dim=1), nodeCoords)
+# !!!!----
+
+# !!!!----
 # select some particular group of nodes w.r.t. the DOF
 dofOfSelectedNodes = 3
 selectNodesDOF = classifyChosenNodesByDOF(boundaryNodes, nodeDOFs)
