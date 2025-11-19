@@ -36,8 +36,8 @@ def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
         5, 17
     }
     other3DDerivatives = {
-        105, 1005, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058, 10059,
-        10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
+        105, 1005, 1055, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058,
+        10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
     }
 
     gmsh2DTypes = {
@@ -108,8 +108,9 @@ def remapElementTypes(elements, groupSets):
         # 3D types
         elif t == 5:
             mapping3D = {
-                "bbarBrickGrp": 105,
-                "sspBrickGrp": 1005,
+                "bbarBrickUPGrp": 105,
+                "sspBrickUPGrp": 1005,
+                "sspBrickGrp": 1055,
                 "ASD3DLGrp": 10051, "ASD3DRGrp": 10052, "ASD3DKGrp": 10053, "ASD3DFGrp": 10054,
                 "ASD3DBLGrp": 10055, "ASD3DBRGrp": 10056, "ASD3DBKGrp": 10057, "ASD3DBFGrp": 10058,
                 "ASD3DLKGrp": 10059, "ASD3DBLKGrp": 10060, "ASD3DRKGrp": 10061, "ASD3DBRKGrp": 10062,
@@ -137,14 +138,14 @@ def summarizeRemaps(elements):
 
     labels = {
         # 1D beams
-        1: "elasticBeamColumn2D",
-        101: "elasticBeamColumn3D",
+        1:     "elasticBeamColumn2D",
+        101:   "elasticBeamColumn3D",
 
         # 2D elements
-        3: "quad (plain 2D)",
-        10: "plane element (generic)",
-        103: "bbarQuadUP",
-        1003: "quadUP",
+        3:     "quad (plain 2D)",
+        10:    "plane element (generic)",
+        103:   "bbarQuadUP",
+        1003:  "quadUP",
         10031: "ASD Left",
         10032: "ASD Bottom",
         10033: "ASD Right",
@@ -152,9 +153,10 @@ def summarizeRemaps(elements):
         10035: "ASD Bottom-Right",
 
         # 3D elements
-        5: "brick (plain 3D)",
-        105: "bbarBrickUP",
-        1005: "SSPbrickUP",
+        5:     "brick (plain 3D)",
+        105:   "bbarBrickUP",
+        1005:  "SSPbrickUP",
+        1055:  "SSPbrick",
         10051: "ASD3DL",
         10052: "ASD3DR",
         10053: "ASD3DK",
@@ -781,8 +783,29 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                         f"{b29_4_QuadUP}\n"
                     )
 
+                # !!!!!!!!! 3D cases !!!!!!!!!
+
+                elif key == "SSPbrick":  # displacement-only SSPbrick
+                    # slope angle (if needed)
+                    alpha__ = 0.0  # degrees
+                    alphaVal = np.deg2rad(alpha__)
+                    gx = + gVal_ * np.sin(alphaVal)
+                    gy = 0.0
+                    gz = - gVal_ * np.cos(alphaVal)
+
+                    nodeList = el["nodes"]
+
+                    # Same node reordering you use for other 8-node bricks
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+                    nodes = " ".join(str(n) for n in nodesF)
+
+                    f__.write(
+                        f"element SSPbrick {el['id']} {nodes} {mainSoilTags_[phy]} "
+                        f"{gx} {gy} {gz}\n"
+                    )
+
                 elif key == "brickUP":  # OK VERIFIED
-                    # !!!!!!!!! 3D cases !!!!!!!!!
 
                     # see the physical group in which we want the "quadUP" element in gmsh (here, Plane 4 and 5)
                     # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
@@ -1183,49 +1206,51 @@ def twentyEightBrickDOFs(ns_):
 elementProfiles = {
     # BEAM ELEMENTS (1D structural members)
     # GMSH TYPE 1 = 2-node line element
-    1:     {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    101:   {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
+    1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
+    101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
-    3:     {"key": "quad4",      "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103:   {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    1003:  {"key": "quadUP",     "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
+    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
     # !!! 2D boundary absorbing START !!!
-    10031: {"key": "ASDLeft",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
-    10032: {"key": "ASDBottom",  "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
-    10033: {"key": "ASDRight",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
+    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
+    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
+    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
     10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
     10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
-    10:    {"key": "9_4_QuadUP",     "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
+    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
 
     # !!!
-    5:     {"key": "brickUP",     "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105:   {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    1005:  {"key": "SSPbrickUP",  "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
+    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
+    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
+    1055: {"key": "SSPbrick", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+
     # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10052: {"key": "ASD3DR",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10053: {"key": "ASD3DK",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10054: {"key": "ASD3DF",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10055: {"key": "ASD3DBL",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10056: {"key": "ASD3DBR",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10057: {"key": "ASD3DBK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10058: {"key": "ASD3DBF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10059: {"key": "ASD3DLK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10060: {"key": "ASD3DBLK",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10061: {"key": "ASD3DRK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10062: {"key": "ASD3DBRK",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10063: {"key": "ASD3DLF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10064: {"key": "ASD3DBLF",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10065: {"key": "ASD3DRF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10066: {"key": "ASD3DBRF",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10067: {"key": "ASD3DB",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10051: {"key": "ASD3DL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10052: {"key": "ASD3DR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10053: {"key": "ASD3DK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10054: {"key": "ASD3DF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10055: {"key": "ASD3DBL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10056: {"key": "ASD3DBR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10057: {"key": "ASD3DBK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10058: {"key": "ASD3DBF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10059: {"key": "ASD3DLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10060: {"key": "ASD3DBLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10061: {"key": "ASD3DRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10062: {"key": "ASD3DBRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10063: {"key": "ASD3DLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10064: {"key": "ASD3DBLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10065: {"key": "ASD3DRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10066: {"key": "ASD3DBRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10067: {"key": "ASD3DB", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
     # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # !!! 3D boundary absorbing END !!!
-    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
+    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
 }
 
 
@@ -1460,8 +1485,8 @@ def detectMaxPhyGroup(meshFile):
                     # include both 2D and 3D element types
                     if elementType in (1, 101,  # newly added
                                        3, 103, 1003, 10031, 10032, 10033, 10034, 10035, 10,
-                                       5, 105, 1005, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058, 10059,
-                                       10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067,
+                                       5, 105, 1005, 1055, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058,
+                                       10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067,
                                        17):
                         if phyGroup > maxPhyGroup:
                             maxPhyGroup = phyGroup

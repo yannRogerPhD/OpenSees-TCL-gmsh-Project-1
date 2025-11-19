@@ -11,11 +11,12 @@ outDir = outputFolder(meshFile)
 beam2DGrp = {50}  # physical groups for 2D beam elements
 beam3DGrp = {}  # physical groups for 3D beam elements
 
+sspBrickUPGrp = {}
 sspBrickGrp = {}
 bbarQuadUPGrp = {}
 quadUPGrp = {}
-bbarBrickGrp = {}
-# sspBrickGrp = {1, 2, 3}, bbarBrickGrp = {} is for volumes instead
+bbarBrickUPGrp = {}
+# sspBrickUPGrp = {1, 2, 3}, bbarBrickUPGrp = {} is for volumes instead
 
 ASDLeftGrp, ASDRightGrp = {}, {}
 ASDBottomGrp = {}
@@ -44,13 +45,13 @@ elements = parseElementsFromMsh(meshFile)
 elements, has3D = filterElementsByDIM(elements, beam2DGrp, beam3DGrp)
 groupSets = {
     "beam2DGrp": beam2DGrp, "beam3DGrp": beam3DGrp, "bbarQuadUPGrp": bbarQuadUPGrp, "quadUPGrp": quadUPGrp,
-    "bbarBrickGrp": bbarBrickGrp, "sspBrickGrp": sspBrickGrp, "ASDLeftGrp": ASDLeftGrp, "ASDBottomGrp": ASDBottomGrp,
-    "ASDRightGrp": ASDRightGrp, "ASDBottomLeftGrp": ASDBottomLeftGrp, "ASDBottomRightGrp": ASDBottomRightGrp,
+    "bbarBrickUPGrp": bbarBrickUPGrp, "sspBrickUPGrp": sspBrickUPGrp, "sspBrickGrp": sspBrickGrp,
+    "ASDLeftGrp": ASDLeftGrp, "ASDBottomGrp": ASDBottomGrp, "ASDRightGrp": ASDRightGrp,
+    "ASDBottomLeftGrp": ASDBottomLeftGrp, "ASDBottomRightGrp": ASDBottomRightGrp, "ASD3DBGrp": ASD3DBGrp,
     "ASD3DLGrp": ASD3DLGrp, "ASD3DRGrp": ASD3DRGrp, "ASD3DKGrp": ASD3DKGrp, "ASD3DFGrp": ASD3DFGrp,
     "ASD3DBLGrp": ASD3DBLGrp, "ASD3DBRGrp": ASD3DBRGrp, "ASD3DBKGrp": ASD3DBKGrp, "ASD3DBFGrp": ASD3DBFGrp,
     "ASD3DLKGrp": ASD3DLKGrp, "ASD3DBLKGrp": ASD3DBLKGrp, "ASD3DRKGrp": ASD3DRKGrp, "ASD3DBRKGrp": ASD3DBRKGrp,
-    "ASD3DLFGrp": ASD3DLFGrp, "ASD3DBLFGrp": ASD3DBLFGrp, "ASD3DRFGrp": ASD3DRFGrp, "ASD3DBRFGrp": ASD3DBRFGrp,
-    "ASD3DBGrp": ASD3DBGrp
+    "ASD3DLFGrp": ASD3DLFGrp, "ASD3DBLFGrp": ASD3DBLFGrp, "ASD3DRFGrp": ASD3DRFGrp, "ASD3DBRFGrp": ASD3DBRFGrp
 }
 
 elements = remapElementTypes(elements, groupSets)
