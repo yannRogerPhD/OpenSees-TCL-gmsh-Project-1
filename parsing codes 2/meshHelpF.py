@@ -182,7 +182,11 @@ def summarizeRemaps(elements):
             pct = (counts[t] / total) * 100
             print(f"  {counts[t]:6d} --> {label:25s} ({t:6d})   [{pct:6.2f}%]")
 
-    # Optional: report any unexpected type numbers
+    # (NEW): total percentage check
+    total_pct = sum((counts[t] / total) * 100 for t in counts)
+    print(f"Total percentage = {total_pct:.2f}%")
+
+    # (optional): report any unexpected type numbers
     known = set(labels)
     leftovers = {t: c for t, c in counts.items() if t not in known}
     if leftovers:
@@ -451,6 +455,11 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
         filePrefix (str): filename prefix (default: "elements_")
         outputDir (str): directory for output files
     """
+
+    print("\n[DEBUG] Material mapping being used:")
+    for k, v in mainSoilTags_.items():
+        print(f"  Physical group {k} --> material {v}")
+    print()
 
     written = []
     for eType_ in {el["type"] for el in elements_ if el["type"] in profiles_}:

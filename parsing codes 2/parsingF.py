@@ -37,11 +37,28 @@ gVal = 9.806
 
 maxPhyGroup = detectMaxPhyGroup(meshFile)
 mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}  # auto-build physical group tags based on mesh content
+
+# --------------------------------------------------------------------------------------------------------------------
+# USER MATERIAL REMAPPING: physical group --> material tag
+# --------------------------------------------------------------------------------------------------------------------
+customMaterialMap = {
+    1: 5,
+    2: 4,
+    3: 2,
+    # etc.
+}
+
+for phy, mat in customMaterialMap.items():
+    if phy in mainSoilTags:
+        mainSoilTags[phy] = mat
+    else:
+        print(f"[Warning] physical group {phy} not found in mesh; ignoring.")
+
 elements = parseElementsFromMsh(meshFile)
 
-# -----------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
 # Filter out and remap elements based on dimensionality and groups
-# -----------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
 elements, has3D = filterElementsByDIM(elements, beam2DGrp, beam3DGrp)
 groupSets = {
     "beam2DGrp": beam2DGrp, "beam3DGrp": beam3DGrp, "bbarQuadUPGrp": bbarQuadUPGrp, "quadUPGrp": quadUPGrp,
@@ -57,9 +74,9 @@ groupSets = {
 elements = remapElementTypes(elements, groupSets)
 summarizeRemaps(elements)
 
-# ----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
 # Detect ndm/ndf and classify node DOFs
-# ----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
 ndmGlobal, ndfGlobal = detect_ndm_ndf(elements, elementProfiles)
 nodeDOFs_soil, nodeDOFs_struct, nodeDOFs = classifyNodeDOFs(elements, elementProfiles, beam2DGrp, beam3DGrp)
 
@@ -72,15 +89,15 @@ print(f"  2-DOF nodes: {len(twoDOFNodes)}")
 print(f"  3-DOF nodes: {len(threeDOFNodes)}")
 print(f"  4-DOF nodes: {len(fourDOFNodes)}")
 
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
 # Read node coordinates from Gmsh
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
 nodeCoords = parseNodesFromMsh(meshFile)
 print(f"Parsed {len(nodeCoords)} nodes from {meshFile}")
 
-# -----------------------------------------------------------------------------------------------------------------
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Writing Outputs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Writing Outputs !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# ------------------------------------------------------------------------------------------------------------------
 os.makedirs(outDir, exist_ok=True)
 
 writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs, filePrefix="allSoilNodes",
@@ -91,12 +108,12 @@ if nodeDOFs_soil:
     # writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs_soil, filePrefix="AllSoilNodes", outputDir=outDir)
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_soil, ndmGlobal, outputDir=outDir, labelPrefix="soil")
 #
-# Structure nodes
+# structure nodes
 if nodeDOFs_struct:
     # writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs_struct, filePrefix="structure_nodes", outputDir=outDir)
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_struct, ndmGlobal, outputDir=outDir, labelPrefix="structure")
 
-# writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
+writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
 
 # !!!!----
 # select some particular group of nodes
@@ -132,8 +149,11 @@ boundaryNodes3DOFs = selectNodesDOF.get(dofOfSelectedNodes, [])
 # leftASDElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
 # ASD3DElements = [el["id"] for el in elements
 #                  if el["type"] in
-#                  {10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058, 10059,
-#                   10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067}]
+#                  {
+#                   10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056,
+#                   10057, 10058, 10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
+#                   }
+#                  ]
 #
 # outputPath = os.path.join(outDir, 'leftASDUpdate.tcl')
 #
