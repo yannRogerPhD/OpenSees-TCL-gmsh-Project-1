@@ -34,26 +34,6 @@ ASD3DBLFGrp, ASD3DBLKGrp = {lastVolume + 13}, {lastVolume + 14}
 ASD3DBRFGrp, ASD3DBRKGrp = {lastVolume + 15}, {lastVolume + 16}
 
 gVal = 9.806
-
-maxPhyGroup = detectMaxPhyGroup(meshFile)
-mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)}  # auto-build physical group tags based on mesh content
-
-# --------------------------------------------------------------------------------------------------------------------
-# USER MATERIAL REMAPPING: physical group --> material tag
-# --------------------------------------------------------------------------------------------------------------------
-customMaterialMap = {
-    1: 5,
-    2: 4,
-    3: 2,
-    # etc.
-}
-
-for phy, mat in customMaterialMap.items():
-    if phy in mainSoilTags:
-        mainSoilTags[phy] = mat
-    else:
-        print(f"[Warning] physical group {phy} not found in mesh; ignoring.")
-
 elements = parseElementsFromMsh(meshFile)
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -73,6 +53,43 @@ groupSets = {
 
 elements = remapElementTypes(elements, groupSets)
 summarizeRemaps(elements)
+
+# -------------------------------------------------------------------------------------------------------------------
+# automatic soil group detection
+# -------------------------------------------------------------------------------------------------------------------
+soil2D_types = {3, 10, 103, 1003}
+soil3D_types = {5, 17, 105, 1005, 1055}
+
+# use already-detected dimensionality
+soilTypes = soil3D_types if has3D else soil2D_types
+
+# extract only soil groups from the mesh
+soilGroups = {el["group"] for el in elements if el["type"] in soilTypes}
+
+# build mainSoilTags automatically
+mainSoilTags = {g: g for g in sorted(soilGroups)}
+
+print("\n[INFO] auto-detected soil physical groups:", sorted(soilGroups))
+print("[INFO] mainSoilTags auto-built as:", mainSoilTags, "\n")
+
+# maxPhyGroup = detectMaxPhyGroup(meshFile)
+# mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)} # auto-build physical group tags based on mesh content
+
+# --------------------------------------------------------------------------------------------------------------------
+# USER MATERIAL REMAPPING: physical group --> material tag
+# --------------------------------------------------------------------------------------------------------------------
+customMaterialMap = {
+    1: 5,
+    2: 4,
+    3: 2,
+    # etc.
+}
+
+for phy, mat in customMaterialMap.items():
+    if phy in mainSoilTags:
+        mainSoilTags[phy] = mat
+    else:
+        print(f"[Warning] physical group {phy} not found in mesh/not soil; ignoring.")
 
 # ------------------------------------------------------------------------------------------------------------------
 # Detect ndm/ndf and classify node DOFs

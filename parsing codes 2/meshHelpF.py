@@ -1222,6 +1222,7 @@ elementProfiles = {
     3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
     103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
     1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
+
     # !!! 2D boundary absorbing START !!!
     10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
     10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
@@ -1229,6 +1230,7 @@ elementProfiles = {
     10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
     10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
+
     10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
 
     # !!!
