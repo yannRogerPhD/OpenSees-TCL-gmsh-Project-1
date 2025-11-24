@@ -9,7 +9,14 @@ This GitHub page aims to primarily illustrate the practical use of **OpenSees TC
 - Soil Response Analyses (SRAs)
 
 Most of the examples as well as the methodology are based on resources from:  
-[http://soilquake.net/opensees/version2.1/index.htm](http://soilquake.net/opensees/version2.1/index.htm)
+- OpenSees wiki: 
+  - [main geotechnical and structural examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples)
+  - [basic examples](https://opensees.berkeley.edu/wiki/index.php?title=Basic_Examples_Manual)
+  - [advanced (structural) examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples_Manual)
+  - [sensitivity analysis](https://opensees.berkeley.edu/wiki/index.php?title=Sensitivity_Analysis)
+- soilQuake (mainly for material applications):
+  - 25 different examples in various configurations
+  - [PIMY, PDMY, and solid-fluid coupling problems](http://soilquake.net/opensees/version2.1/index.htm)
 
 ## Notes about gmsh
 
