@@ -1798,3 +1798,24 @@ def writeMainTclGlobal(tclRootDir, modelName,
     print("Contains source calls for:")
     for f_ in orderedFiles:
         print(f"   • {modelName}/{f_}")
+
+
+def countINTBraces(text):
+    # find the boundaries
+    start = text.find('{')
+    end = text.find('}', start)
+    if start == -1 or end == -1:
+        return 0
+
+    # extract the content inside the braces
+    inside = text[start + 1:end]
+
+    # split by commas and clean each piece
+    items = [x.strip() for x in inside.split(',') if x.strip()]
+
+    return len(items)
+
+
+# test
+s = "Transfinite Curves {1, 3, 4, 5};"
+print(countINTBraces(s))
