@@ -1,0 +1,21 @@
+-------------------------------------
+parsing 1c (most recent update keep)
+-------------------------------------
+(before generalization): pile structural nodes. This version of the SSI code only detects interfaces in the vertical
+direction. Basically, this generalized code version does the following (for SSI interface considerations):
+- takes a pile node
+- reads its vertical coordinate pv
+- identifies soil bricks whose vertical span includes that pv
+- extracts the soil brick face at constant vertical coordinate = pv
+- checks if the pile node lies horizontally inside that face
+- returns the face nodes
+-----
+This means the algorithm is built around:
+horizontal faces orthogonal to the vertical axis. It:
+!! only detects interfaces along the vertical column of the pile.
+!! only handles contacts that occur through horizontal slices.
+!! does not search sideways or diagonally.
+-----
+
+Actual modifications (update) include accounting and modeling any 3D structural element (vertical, horizontal, slanted,
+complex foundation shapes, mats, footings, embedded beams, embedded slabs, etc.) interacting with nearby soil bricks.
