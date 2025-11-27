@@ -79,7 +79,7 @@ def generateASDGeo(lastVolumeID=1):
         ("BRK", "{x0 + lTx, y0 + lTy, z0 - thickASD, thickASD, thickASD, thickASD}")
     ]
 
-    # Generate boxes
+    # generate boxes
     for i, (label, coords) in enumerate(boxesNew, start=start):
         lines.append(f'Box({i}) = {coords}; // {label}\n')
 

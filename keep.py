@@ -1,3 +1,4 @@
+"""
 # !!!!----
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!! SELECTING A GROUP OF NODES IN A UNION MANNER !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 masterNodes = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=4, dim=1) |
@@ -111,3 +112,4 @@ if nodeDOFs_struct:
 soilTypes, soilGroups = detectSoilGroups(elements, has3D)
 soilNodeSet, pileNodeSet = classifySoilAndPileNodes(elements, soilTypes, beam3DGrp)
 # -------------------------------------------------------------------------------------------------------------------
+"""
