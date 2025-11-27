@@ -1,0 +1,17 @@
+# !!!!!!!!!!!!!!!!!!! Nodes with 6 DOFs !!!!!!!!!!!!!!!!!!!
+
+node 9      0.375000 0.275000 0.000000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 10     0.375000 0.275000 1.000000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 11     0.375000 0.275000 1.250000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 12     0.375000 0.775000 0.000000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 13     0.375000 0.775000 1.000000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 14     0.375000 0.775000 1.250000    # 6 DOFs (u,v,w,rx,ry,rz)
+node 47     0.375000 0.275000 0.333333    # 6 DOFs (u,v,w,rx,ry,rz)
+node 48     0.375000 0.275000 0.666667    # 6 DOFs (u,v,w,rx,ry,rz)
+node 49     0.375000 0.275000 1.083333    # 6 DOFs (u,v,w,rx,ry,rz)
+node 50     0.375000 0.275000 1.166667    # 6 DOFs (u,v,w,rx,ry,rz)
+node 51     0.375000 0.775000 0.333333    # 6 DOFs (u,v,w,rx,ry,rz)
+node 52     0.375000 0.775000 0.666667    # 6 DOFs (u,v,w,rx,ry,rz)
+node 53     0.375000 0.775000 1.083333    # 6 DOFs (u,v,w,rx,ry,rz)
+node 54     0.375000 0.775000 1.166667    # 6 DOFs (u,v,w,rx,ry,rz)
+node 55     0.375000 0.525000 0.000000    # 6 DOFs (u,v,w,rx,ry,rz)

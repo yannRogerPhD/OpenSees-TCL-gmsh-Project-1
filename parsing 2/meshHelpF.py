@@ -55,7 +55,7 @@ def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
             [
                 el for el in elements
                 if el["type"] in (gmsh3DTypes | other3DDerivatives)
-                or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
+                   or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
             ]
         print("Detected 3D mesh --> ignoring surface elements (type 3)...")
 
@@ -64,7 +64,7 @@ def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
             [
                 el for el in elements
                 if el["type"] in (gmsh2DTypes | other2DDerivatives)
-                and (el["type"] != 1 or el["group"] in beam2DGrp)
+                   and (el["type"] != 1 or el["group"] in beam2DGrp)
             ]
         print("Detected 2D mesh --> keeping quads and beam line groups only...")
 
@@ -138,14 +138,14 @@ def summarizeRemaps(elements):
 
     labels = {
         # 1D beams
-        1:     "elasticBeamColumn2D",
-        101:   "elasticBeamColumn3D",
+        1: "elasticBeamColumn2D",
+        101: "elasticBeamColumn3D",
 
         # 2D elements
-        3:     "quad (plain 2D)",
-        10:    "plane element (generic)",
-        103:   "bbarQuadUP",
-        1003:  "quadUP",
+        3: "quad (plain 2D)",
+        10: "plane element (generic)",
+        103: "bbarQuadUP",
+        1003: "quadUP",
         10031: "ASD Left",
         10032: "ASD Bottom",
         10033: "ASD Right",
@@ -153,10 +153,10 @@ def summarizeRemaps(elements):
         10035: "ASD Bottom-Right",
 
         # 3D elements
-        5:     "brick (plain 3D)",
-        105:   "bbarBrickUP",
-        1005:  "SSPbrickUP",
-        1055:  "SSPbrick",
+        5: "brick (plain 3D)",
+        105: "bbarBrickUP",
+        1005: "SSPbrickUP",
+        1055: "SSPbrick",
         10051: "ASD3DL",
         10052: "ASD3DR",
         10053: "ASD3DK",
@@ -1224,44 +1224,44 @@ elementProfiles = {
     1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
 
     # !!! 2D boundary absorbing START !!!
-    10031: {"key": "ASDLeft",     "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
-    10032: {"key": "ASDBottom",   "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
-    10033: {"key": "ASDRight",    "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
-    10034: {"key": "ASDBottomL",  "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR",  "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
+    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
+    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
+    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
+    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
+    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
     # !!! 2D boundary absorbing END !!!
 
-    10:    {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
+    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
 
     # !!!
-    5:     {"key": "brickUP",     "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105:   {"key": "bbarBrickUP", "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},
-    1005:  {"key": "SSPbrickUP",  "ndm": 3, "needsP": True,  "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
-    1055:  {"key": "SSPbrick",    "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
+    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
+    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
+    1055: {"key": "SSPbrick", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
 
     # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL",       "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10052: {"key": "ASD3DR",       "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10053: {"key": "ASD3DK",       "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10054: {"key": "ASD3DF",       "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10055: {"key": "ASD3DBL",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10056: {"key": "ASD3DBR",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10057: {"key": "ASD3DBK",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10058: {"key": "ASD3DBF",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10059: {"key": "ASD3DLK",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10060: {"key": "ASD3DBLK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10061: {"key": "ASD3DRK",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10062: {"key": "ASD3DBRK",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10063: {"key": "ASD3DLF",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10064: {"key": "ASD3DBLF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10065: {"key": "ASD3DRF",      "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10066: {"key": "ASD3DBRF",     "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10067: {"key": "ASD3DB",       "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10051: {"key": "ASD3DL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10052: {"key": "ASD3DR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10053: {"key": "ASD3DK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10054: {"key": "ASD3DF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10055: {"key": "ASD3DBL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10056: {"key": "ASD3DBR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10057: {"key": "ASD3DBK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10058: {"key": "ASD3DBF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10059: {"key": "ASD3DLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10060: {"key": "ASD3DBLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10061: {"key": "ASD3DRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10062: {"key": "ASD3DBRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10063: {"key": "ASD3DLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10064: {"key": "ASD3DBLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10065: {"key": "ASD3DRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10066: {"key": "ASD3DBRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
+    10067: {"key": "ASD3DB", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
     # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
     # !!! 3D boundary absorbing END !!!
-    17:    {"key": "20_8_BrickUP", "ndm": 3, "needsP": True,  "dofRule": twentyEightBrickDOFs},
+    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
 }
 
 
@@ -1341,15 +1341,15 @@ def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None, dim=None):
 
     # !!! Map common element types to their geometric dimensions !!!
     eleType_to_dim = {
-        1: 1,   # 2-node line
-        2: 2,   # 3-node triangle
-        3: 2,   # 4-node quadrilateral
-        4: 3,   # 4-node tetrahedron
-        5: 3,   # 8-node hexahedron
-        6: 3,   # 6-node prism
-        7: 3,   # 5-node pyramid
-        8: 1,   # 3-node quadratic line
-        9: 2,   # 6-node quadratic triangle
+        1: 1,  # 2-node line
+        2: 2,  # 3-node triangle
+        3: 2,  # 4-node quadrilateral
+        4: 3,  # 4-node tetrahedron
+        5: 3,  # 8-node hexahedron
+        6: 3,  # 6-node prism
+        7: 3,  # 5-node pyramid
+        8: 1,  # 3-node quadratic line
+        9: 2,  # 6-node quadratic triangle
         10: 2,  # 9-node quadratic quad
         11: 3,  # 10-node quadratic tetra
         16: 2,  # 8-node serendipity quad
@@ -1802,16 +1802,47 @@ def writeMainTclGlobal(tclRootDir, modelName,
         print(f"   • {modelName}/{f_}")
 
 
-def soilFaceNodesAroundPile(pileNode, elements_, soilTypes_, nodeCoords_, tol_=1e-6):
+def soilFaceNodesAroundPile(pileNode, elements_, soilTypes_, nodeCoords_,
+                            verticalAxis="y", tol_=1e-6):
     """
     For a given pile node, find all soil nodes that belong to the horizontal
-    faces of soil elements that surround the pile at that depth (y = y_pile).
+    faces of soil elements that surround the pile at that depth.
 
-    Assumes:
-      - y is the vertical axis
-      - soil elements are 3D bricks included in `soilTypes`
+    Works for any vertical axis: "x", "y", or "z".
+
+    Parameters
+    ----------
+    pileNode : int
+        Pile node ID.
+    elements_ : list[dict]
+        All mesh elements.
+    soilTypes_ : set[int]
+        Soil element types (3D bricks) to consider.
+    nodeCoords_ : dict[int, tuple]
+        Mapping nodeTag -> (x, y, z).
+    verticalAxis : {"x","y","z"}
+        Which coordinate is considered vertical.
+    tol_ : float
+        Tolerance for matching coordinates.
+
+    Returns
+    -------
+    list[int]
+        Sorted the list of soil node IDs on faces surrounding this pile node
+        at the given depth.
     """
-    px, py, pz = nodeCoords_[pileNode]
+
+    axisIndex = {"x": 0, "y": 1, "z": 2}
+    v = axisIndex[verticalAxis]  # vertical axis index
+    # the two horizontal axes
+    h1, h2 = [i for i in (0, 1, 2) if i != v]
+
+    # coordinates of the pile node
+    P = nodeCoords_[pileNode]
+    pv = P[v]  # vertical coordinate
+    ph1 = P[h1]  # horizontal coord 1
+    ph2 = P[h2]  # horizontal coord 2
+
     face_nodes = set()
 
     for el in elements_:
@@ -1819,35 +1850,41 @@ def soilFaceNodesAroundPile(pileNode, elements_, soilTypes_, nodeCoords_, tol_=1
             continue
 
         el_nodes = el["nodes"]
-        ys = [nodeCoords_[n][1] for n in el_nodes]
 
-        # quick reject: pile y not within element's vertical span
-        y_min = min(ys)
-        y_max = max(ys)
-        if py < y_min - tol_ or py > y_max + tol_:
+        # vertical coordinates of this element
+        vs = [nodeCoords_[n][v] for n in el_nodes]
+        v_min = min(vs)
+        v_max = max(vs)
+
+        # quick reject: pile depth not within element's vertical span
+        if pv < v_min - tol_ or pv > v_max + tol_:
             continue
 
-        # nodes on the horizontal face at y ≈ py
-        face = [n for n in el_nodes if abs(nodeCoords_[n][1] - py) <= tol_]
+        # nodes on the horizontal face at v ≈ pv
+        face = [
+            n for n in el_nodes
+            if abs(nodeCoords_[n][v] - pv) <= tol_
+        ]
         if len(face) < 3:
             # less than 3 nodes -> cannot form a meaningful face
             continue
 
-        xs = [nodeCoords_[n][0] for n in face]
-        zs = [nodeCoords_[n][2] for n in face]
+        # horizontal coordinates for this face
+        h1s = [nodeCoords_[n][h1] for n in face]
+        h2s = [nodeCoords_[n][h2] for n in face]
 
-        x_min, x_max = min(xs), max(xs)
-        z_min, z_max = min(zs), max(zs)
+        h1_min, h1_max = min(h1s), max(h1s)
+        h2_min, h2_max = min(h2s), max(h2s)
 
-        # check if the pile (px, pz) is inside the x–z bounding box of this face
-        if (px < x_min - tol_ or px > x_max + tol_ or
-                pz < z_min - tol_ or pz > z_max + tol_):
+        # check if the pile horizontal position lies inside this face
+        if (ph1 < h1_min - tol_ or ph1 > h1_max + tol_ or
+                ph2 < h2_min - tol_ or ph2 > h2_max + tol_):
             continue
 
         # this element contributes nodes on the surrounding face
         face_nodes.update(face)
 
-    # return the sorted list just for reproducibility / debugging
+    # return the sorted list for reproducibility / debugging
     return sorted(face_nodes)
 
 
@@ -1964,25 +2001,30 @@ def groupNodesByCoordinate(nodeSet, nodeCoords, axis="y", tol=1e-6):
     return groups
 
 
-def buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords):
+def buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords,
+                verticalAxis="y", tol_=1e-6):
     """
-    Build a mapping: pileNode -> soil face nodes surrounding it.
+    Build a mapping: pileNode --> soil face nodes surrounding it.
 
     Parameters
     ----------
     pileNodeSet : set[int]
-        Set of node IDs belonging to pile (3D beam) elements.
+        Set of node IDs belonging to pile (2D/3D beam) elements.
     elements : list[dict]
         All mesh elements.
     soilTypes : set[int]
         Soil element types used to guide the search.
     nodeCoords : dict[int, tuple]
         Node coordinates from parseNodesFromMsh.
+    verticalAxis : {"x","y","z"}
+        Which coordinate is considered vertical.
+    tol_ : float
+        Tolerance for geometric checks.
 
     Returns
     -------
     dict[int, list[int]]
-        Mapping: pile node ID -> list of surrounding soil node IDs.
+        Mapping: pile node ID --> list of surrounding soil node IDs.
     """
 
     SSI_map = {}
@@ -1993,6 +2035,8 @@ def buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords):
             elements,
             soilTypes,
             nodeCoords,
+            verticalAxis=verticalAxis,
+            tol_=tol_,
         )
         SSI_map[pNode] = ring_nodes
 
@@ -2041,6 +2085,38 @@ def getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=("x", "y", "z"),
     return sortedNodes
 
 
+def summarizeNodeDOFs(nodeDOFs):
+    """
+    Prints a clean, automatic summary of DOF categories.
+    Does not modify any data structures.
+    """
+    print("\n------------------------------------------------------------------------------------------")
+    print(" Node DOF Summary")
+    print("------------------------------------------------------------------------------------------")
+
+    if not nodeDOFs:
+        print("No nodes found.")
+        print("------------------------------------------------------------------------------------\n")
+        return
+
+    uniqueDOFs = sorted(set(nodeDOFs.values()))
+    print(f"Total nodes detected: {len(nodeDOFs)}\n")
+
+    dofLabels = {
+        2: "u, v (2D soils / ASD boundaries)",
+        3: "u, v, p   or   u, v, w (UP soils / 3D solids)",
+        4: "u, v, w, p (3D UP solids)",
+        6: "u, v, w, rx, ry, rz (3D beams)"
+    }
+
+    for dof in uniqueDOFs:
+        nodesOfThisDOF = [n for n, d in nodeDOFs.items() if d == dof]
+        label = dofLabels.get(dof, "")
+        print(f"  {dof}-DOF nodes: {len(nodesOfThisDOF):6d}   {label}")
+
+    print("------------------------------------------------------------------------------------------\n")
+
+
 def countINTBraces(text):
     # find the boundaries
     start = text.find('{')
@@ -2055,6 +2131,29 @@ def countINTBraces(text):
     items = [x.strip() for x in inside.split(',') if x.strip()]
 
     return len(items)
+
+
+def computeSoilBoundingBox(soilNodeSet, nodeCoords):
+    xs = [nodeCoords[n][0] for n in soilNodeSet]
+    ys = [nodeCoords[n][1] for n in soilNodeSet]
+    zs = [nodeCoords[n][2] for n in soilNodeSet]
+
+    return {
+        "xMin": min(xs), "xMax": max(xs),
+        "yMin": min(ys), "yMax": max(ys),
+        "zMin": min(zs), "zMax": max(zs),
+    }
+
+
+def selectBuriedStructuralNodes(structuralNodeSet, soil_bbox, nodeCoords, tol):
+    buried = set()
+    for n in structuralNodeSet:
+        x, y, z = nodeCoords[n]
+        if (soil_bbox["xMin"] - tol <= x <= soil_bbox["xMax"] + tol and
+                soil_bbox["yMin"] - tol <= y <= soil_bbox["yMax"] + tol and
+                soil_bbox["zMin"] - tol <= z <= soil_bbox["zMax"] + tol):
+            buried.add(n)
+    return buried
 
 
 # test

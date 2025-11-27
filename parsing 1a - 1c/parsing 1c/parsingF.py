@@ -1,17 +1,22 @@
 import os
-from meshHelpF import (sortNodesByX, sortNodesByY, both2and3DOFs, threeDOFs, fourDOFs3D, buildSSImap,  # noqa: F401
-sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles, writeElementsTcl, outputFolder, twentyEightBrickDOFs, only2DOFs,
-parseElementsFromMsh, parseNodesFromMsh, elementProfiles, filterElementsByDIM, remapElementTypes, summarizeRemaps,
-detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF, selectNodes, defaultTol, detectSoilGroups,
-classifySoilAndPileNodes, getAndSortGroupNodes, summarizeNodeDOFs, computeSoilBoundingBox, selectBuriedStructuralNodes)
+from meshHelpF import (detectMaxPhyGroup, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs,  # noqa: F401
+                       sortNodesByX, sortNodesByY, sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles,
+                       writeElementsTcl, outputFolder,
+                       only2DOFs, parseElementsFromMsh, parseNodesFromMsh, getBoundaryNodesFromMsh, writeMainTclGlobal,
+                       elementProfiles,
+                       filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs,
+                       classifyChosenNodesByDOF,
+                       FuzzyFloat, selectNodes, defaultTol, _roundFunc, soilFaceNodesAroundPile, detectSoilGroups,
+                       classifySoilAndPileNodes,
+                       groupNodesByCoordinate, buildSSImap, getAndSortGroupNodes, summarizeNodeDOFs)
 
-meshFile = "modelISS.msh"
-verticalAxis = "z"
+meshFile = "model3D.msh"
+verticalAxis = "y"
 outDir = outputFolder(meshFile)
 tol = defaultTol
 
 beam2DGrp = {}
-beam3DGrp = {13, 14, 15, 16, 17}
+beam3DGrp = {13, 14}
 
 sspBrickUPGrp = {1}
 sspBrickGrp = {}
@@ -117,22 +122,24 @@ phyGroupID = 2
 axesToSort = ("x", "y", "z")
 boundaryNodes = getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=axesToSort, dim=1)
 
-# ------------------------------------------------------------------------------------------------------------------
-# SSI PREPARATION: soil bounding box + selecting buried structural nodes
-# ------------------------------------------------------------------------------------------------------------------
+# consistent with verticalAxis
+if verticalAxis == "x":
+    sortFunc = sortNodesByX
+elif verticalAxis == "y":
+    sortFunc = sortNodesByY
+else:
+    sortFunc = sortNodesByZ
+print(f"[DEBUG] all pile nodes sorted by {verticalAxis.upper()}:", sortFunc(pileNodeSet, nodeCoords))
 
-soil_bbox = computeSoilBoundingBox(soilNodeSet, nodeCoords)
-print("[DEBUG] Soil bounding box:", soil_bbox)
+soilByLayer = groupNodesByCoordinate(soilNodeSet, nodeCoords, axis=verticalAxis, tol=tol)
+pileByLayer = groupNodesByCoordinate(pileNodeSet, nodeCoords, axis=verticalAxis, tol=tol)
 
-structuralNodeSet = set(nodeDOFs_struct.keys())
-print("[DEBUG] structural nodes:", len(structuralNodeSet))
+print(f"[SSI] layers (soil): {len(soilByLayer)}")
+print(f"[SSI] layers (pile): {len(pileByLayer)}")
 
-buriedStructuralNodes = selectBuriedStructuralNodes(structuralNodeSet, soil_bbox, nodeCoords, tol)
-print("[DEBUG] buried structural nodes:", len(buriedStructuralNodes))
+# SSI_map: pileNode --> list of surrounding soil node IDs
+SSI_map = buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords, verticalAxis=verticalAxis, tol_=tol, )
 
-# !!
-SSI_map = buildSSImap(buriedStructuralNodes, elements, soilTypes, nodeCoords, verticalAxis=verticalAxis, tol_=tol)
-
-print("[SSI] node --> soil faces mapping:")
-for sNode, soilNodes in SSI_map.items():
-    print(f"  structural node {sNode}: {soilNodes}")
+print("[SSI] mapping pile --> soil:")
+for pNode, sNodes in SSI_map.items():
+    print(f"  pile node {pNode}: {sNodes}")
