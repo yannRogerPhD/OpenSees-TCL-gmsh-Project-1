@@ -343,7 +343,7 @@ def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
                 f__.write(f"    # {dofCountT} DOFs {label}")
             f__.write("\n")
 
-    print(f"✅ Wrote {fileName} with {len(nodeCoordS)} nodes "
+    print(f"Wrote {fileName} with {len(nodeCoordS)} nodes "
           f"(comments show detected DOFs)")
 
 
