@@ -1,17 +1,17 @@
 import os
 from meshHelpF import (detectMaxPhyGroup, both2and3DOFs, threeDOFs, fourDOFs3D, twentyEightBrickDOFs,  # noqa: F401
-    sortNodesByX, sortNodesByY, sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles, writeElementsTcl, outputFolder,
-    only2DOFs, parseElementsFromMsh, parseNodesFromMsh, getBoundaryNodesFromMsh, writeMainTclGlobal, elementProfiles,
-    filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF,
-    FuzzyFloat, selectNodes)
+sortNodesByX, sortNodesByY, sortNodesByZ, writeNodesTcl, writeSeparatedNodeFiles, writeElementsTcl, outputFolder,
+only2DOFs, parseElementsFromMsh, parseNodesFromMsh, getBoundaryNodesFromMsh, writeMainTclGlobal, elementProfiles,
+filterElementsByDIM, remapElementTypes, summarizeRemaps, detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF,
+FuzzyFloat, selectNodes, defaultTolerance, _roundFunc, soilFaceNodesAroundPile)
 
-meshFile = "mod2.msh"
+meshFile = "model3D.msh"
 outDir = outputFolder(meshFile)
 
-beam2DGrp = {50}  # physical groups for 2D beam elements
-beam3DGrp = {}  # physical groups for 3D beam elements
+beam2DGrp = {}  # physical groups for 2D beam elements
+beam3DGrp = {13, 14}  # physical groups for 3D beam elements
 
-sspBrickUPGrp = {}
+sspBrickUPGrp = {1}
 sspBrickGrp = {}
 bbarQuadUPGrp = {}
 quadUPGrp = {}
@@ -22,16 +22,12 @@ ASDLeftGrp, ASDRightGrp = {}, {}
 ASDBottomGrp = {}
 ASDBottomLeftGrp, ASDBottomRightGrp = {}, {}
 
-lastVolume = 100
-ASD3DBGrp = {lastVolume}
-ASD3DLGrp, ASD3DRGrp = {lastVolume + 1}, {lastVolume + 2}
-ASD3DFGrp, ASD3DKGrp = {lastVolume + 3}, {lastVolume + 4}
-ASD3DBLGrp, ASD3DBRGrp = {lastVolume + 5}, {lastVolume + 6}
-ASD3DBFGrp, ASD3DBKGrp = {lastVolume + 7}, {lastVolume + 8}
-ASD3DLFGrp, ASD3DLKGrp = {lastVolume + 9}, {lastVolume + 10}
-ASD3DRFGrp, ASD3DRKGrp = {lastVolume + 11}, {lastVolume + 12}
-ASD3DBLFGrp, ASD3DBLKGrp = {lastVolume + 13}, {lastVolume + 14}
-ASD3DBRFGrp, ASD3DBRKGrp = {lastVolume + 15}, {lastVolume + 16}
+lastVol = 1000043
+ASD3DBGrp = {lastVol}
+ASD3DLGrp, ASD3DRGrp, ASD3DFGrp, ASD3DKGrp = {lastVol + 1}, {lastVol + 2}, {lastVol + 3}, {lastVol + 4}
+ASD3DBLGrp, ASD3DBRGrp, ASD3DBFGrp, ASD3DBKGrp = {lastVol + 5}, {lastVol + 6}, {lastVol + 7}, {lastVol + 8}
+ASD3DLFGrp, ASD3DLKGrp, ASD3DRFGrp, ASD3DRKGrp = {lastVol + 9}, {lastVol + 10}, {lastVol + 11}, {lastVol + 12}
+ASD3DBLFGrp, ASD3DBLKGrp, ASD3DBRFGrp, ASD3DBRKGrp = {lastVol + 13}, {lastVol + 14}, {lastVol + 15}, {lastVol + 16}
 
 gVal = 9.806
 elements = parseElementsFromMsh(meshFile)
@@ -59,12 +55,23 @@ summarizeRemaps(elements)
 # -------------------------------------------------------------------------------------------------------------------
 soil2D_types = {3, 10, 103, 1003}
 soil3D_types = {5, 17, 105, 1005, 1055}
-
-# use already-detected dimensionality
 soilTypes = soil3D_types if has3D else soil2D_types
 
 # extract only soil groups from the mesh
 soilGroups = {el["group"] for el in elements if el["type"] in soilTypes}
+
+# -------------------------------------------------------------------------------------------------------------------
+# !!! node sets for soil and structure (for SSI purposes) !!!
+# all nodes that belong to soil elements
+soilNodeSet = {n for el in elements if el["type"] in soilTypes for n in el["nodes"]}
+
+# elements that are 3D beams (piles) – using physical groups in beam3DGrp
+pileElemts = [el for el in elements if el["type"] == 101 and el["group"] in beam3DGrp]
+
+# node set on piles
+pileNodeSet = {n for el in pileElemts for n in el["nodes"]}
+# -------------------------------------------------------------------------------------------------------------------
+
 
 # build mainSoilTags automatically
 mainSoilTags = {g: g for g in sorted(soilGroups)}
@@ -72,8 +79,6 @@ mainSoilTags = {g: g for g in sorted(soilGroups)}
 print("\n[INFO] auto-detected soil physical groups:", sorted(soilGroups))
 print("[INFO] mainSoilTags auto-built as:", mainSoilTags, "\n")
 
-# maxPhyGroup = detectMaxPhyGroup(meshFile)
-# mainSoilTags = {i: i for i in range(1, maxPhyGroup + 1)} # auto-build physical group tags based on mesh content
 
 # --------------------------------------------------------------------------------------------------------------------
 # USER MATERIAL REMAPPING: physical group --> material tag
@@ -122,12 +127,10 @@ writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs, filePrefix="allSoilNodes",
 
 # soil nodes
 if nodeDOFs_soil:
-    # writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs_soil, filePrefix="AllSoilNodes", outputDir=outDir)
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_soil, ndmGlobal, outputDir=outDir, labelPrefix="soil")
 #
 # structure nodes
 if nodeDOFs_struct:
-    # writeNodesTcl(nodeCoords, ndmGlobal, nodeDOFs_struct, filePrefix="structure_nodes", outputDir=outDir)
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_struct, ndmGlobal, outputDir=outDir, labelPrefix="structure")
 
 writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
@@ -141,56 +144,44 @@ boundaryNodes = sortNodesByZ(sortNodesByY(sortNodesByX(boundaryNodes, nodeCoords
 # !!!!----
 
 # !!!!----
-masterNodes = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=4, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=15, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=23, dim=1), nodeCoords)
-slaveNodes1 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=2, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=13, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=21, dim=1), nodeCoords)
-slaveNodes2 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=6, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=16, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=24, dim=1), nodeCoords)
-slaveNodes3 = sortNodesByY(getBoundaryNodesFromMsh(meshFile, phyGroupID=8, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=18, dim=1) |
-                           getBoundaryNodesFromMsh(meshFile, phyGroupID=26, dim=1), nodeCoords)
-# !!!!----
-
-# !!!!----
-# select some particular group of nodes w.r.t. the DOF
-dofOfSelectedNodes = 3
-selectNodesDOF = classifyChosenNodesByDOF(boundaryNodes, nodeDOFs)
-boundaryNodes3DOFs = selectNodesDOF.get(dofOfSelectedNodes, [])
-# !!!!----
-
-# !!!!----
 # leftASDElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
-# ASD3DElements = [el["id"] for el in elements
-#                  if el["type"] in
-#                  {
-#                   10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056,
-#                   10057, 10058, 10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
-#                   }
-#                  ]
-#
-# outputPath = os.path.join(outDir, 'leftASDUpdate.tcl')
-#
-# with open(outputPath, 'w') as f:
-#     for i in leftASDElements:
-#         f.write(f"setParameter -val 1 -ele {i} stage\n")
+# ASD3DElements = [el["id"] for el in elements if el["type"] in
+#                  {10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056, 10057,
+#                  10058, 10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067}]
 # !!!!----
 
-# !!!!----
-tryNodes = selectNodes(lambda x, y, z: x == 0.125, nodeCoords)
-# !!!!----
+print(sortNodesByY(pileNodeSet, nodeCoords))
 
-# !!!!----
-leftNodesT = getBoundaryNodesFromMsh(meshFile, phyGroupID=4, dim=1)
-nodesDOFsLeftNodesT = classifyChosenNodesByDOF(leftNodesT, nodeDOFs)
-# now extract 3-DOFs nodes
-nodes3DOFsLeftNodesT = nodesDOFsLeftNodesT.get(3, [])
-# print(nodes3DOFsLeftNodesT)
+tol = defaultTolerance
 
-# now extract 2-DOFs nodes
-nodes2DOFsLeftNodesT = nodesDOFsLeftNodesT.get(2, [])
-# print(nodes2DOFsLeftNodesT)
-# !!!!----
+soilByY, pileByY = {}, {}
+
+for n in soilNodeSet:
+    x_, y_, z_ = nodeCoords[n]
+    yKey = _roundFunc(y_, tol)
+    soilByY.setdefault(yKey, []).append(n)
+
+for n in pileNodeSet:
+    x_, y_, z_ = nodeCoords[n]
+    yKey = _roundFunc(y_, tol)
+    pileByY.setdefault(yKey, []).append(n)
+
+print(f"[SSI] z-layers with soil: {len(soilByY)}")
+print(f"[SSI] z-layers with pile: {len(pileByY)}")
+
+
+# SSI_map: pileNode --> list of surrounding soil node IDs
+SSI_map = {}
+
+for pNode in pileNodeSet:
+    ring_nodes = soilFaceNodesAroundPile(
+        pNode,
+        elements,
+        soilTypes,
+        nodeCoords,
+    )
+    SSI_map[pNode] = ring_nodes
+
+print("[SSI] mapping pile --> soil (pile node -> soil face nodes):")
+for pNode, sNodes in SSI_map.items():
+    print(f"  pile node {pNode}: {sNodes}")

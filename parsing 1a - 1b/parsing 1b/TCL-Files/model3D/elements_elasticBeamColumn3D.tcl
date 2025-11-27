@@ -1,0 +1,9 @@
+# !!!!!!!!!!! elasticBeamColumn3D elements !!!!!!!!!!!
+
+element elasticBeamColumn 56 9 44 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 57 44 45 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 58 45 46 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 59 46 10 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 60 10 47 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 61 47 48 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass
+element elasticBeamColumn 62 48 11 0.25 210000000000.0 81000000000.0 0.0001 0.0002 0.0003 1 -mass 7850.0 -cMass

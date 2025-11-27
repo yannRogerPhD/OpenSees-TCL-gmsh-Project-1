@@ -1802,6 +1802,55 @@ def writeMainTclGlobal(tclRootDir, modelName,
         print(f"   • {modelName}/{f_}")
 
 
+def soilFaceNodesAroundPile(pileNode, elements_, soilTypes_, nodeCoords_, tol_=1e-6):
+    """
+    For a given pile node, find all soil nodes that belong to the horizontal
+    faces of soil elements that surround the pile at that depth (y = y_pile).
+
+    Assumes:
+      - y is the vertical axis
+      - soil elements are 3D bricks included in `soilTypes`
+    """
+    px, py, pz = nodeCoords_[pileNode]
+    face_nodes = set()
+
+    for el in elements_:
+        if el["type"] not in soilTypes_:
+            continue
+
+        el_nodes = el["nodes"]
+        ys = [nodeCoords_[n][1] for n in el_nodes]
+
+        # quick reject: pile y not within element's vertical span
+        y_min = min(ys)
+        y_max = max(ys)
+        if py < y_min - tol_ or py > y_max + tol_:
+            continue
+
+        # nodes on the horizontal face at y ≈ py
+        face = [n for n in el_nodes if abs(nodeCoords_[n][1] - py) <= tol_]
+        if len(face) < 3:
+            # less than 3 nodes -> cannot form a meaningful face
+            continue
+
+        xs = [nodeCoords_[n][0] for n in face]
+        zs = [nodeCoords_[n][2] for n in face]
+
+        x_min, x_max = min(xs), max(xs)
+        z_min, z_max = min(zs), max(zs)
+
+        # check if the pile (px, pz) is inside the x–z bounding box of this face
+        if (px < x_min - tol_ or px > x_max + tol_ or
+                pz < z_min - tol_ or pz > z_max + tol_):
+            continue
+
+        # this element contributes nodes on the surrounding face
+        face_nodes.update(face)
+
+    # return the sorted list just for reproducibility / debugging
+    return sorted(face_nodes)
+
+
 def countINTBraces(text):
     # find the boundaries
     start = text.find('{')
