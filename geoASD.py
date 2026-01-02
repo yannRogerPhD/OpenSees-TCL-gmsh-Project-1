@@ -92,6 +92,6 @@ def generateASDGeo(lastVolumeID=1):
 
 
 # usage:
-lastVolID = 3
+lastVolID = 1
 geoText = generateASDGeo(lastVolumeID=lastVolID)
 print(geoText)

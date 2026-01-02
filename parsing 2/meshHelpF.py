@@ -55,7 +55,7 @@ def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
             [
                 el for el in elements
                 if el["type"] in (gmsh3DTypes | other3DDerivatives)
-                   or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
+                or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
             ]
         print("Detected 3D mesh --> ignoring surface elements (type 3)...")
 
@@ -64,7 +64,7 @@ def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
             [
                 el for el in elements
                 if el["type"] in (gmsh2DTypes | other2DDerivatives)
-                   and (el["type"] != 1 or el["group"] in beam2DGrp)
+                and (el["type"] != 1 or el["group"] in beam2DGrp)
             ]
         print("Detected 2D mesh --> keeping quads and beam line groups only...")
 
