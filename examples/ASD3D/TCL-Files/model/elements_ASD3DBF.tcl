@@ -1,0 +1,10 @@
+# !!!!!!!!!!! ASD3DBF elements !!!!!!!!!!!
+
+element ASDAbsorbingBoundary3D 5565 2 22 34 10 173 353 491 222 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5566 173 353 491 222 174 354 492 223 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5567 174 354 492 223 175 355 493 224 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5568 175 355 493 224 176 356 494 225 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5569 176 356 494 225 177 357 495 226 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5570 177 357 495 226 178 358 496 227 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5571 178 358 496 227 179 359 497 228 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
+element ASDAbsorbingBoundary3D 5572 179 359 497 228 6 21 33 12 1153846153.8461537 0.3 2100.0 BF -fx $tsX -fy $tsY
