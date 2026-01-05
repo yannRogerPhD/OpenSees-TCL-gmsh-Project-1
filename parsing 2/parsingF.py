@@ -11,7 +11,7 @@ outDir = outputFolder(meshFile)
 tol = defaultTol
 
 beam2DGrp = {}
-beam3DGrp = {13, 14, 15, 16, 17}
+beam3DGrp = {13, 14, 15, 16, 17, 20}
 
 sspBrickUPGrp = {1}
 sspBrickGrp = {}
