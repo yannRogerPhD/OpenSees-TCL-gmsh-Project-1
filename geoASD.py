@@ -1,4 +1,5 @@
 """
+# might not be necessary since extrusion is better with GUI
 //+
 lTx = DefineNumber[ 1.0, Name "Parameters/lx" ];
 //+
