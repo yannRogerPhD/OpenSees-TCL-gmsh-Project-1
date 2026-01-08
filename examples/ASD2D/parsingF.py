@@ -5,15 +5,15 @@ parseElementsFromMsh, parseNodesFromMsh, elementProfiles, filterElementsByDIM, r
 detect_ndm_ndf, classifyNodeDOFs, classifyChosenNodesByDOF, selectNodes, defaultTol, detectSoilGroups,
 classifySoilAndPileNodes, getAndSortGroupNodes, summarizeNodeDOFs, computeSoilBoundingBox, selectBuriedStructuralNodes)
 
-meshFile = "modelISS.msh"
-verticalAxis = "z"
+meshFile = "model.msh"
+verticalAxis = "y"
 outDir = outputFolder(meshFile)
 tol = defaultTol
 
 beam2DGrp = {}
-beam3DGrp = {13, 14, 15, 16, 17, 20}
+beam3DGrp = {3400988763}
 
-sspBrickUPGrp = {1}
+sspBrickUPGrp = {}
 sspBrickGrp = {}
 bbarQuadUPGrp = {}
 quadUPGrp = {}
@@ -21,7 +21,8 @@ bbarBrickUPGrp = {}
 
 # 2D absorbing Boundary conditions, order: B, L, R, BL, BR
 lastVol2 = 1000042
-ASDBottomGrp, ASDLeftGrp, ASDRightGrp, ASDBottomLeftGrp, ASDBottomRightGrp = {}, {}, {}, {}, {}
+ASDBottomGrp, ASDLeftGrp, ASDRightGrp, ASDBottomLeftGrp, ASDBottomRightGrp = ({5}, {6, 7, 8, 9}, {10, 11, 12, 13},
+                                                                              {14}, {15})
 
 # 3D absorbing conditions, order: B, L, R, F, K, BL, BR, BF, BK, LF, LK, RF, RK, BLF, BLK, BRF, BRK
 lastVol3 = 1000043
@@ -62,9 +63,10 @@ print("[INFO] mainSoilTags auto-built as:", mainSoilTags, "\n")
 # USER MATERIAL REMAPPING: physical group --> material tag
 # --------------------------------------------------------------------------------------------------------------------
 customMaterialMap = {
-    1: 5,
-    2: 4,
-    3: 2,
+    1: 1,
+    2: 1,
+    3: 1,
+    4: 1,
     # etc.
 }
 
@@ -107,7 +109,7 @@ if nodeDOFs_struct:
 writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
 
 # !!!!----
-# ASD2DElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
+ASD2DElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
 # ASD3DElements = [el["id"] for el in elements if el["type"] in
 #                  {10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056, 10057,
 #                  10058, 10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067}]
@@ -136,3 +138,9 @@ SSI_map = buildSSImap(buriedStructuralNodes, elements, soilTypes, nodeCoords, ve
 print("[SSI] node --> soil faces mapping:")
 for sNode, soilNodes in SSI_map.items():
     print(f"  structural node {sNode}: {soilNodes}")
+
+with open("updateASD.tcl", "w") as fUpdateASD:
+    for i in ASD2DElements:
+        fUpdateASD.write(f"setParameter -val 1 -ele {i} stage\n")
+
+# setParameter -val 1 -ele {*}$abs_elements stage
