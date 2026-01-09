@@ -150,6 +150,154 @@ If (#sRight[] > 0)
   }
 EndIf
 
+
+// front boundary faces: y = YMIN_SOIL (within eps)
+sFront[] = Surface In BoundingBox {XMIN_SOIL-eps, YMIN_SOIL-eps, ZMIN_SOIL-eps, XMAX_SOIL+eps, YMIN_SOIL+eps, ZMAX_SOIL+eps};
+sFront[] = Unique(Abs(sFront[]));
+
+// Extrude outward along -Y (Front)
+If (#sFront[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sFront[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+
+// back boundary faces: y = YMAX_SOIL (within eps)
+sBack[] = Surface In BoundingBox {XMIN_SOIL-eps, YMAX_SOIL-eps, ZMIN_SOIL-eps, XMAX_SOIL+eps, YMAX_SOIL+eps, ZMAX_SOIL+eps};
+sBack[] = Unique(Abs(sBack[]));
+
+// Extrude outward along +Y (Back)
+If (#sBack[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sBack[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+// BL: take the left vertical face of the B layer and extrude it along -X
+sBL_fromB[] = Surface In BoundingBox {XMIN_SOIL-eps, YMIN_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMIN_SOIL+eps, YMAX_SOIL+eps,  ZMIN_SOIL+eps};
+sBL_fromB[] = Unique(Abs(sBL_fromB[]));
+
+If (#sBL_fromB[] > 0)
+  Extrude {-tAbsL, 0, 0} {
+    Surface{sBL_fromB[]}; Layers{nAbsL}; Recombine;
+  }
+EndIf
+
+// BR: take the right vertical face of the B layer and extrude it along +X
+sBR_fromB[] = Surface In BoundingBox {XMAX_SOIL-eps, YMIN_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMAX_SOIL+eps, YMAX_SOIL+eps,  ZMIN_SOIL+eps};
+sBR_fromB[] = Unique(Abs(sBR_fromB[]));
+
+If (#sBR_fromB[] > 0)
+  Extrude {tAbsR, 0, 0} {
+    Surface{sBR_fromB[]}; Layers{nAbsR}; Recombine;
+  }
+EndIf
+
+// BF: take the front vertical face of the B layer and extrude it along -Y
+sBF_fromB[] = Surface In BoundingBox {XMIN_SOIL-eps, YMIN_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMAX_SOIL+eps, YMIN_SOIL+eps,  ZMIN_SOIL+eps};
+sBF_fromB[] = Unique(Abs(sBF_fromB[]));
+
+If (#sBF_fromB[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sBF_fromB[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+// BK: take the back vertical face of the B layer and extrude it along +Y
+sBK_fromB[] = Surface In BoundingBox {XMIN_SOIL-eps, YMAX_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMAX_SOIL+eps, YMAX_SOIL+eps,  ZMIN_SOIL+eps};
+sBK_fromB[] = Unique(Abs(sBK_fromB[]));
+
+If (#sBK_fromB[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sBK_fromB[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+// LF: take the front face of the L layer and extrude it along -Y
+sLF_fromL[] = Surface In BoundingBox {(XMIN_SOIL - tAbsL)-eps, YMIN_SOIL-eps, ZMIN_SOIL-eps, XMIN_SOIL+eps,          YMIN_SOIL+eps, ZMAX_SOIL+eps};
+sLF_fromL[] = Unique(Abs(sLF_fromL[]));
+
+If (#sLF_fromL[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sLF_fromL[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+// LK: take the back face of the L layer and extrude it along +Y
+sLK_fromL[] = Surface In BoundingBox {(XMIN_SOIL - tAbsL)-eps, YMAX_SOIL-eps, ZMIN_SOIL-eps, XMIN_SOIL+eps,          YMAX_SOIL+eps, ZMAX_SOIL+eps};
+sLK_fromL[] = Unique(Abs(sLK_fromL[]));
+
+If (#sLK_fromL[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sLK_fromL[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+// RF: take the front face of the R layer and extrude it along -Y
+sRF_fromR[] = Surface In BoundingBox {XMAX_SOIL-eps,            YMIN_SOIL-eps, ZMIN_SOIL-eps, (XMAX_SOIL + tAbsR)+eps,  YMIN_SOIL+eps, ZMAX_SOIL+eps};
+sRF_fromR[] = Unique(Abs(sRF_fromR[]));
+
+If (#sRF_fromR[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sRF_fromR[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+// RK: take the back face of the R layer and extrude it along +Y
+sRK_fromR[] = Surface In BoundingBox {XMAX_SOIL-eps,            YMAX_SOIL-eps, ZMIN_SOIL-eps, (XMAX_SOIL + tAbsR)+eps,  YMAX_SOIL+eps, ZMAX_SOIL+eps};
+sRK_fromR[] = Unique(Abs(sRK_fromR[]));
+
+If (#sRK_fromR[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sRK_fromR[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+// BLF: take the front face of the BL prism and extrude it along -Y
+sBLF_fromBL[] = Surface In BoundingBox {(XMIN_SOIL - tAbsL)-eps, YMIN_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMIN_SOIL+eps,          YMIN_SOIL+eps,  ZMIN_SOIL+eps};
+sBLF_fromBL[] = Unique(Abs(sBLF_fromBL[]));
+
+If (#sBLF_fromBL[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sBLF_fromBL[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+// BLK: take the back face of the BL prism and extrude it along +Y
+sBLK_fromBL[] = Surface In BoundingBox {(XMIN_SOIL - tAbsL)-eps, YMAX_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, XMIN_SOIL+eps,          YMAX_SOIL+eps,  ZMIN_SOIL+eps};
+sBLK_fromBL[] = Unique(Abs(sBLK_fromBL[]));
+
+If (#sBLK_fromBL[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sBLK_fromBL[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+// BRF: take the front face of the BR prism and extrude it along -Y
+sBRF_fromBR[] = Surface In BoundingBox {XMAX_SOIL-eps,           YMIN_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, (XMAX_SOIL + tAbsR)+eps, YMIN_SOIL+eps,  ZMIN_SOIL+eps};
+sBRF_fromBR[] = Unique(Abs(sBRF_fromBR[]));
+
+If (#sBRF_fromBR[] > 0)
+  Extrude {0, -tAbsF, 0} {
+    Surface{sBRF_fromBR[]}; Layers{nAbsF}; Recombine;
+  }
+EndIf
+
+// BRK: take the back face of the BR prism and extrude it along +Y
+sBRK_fromBR[] = Surface In BoundingBox {XMAX_SOIL-eps,           YMAX_SOIL-eps, (ZMIN_SOIL - tAbsB)-eps, (XMAX_SOIL + tAbsR)+eps, YMAX_SOIL+eps,  ZMIN_SOIL+eps};
+sBRK_fromBR[] = Unique(Abs(sBRK_fromBR[]));
+
+If (#sBRK_fromBR[] > 0)
+  Extrude {0, tAbsK, 0} {
+    Surface{sBRK_fromBR[]}; Layers{nAbsK}; Recombine;
+  }
+EndIf
+
+
+// Coherence after absorbing layers
+Coherence;
+
 transX_col1 = Ceil(52/52) + 1;
 transY_row1 = Ceil(52/52) + 1;
 transZ_L1 = Ceil(20/1.25) + 1;
@@ -161,7 +309,7 @@ transY_row2 = Ceil(52/52) + 1;
 transY_row3 = Ceil(52/52) + 1;
 transY_row4 = Ceil(52/52) + 1;
 transY_row5 = Ceil(52/52) + 1;
-transZ_L2 = Ceil(30/1.5) + 1;
+transZ_L2 = Ceil(30/1.25) + 1;
 transZ_L3 = Ceil(40/1.25) + 1;
 transZ_L4 = Ceil(50/1.25) + 1;
 

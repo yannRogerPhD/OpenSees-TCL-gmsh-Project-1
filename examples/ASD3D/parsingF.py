@@ -12,10 +12,10 @@ tol = defaultTol
 
 beam2DGrp = {}
 # beam3DGrp = {13, 14, 15, 16, 17}
-beam3DGrp = {203334}
+beam3DGrp = {20335634}
 
 sspBrickUPGrp = {}
-sspBrickGrp = {1}
+sspBrickGrp = set(range(1, 101))
 bbarQuadUPGrp = {}
 quadUPGrp = {}
 bbarBrickUPGrp = {}
@@ -25,12 +25,23 @@ lastVol2 = 1000042
 ASDBottomGrp, ASDLeftGrp, ASDRightGrp, ASDBottomLeftGrp, ASDBottomRightGrp = {}, {}, {}, {}, {}
 
 # 3D absorbing conditions, order: B, L, R, F, K, BL, BR, BF, BK, LF, LK, RF, RK, BLF, BLK, BRF, BRK
-lastVol3 = 2
-ASD3DBGrp = {lastVol3}
-ASD3DLGrp, ASD3DRGrp, ASD3DFGrp, ASD3DKGrp = {lastVol3 + 1}, {lastVol3 + 2}, {lastVol3 + 3}, {lastVol3 + 4}
-ASD3DBLGrp, ASD3DBRGrp, ASD3DBFGrp, ASD3DBKGrp = {lastVol3 + 5}, {lastVol3 + 6}, {lastVol3 + 7}, {lastVol3 + 8}
-ASD3DLFGrp, ASD3DLKGrp, ASD3DRFGrp, ASD3DRKGrp = {lastVol3 + 9}, {lastVol3 + 10}, {lastVol3 + 11}, {lastVol3 + 12}
-ASD3DBLFGrp, ASD3DBLKGrp, ASD3DBRFGrp, ASD3DBRKGrp = {lastVol3 + 13}, {lastVol3 + 14}, {lastVol3 + 15}, {lastVol3 + 16}
+ASD3DBGrp = set(range(101, 126))
+ASD3DLGrp = set(range(126, 146))
+ASD3DRGrp = set(range(146, 166))
+ASD3DFGrp = set(range(166, 186))
+ASD3DKGrp = set(range(186, 206))
+ASD3DBLGrp = set(range(206, 211))
+ASD3DBRGrp = set(range(211, 216))
+ASD3DBFGrp = set(range(216, 221))
+ASD3DBKGrp = set(range(221, 226))
+ASD3DLFGrp = set(range(226, 230))
+ASD3DLKGrp = set(range(230, 234))
+ASD3DRFGrp = set(range(234, 238))
+ASD3DRKGrp = set(range(238, 242))
+ASD3DBLFGrp = set(range(242, 243))
+ASD3DBLKGrp = set(range(243, 244))
+ASD3DBRFGrp = set(range(244, 245))
+ASD3DBRKGrp = set(range(245, 246))
 
 gVal = 9.806
 elements = parseElementsFromMsh(meshFile)
@@ -62,12 +73,8 @@ print("[INFO] mainSoilTags auto-built as:", mainSoilTags, "\n")
 # --------------------------------------------------------------------------------------------------------------------
 # USER MATERIAL REMAPPING: physical group --> material tag
 # --------------------------------------------------------------------------------------------------------------------
-customMaterialMap = {
-    1: 1,
-    2: 4,
-    3: 2,
-    # etc.
-}
+customMaterialMap = {i: 1 for i in range(1, 101)}
+
 
 for phy, mat in customMaterialMap.items():
     if phy in mainSoilTags:
@@ -105,10 +112,10 @@ if nodeDOFs_soil:
 if nodeDOFs_struct:
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_struct, ndmGlobal, outputDir=outDir, labelPrefix="structure")
 
-writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
+writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, nodeCoords=nodeCoords, outputDir=outDir)
 
 # !!!!----
-# leftASDElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
+# ASD2DElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]
 ASD3DElements = [el["id"] for el in elements if el["type"] in
                  {10031, 10032, 10033, 10034, 10035, 10051, 10052, 10053, 10054, 10055, 10056, 10057,
                  10058, 10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067}]
@@ -143,3 +150,5 @@ SSI_map = buildSSImap(buriedStructuralNodes, elements, soilTypes, nodeCoords, ve
 print("[SSI] node --> soil faces mapping:")
 for sNode, soilNodes in SSI_map.items():
     print(f"  structural node {sNode}: {soilNodes}")
+
+# print(ASD3DBGrp)

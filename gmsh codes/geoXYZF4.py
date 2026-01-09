@@ -735,6 +735,12 @@ def emit_geo(
         L_.append("EndIf")
         L_.append("")
 
+    # second Coherence after absorbing layers
+    L_.append("")
+    L_.append("// Coherence after absorbing layers")
+    L_.append("Coherence;")
+    L_.append("")
+
     # Define transfinite counts (deduplicate by symbol)
     seen: set[str] = set()
     for b in boxes_:
@@ -827,11 +833,17 @@ if __name__ == "__main__":
     XMeshSizes = [260 / 5, 260 / 5, 260 / 5, 260 / 5, 260 / 5]
     YMeshSizes = [260 / 5, 260 / 5, 260 / 5, 260 / 5, 260 / 5]
 
+    # x_widths = [260 / 5, 260 / 5, 260 / 5]
+    # y_widths = [260 / 5, 260 / 5, 260 / 5]
+    #
+    # XMeshSizes = [260 / 5, 260 / 5, 260 / 5]
+    # YMeshSizes = [260 / 5, 260 / 5, 260 / 5]
+
     layers = [
-        dict(z_top=0.0, thickness=20, ZMeshSize=1.25, transZ="transZ_L1"),
-        dict(z_top=-20, thickness=30, ZMeshSize=1.5, transZ="transZ_L2"),
-        dict(z_top=-50, thickness=40, ZMeshSize=1.25, transZ="transZ_L3"),
-        dict(z_top=-90, thickness=50, ZMeshSize=1.25, transZ="transZ_L4"),
+        dict(z_top=0.0, thickness=20, ZMeshSize=1.25, transZ="transZ_L1"),  # 1.25
+        dict(z_top=-20, thickness=30, ZMeshSize=1.25, transZ="transZ_L2"),  # 1.5
+        dict(z_top=-50, thickness=40, ZMeshSize=1.25, transZ="transZ_L3"),  # 1.25
+        dict(z_top=-90, thickness=50, ZMeshSize=1.25, transZ="transZ_L4"),  # 1.25
     ]
 
     transX_cols = [f"transX_col{j + 1}" for j in range(len(x_widths))]
@@ -862,11 +874,12 @@ if __name__ == "__main__":
     symmetries = [
         # SymmetryPlane(1.0, 0.0, 0.0, -10.5975),
         # SymmetryPlane(0.0, 1.0, 0.0, -3.0975),
+        # SymmetryPlane(1.0, 0.0, 0.0, -130),
     ]
 
     # order = ["B", "L", "R", "F", "K", "BL", "BR", "BF", "BK", "LF", "LK", "RF", "RK", "BLF", "BLK", "BRF", "BRK"]
-    # order = ["B", "L", "R", "F", "K", "BL", "BR", "BF", "BK", "LF", "LK", "RF", "RK", "BLF", "BLK", "BRF", "BRK"]
     order = ["B", "L", "R", "F", "K", "BL", "BR", "BF", "BK", "LF", "LK", "RF", "RK", "BLF", "BLK", "BRF", "BRK"]
+    # order = []
     geo = emit_geo(
         boxes,
         eps=1e-6,
@@ -878,91 +891,3 @@ if __name__ == "__main__":
 
     with open("model.geo", "w", encoding="utf-8") as f:
         f.write(geo)
-
-# ----------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-# Volume-ID bookkeeping (pure Python)
-# Returns and prints absorbing volume IDs as explicit Python sets
-# ----------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-ABS_ORDER = [
-    "B", "L", "R", "F", "K",
-    "BL", "BR", "BF", "BK",
-    "LF", "LK", "RF", "RK",
-    "BLF", "BLK", "BRF", "BRK",
-]
-
-
-def _abc_counts(nx: int, ny: int, nz: int, abs_layers: int = 1) -> dict[str, int]:
-    base = {
-        # faces
-        "B": nx * ny,
-        "L": ny * nz,
-        "R": ny * nz,
-        "F": nx * nz,
-        "K": nx * nz,
-        # edges
-        "BL": ny,
-        "BR": ny,
-        "BF": nx,
-        "BK": nx,
-        "LF": nz,
-        "LK": nz,
-        "RF": nz,
-        "RK": nz,
-        # corners
-        "BLF": 1,
-        "BLK": 1,
-        "BRF": 1,
-        "BRK": 1,
-    }
-    return {k: v * abs_layers for k, v in base.items()}
-
-
-def get_absorbing_volume_id_set_ranges(nx: int, ny: int, nz: int, abs_layers: int = 1):
-    """
-    Returns:
-      soil_n: number of soil volumes
-      ranges: dict[str, tuple[int,int]] mapping combo -> (start, stop_exclusive)
-              so the set is: set(range(start, stop_exclusive))
-    """
-    if nx <= 0 or ny <= 0 or nz <= 0 or abs_layers <= 0:
-        raise ValueError("nx, ny, nz, abs_layers must be positive integers")
-
-    soil_n = nx * ny * nz
-    counts = _abc_counts(nx, ny, nz, abs_layers)
-
-    cur = soil_n + 1
-    ranges: dict[str, tuple[int, int]] = {}
-    for key in ABS_ORDER:
-        n = counts[key]
-        ranges[key] = (cur, cur + n)  # stop is exclusive
-        cur += n
-
-    return soil_n, ranges
-
-
-def emit_absorbing_id_definitions(nx: int, ny: int, nz: int, abs_layers: int = 1) -> str:
-    """
-    Produces a paste-ready block like:
-      B = set(range(101, 126))
-      L = set(range(126, 146))
-      ...
-    """
-    soil_n, ranges = get_absorbing_volume_id_set_ranges(nx, ny, nz, abs_layers)
-
-    lines = []
-    lines.append(f"# soil volumes: set(range(1, {soil_n + 1}))")
-    for key in ABS_ORDER:
-        a, b = ranges[key]
-        lines.append(f"{key} = set(range({a}, {b}))")
-        # alternatively (equivalent):
-        # lines.append(f"{key} = {{i for i in range({a}, {b})}}")
-    return "\n".join(lines)
-
-
-# Example (your case)
-if __name__ == "__main__":
-    print(emit_absorbing_id_definitions(nx=5, ny=5, nz=4, abs_layers=1))

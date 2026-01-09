@@ -11,7 +11,7 @@ outDir = outputFolder(meshFile)
 tol = defaultTol
 
 beam2DGrp = {}
-beam3DGrp = {13, 14, 15, 16, 17, 20}
+beam3DGrp = {139988, 194454, 1883345, 1456676, 1556677, 29876450}
 
 sspBrickUPGrp = {1}
 sspBrickGrp = {}
@@ -104,7 +104,7 @@ if nodeDOFs_soil:
 if nodeDOFs_struct:
     writeSeparatedNodeFiles(nodeCoords, nodeDOFs_struct, ndmGlobal, outputDir=outDir, labelPrefix="structure")
 
-writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, outputDir=outDir)
+writeElementsTcl(elements, elementProfiles, mainSoilTags, gVal, nodeCoords=nodeCoords, outputDir=outDir)
 
 # !!!!----
 # ASD2DElements = [el["id"] for el in elements if el["type"] in {10031, 10032, 10033, 10034, 10035}]

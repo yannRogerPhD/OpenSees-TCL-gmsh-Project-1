@@ -260,158 +260,10 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
     return nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
 
 
-def _axis_pair_indices(vertical_axis: int):
-    """
-    For a chosen vertical axis (0=x,1=y,2=z), returns the two in-plane axis indices.
-    Example: vertical_axis=2 (z up) -> in-plane axes are x(0), y(1).
-    """
-    axes = [0, 1, 2]
-    axes.remove(vertical_axis)
-    return axes[0], axes[1]
-
-
-def _get_coord(node_id, nodeCoords):
-    if nodeCoords is None:
-        raise ValueError("nodeCoords is required for coordinate-based hex reordering.")
-
-    assert nodeCoords is not None
-
-    if isinstance(nodeCoords, dict):
-        coords = nodeCoords.get(node_id)
-        if coords is None:
-            raise KeyError(f"Node id {node_id} not found in nodeCoords.")
-        return coords
-
-    # list/tuple-like
-    return nodeCoords[node_id]
-
-
-def classify_hex8_nodes(nodeList, nodeCoords, vertical_axis: int = 2, tol: float = 1e-9):
-    """
-    Reorders an 8-node hex to match the provided diagram convention:
-
-    Bottom face (min vertical):
-      1: (max a min b)
-      2: (max a max b)
-      3: (min a max b)
-      4: (min a min b)
-
-    Top face (max vertical), directly above:
-      5 above 1, 6 above 2, 7 above 3, 8 above 4.
-
-    where (a,b) are the two axes orthogonal to vertical_axis.
-    """
-    if len(nodeList) != 8:
-        raise ValueError(f"Expected 8 nodes for Hex8, got {len(nodeList)}")
-
-    a_axis, b_axis = _axis_pair_indices(vertical_axis)
-
-    # Collect (node_id, coords)
-    pts = []
-    for nid in nodeList:
-        x, y, z = _get_coord(nid, nodeCoords)
-        pts.append((nid, (x, y, z)))
-
-    # Split into bottom/top by vertical coordinate
-    v_vals = [p[1][vertical_axis] for p in pts]
-    v_min = min(v_vals)
-    v_max = max(v_vals)
-
-    bottom = [p for p in pts if abs(p[1][vertical_axis] - v_min) <= tol]
-    top = [p for p in pts if abs(p[1][vertical_axis] - v_max) <= tol]
-
-    # If tolerance is too strict, fall back to sorting by vertical coordinate
-    if len(bottom) != 4 or len(top) != 4:
-        pts_sorted = sorted(pts, key=lambda p: p[1][vertical_axis])
-        bottom = pts_sorted[:4]
-        top = pts_sorted[4:]
-
-    if len(bottom) != 4 or len(top) != 4:
-        raise ValueError("Could not split hex nodes into 4 bottom + 4 top. Check geometry/tol.")
-
-    # On each face, classify corners by (a,b)
-    def ab(p):
-        return p[1][a_axis], p[1][b_axis]
-
-    a_vals = [ab(p)[0] for p in bottom]
-    b_vals = [ab(p)[1] for p in bottom]
-    a_min, a_max = min(a_vals), max(a_vals)
-    b_min, b_max = min(b_vals), max(b_vals)
-
-    def pick(face, a_target, b_target):
-        # pick the closest node on that face to the target (a,b) corner
-        best = None
-        best_d2 = None
-        for p in face:
-            pa, pb = ab(p)
-            d2 = (pa - a_target) ** 2 + (pb - b_target) ** 2
-            if best is None or d2 < best_d2:
-                best = p
-                best_d2 = d2
-        return best[0]  # node id
-
-    # Bottom nodes in diagram order
-    n2 = pick(bottom, a_max, b_min)
-    n3 = pick(bottom, a_max, b_max)
-    n4 = pick(bottom, a_min, b_max)
-    n1 = pick(bottom, a_min, b_min)
-
-    # Top nodes: prefer vertical pairing (closest in a, b to the corresponding bottom node)
-    top_ids = [p[0] for p in top]
-    # top_map = {}
-
-    def closest_top_to(n_bottom):
-        bx, by, bz = _get_coord(n_bottom, nodeCoords)
-        ba = (bx, by, bz)[a_axis]
-        bb = (bx, by, bz)[b_axis]
-        best = None
-        best_d2 = None
-        for tid in top_ids:
-            tx, ty, tz = _get_coord(tid, nodeCoords)
-            ta = (tx, ty, tz)[a_axis]
-            tb = (tx, ty, tz)[b_axis]
-            d2 = (ta - ba) ** 2 + (tb - bb) ** 2
-            if best is None or d2 < best_d2:
-                best = tid
-                best_d2 = d2
-        return best
-
-    n5 = closest_top_to(n1)
-    n6 = closest_top_to(n2)
-    n7 = closest_top_to(n3)
-    n8 = closest_top_to(n4)
-
-    # Ensure uniqueness (if degeneracy causes duplicates, fall back to corner picking on top)
-    if len({n5, n6, n7, n8}) != 4:
-        ta_vals = [ab(p)[0] for p in top]
-        tb_vals = [ab(p)[1] for p in top]
-        ta_min, ta_max = min(ta_vals), max(ta_vals)
-        tb_min, tb_max = min(tb_vals), max(tb_vals)
-        n5 = pick(top, ta_max, tb_min)
-        n6 = pick(top, ta_max, tb_max)
-        n7 = pick(top, ta_min, tb_max)
-        n8 = pick(top, ta_min, tb_min)
-
-    return [n1, n2, n3, n4, n5, n6, n7, n8]
-
-
-def gmsh_hex8_to_canonical(nodeList, nodeCoords=None, vertical_axis: int = 2, tol: float = 1e-9):
-    """
-    Preferred: coordinate-based reorder if nodeCoords is provided.
-    Fallback: old hard-coded permutation (your existing behavior) if nodeCoords is None.
-    """
-    if nodeCoords is not None:
-        return classify_hex8_nodes(nodeList, nodeCoords, vertical_axis=vertical_axis, tol=tol)
-
-    # Fallback to your legacy mapping if no coordinates available
-    # (This preserves current behavior, so we can switch call sites gradually.)
-    return [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-            nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
-
-
 # --------------------------------------------------------------------------------------------------------------
 # Tcl writing utilities
 # --------------------------------------------------------------------------------------------------------------
+
 def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
                   filePrefix="nodes", outputDir=".",
                   elements=None, elementProfileS=None):
@@ -587,9 +439,7 @@ def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
 
 
 def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
-                     nodeCoords=None,
                      filePrefix="elements_", outputDir='.'):
-
     """
     Writes .tcl files grouped by element type.
 
@@ -598,7 +448,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
     Files are named with the prefix 'elements_' followed by the element key, e.g., elements_quadUP.tcl.
 
     Parameters:
-        nodeCoords: node coordinates
         elements_ (list[dict]): each with keys: 'id', 'type', 'group', 'nodes'
         profiles_ (dict[int, dict]): element type --> profile dict
         mainSoilTags_ (dict[int, int]): per-physical-group soil tag mapping
@@ -956,11 +805,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]
 
                     # Same node reordering you use for other 8-node bricks
-                    # nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                    #           nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
-
-                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
-
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -1010,8 +856,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
-
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -1072,9 +918,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-
-                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
-
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -1133,8 +978,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
-
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
                     nodes = " ".join(str(n) for n in nodesF)
 
                     permXSSPbrickUP = {i: permXSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
@@ -1176,7 +1021,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
 
-                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
+                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
 
                     nodes = " ".join(str(n) for n in nodesF)
 

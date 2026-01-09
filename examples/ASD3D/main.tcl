@@ -18,7 +18,24 @@ nDMaterial ElasticIsotropic $matTag $E $poiss $rho
 source TCL-Files/model/soil_nodesByDOF_3DOF.tcl
 
 source TCL-Files/model/elements_SSPbrick.tcl
-source ASD_elements.tcl
+# source ASD_elements.tcl
+source TCL-Files/model/elements_ASD3DB.tcl
+source TCL-Files/model/elements_ASD3DBF.tcl
+source TCL-Files/model/elements_ASD3DBK.tcl
+source TCL-Files/model/elements_ASD3DBL.tcl
+source TCL-Files/model/elements_ASD3DBLF.tcl
+source TCL-Files/model/elements_ASD3DBLK.tcl
+source TCL-Files/model/elements_ASD3DBR.tcl
+source TCL-Files/model/elements_ASD3DBRF.tcl
+source TCL-Files/model/elements_ASD3DBRK.tcl
+source TCL-Files/model/elements_ASD3DF.tcl
+source TCL-Files/model/elements_ASD3DK.tcl
+source TCL-Files/model/elements_ASD3DL.tcl
+source TCL-Files/model/elements_ASD3DLF.tcl
+source TCL-Files/model/elements_ASD3DLK.tcl
+source TCL-Files/model/elements_ASD3DR.tcl
+source TCL-Files/model/elements_ASD3DRF.tcl
+source TCL-Files/model/elements_ASD3DRK.tcl
 
 # Static analysis (or quasi-static)
 # absorbing boundaries now are in STAGE 0 --> they act as constraints
@@ -40,11 +57,13 @@ wipeAnalysis
 
 source updateASD.tcl
 
-set soilBase 22
-set soilBott 24
+set soilBase 147
+set soilTopZ 282
+set soilTopY 176
 
-recorder Node -file "soilBase.txt" -time -node $soilBase -dof 1 accel
-recorder Node -file "soilBott.txt" -time -node $soilBott -dof 1 accel
+recorder Node -file "soilBase.txt" -time -node $soilBase -dof 1 2 3 accel
+recorder Node -file "soilTopY.txt" -time -node $soilTopY -dof 1 2 3 accel
+recorder Node -file "soilTopZ.txt" -time -node $soilTopZ -dof 1 2 3 accel
 
 constraints Transformation
 numberer RCM
@@ -60,9 +79,11 @@ if {$ok != 0} {
     error "Dynamic analysis failed"
 }
 
+wipe
 # analysis started at 09:00
 # temporary stop at 14:50, iteration 5.24467e-08
 # 15:15 - 14:55 at iteration 2.41984e-08
 # 16:30 - 19:30
 
-# Started- 03h20
+# after refinements
+# analysis start - 08:05 - 09:20
