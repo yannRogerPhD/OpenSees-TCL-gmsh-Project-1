@@ -82,7 +82,11 @@ def remapElementTypes(elements, groupSets):
 
         # Beam remapping
         if t == 1:
-            if g in groupSets["beam2DGrp"]:
+            if g in groupSets.get("dispBeam2DGrp", set()):
+                el["type"] = 201
+            elif g in groupSets.get("dispBeam3DGrp", set()):
+                el["type"] = 202
+            elif g in groupSets["beam2DGrp"]:
                 el["type"] = 1
             elif g in groupSets["beam3DGrp"]:
                 el["type"] = 101
@@ -140,6 +144,8 @@ def summarizeRemaps(elements):
         # 1D beams
         1: "elasticBeamColumn2D",
         101: "elasticBeamColumn3D",
+        201: "displacementBeam2D",
+        202: "displacementBeam3D",
 
         # 2D elements
         3: "quad (plain 2D)",
@@ -247,7 +253,7 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
         dofMap = ruleFunc(el["nodes"])
 
         # classify as structure or soil by group membership
-        if eType in (1, 101) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
+        if eType in (1, 101, 201, 202) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
             target = nodeDOFs_struct
         else:
             target = nodeDOFs_soil
@@ -260,10 +266,158 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
     return nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
 
 
+def _axis_pair_indices(vertical_axis: int):
+    """
+    For a chosen vertical axis (0=x,1=y,2=z), returns the two in-plane axis indices.
+    Example: vertical_axis=2 (z up) --> in-plane axes are x(0), y(1).
+    """
+    axes = [0, 1, 2]
+    axes.remove(vertical_axis)
+    return axes[0], axes[1]
+
+
+def _get_coord(node_id, nodeCoords):
+    if nodeCoords is None:
+        raise ValueError("nodeCoords is required for coordinate-based hex reordering.")
+
+    assert nodeCoords is not None
+
+    if isinstance(nodeCoords, dict):
+        coords = nodeCoords.get(node_id)
+        if coords is None:
+            raise KeyError(f"Node id {node_id} not found in nodeCoords.")
+        return coords
+
+    # list/tuple-like
+    return nodeCoords[node_id]
+
+
+def classify_hex8_nodes(nodeList, nodeCoords, vertical_axis: int = 2, tol: float = 1e-9):
+    """
+    Reorders an 8-node hex to match the provided diagram convention:
+
+    Bottom face (min vertical):
+      1: (max a min b)
+      2: (max a max b)
+      3: (min a max b)
+      4: (min a min b)
+
+    Top face (max vertical), directly above:
+      5 above 1, 6 above 2, 7 above 3, 8 above 4.
+
+    where (a,b) are the two axes orthogonal to vertical_axis.
+    """
+    if len(nodeList) != 8:
+        raise ValueError(f"Expected 8 nodes for Hex8, got {len(nodeList)}")
+
+    a_axis, b_axis = _axis_pair_indices(vertical_axis)
+
+    # Collect (node_id, coords)
+    pts = []
+    for nid in nodeList:
+        x, y, z = _get_coord(nid, nodeCoords)
+        pts.append((nid, (x, y, z)))
+
+    # Split into bottom/top by vertical coordinate
+    v_vals = [p[1][vertical_axis] for p in pts]
+    v_min = min(v_vals)
+    v_max = max(v_vals)
+
+    bottom = [p for p in pts if abs(p[1][vertical_axis] - v_min) <= tol]
+    top = [p for p in pts if abs(p[1][vertical_axis] - v_max) <= tol]
+
+    # If tolerance is too strict, fall back to sorting by vertical coordinate
+    if len(bottom) != 4 or len(top) != 4:
+        pts_sorted = sorted(pts, key=lambda p: p[1][vertical_axis])
+        bottom = pts_sorted[:4]
+        top = pts_sorted[4:]
+
+    if len(bottom) != 4 or len(top) != 4:
+        raise ValueError("Could not split hex nodes into 4 bottom + 4 top. Check geometry/tol.")
+
+    # On each face, classify corners by (a,b)
+    def ab(p):
+        return p[1][a_axis], p[1][b_axis]
+
+    a_vals = [ab(p)[0] for p in bottom]
+    b_vals = [ab(p)[1] for p in bottom]
+    a_min, a_max = min(a_vals), max(a_vals)
+    b_min, b_max = min(b_vals), max(b_vals)
+
+    def pick(face, a_target, b_target):
+        # pick the closest node on that face to the target (a,b) corner
+        best = None
+        best_d2 = None
+        for p in face:
+            pa, pb = ab(p)
+            d2 = (pa - a_target) ** 2 + (pb - b_target) ** 2
+            if best is None or d2 < best_d2:
+                best = p
+                best_d2 = d2
+        return best[0]  # node id
+
+    # Bottom nodes in diagram order
+    n1 = pick(bottom, a_min, b_min)
+    n2 = pick(bottom, a_max, b_min)
+    n3 = pick(bottom, a_max, b_max)
+    n4 = pick(bottom, a_min, b_max)
+
+    # Top nodes: prefer vertical pairing (closest in a, b to the corresponding bottom node)
+    top_ids = [p[0] for p in top]
+    # top_map = {}
+
+    def closest_top_to(n_bottom):
+        bx, by, bz = _get_coord(n_bottom, nodeCoords)
+        ba = (bx, by, bz)[a_axis]
+        bb = (bx, by, bz)[b_axis]
+        best = None
+        best_d2 = None
+        for tid in top_ids:
+            tx, ty, tz = _get_coord(tid, nodeCoords)
+            ta = (tx, ty, tz)[a_axis]
+            tb = (tx, ty, tz)[b_axis]
+            d2 = (ta - ba) ** 2 + (tb - bb) ** 2
+            if best is None or d2 < best_d2:
+                best = tid
+                best_d2 = d2
+        return best
+
+    n5 = closest_top_to(n1)
+    n6 = closest_top_to(n2)
+    n7 = closest_top_to(n3)
+    n8 = closest_top_to(n4)
+
+    # Ensure uniqueness (if degeneracy causes duplicates, fall back to corner picking on top)
+    if len({n5, n6, n7, n8}) != 4:
+        ta_vals = [ab(p)[0] for p in top]
+        tb_vals = [ab(p)[1] for p in top]
+        ta_min, ta_max = min(ta_vals), max(ta_vals)
+        tb_min, tb_max = min(tb_vals), max(tb_vals)
+        n5 = pick(top, ta_max, tb_min)
+        n6 = pick(top, ta_max, tb_max)
+        n7 = pick(top, ta_min, tb_max)
+        n8 = pick(top, ta_min, tb_min)
+
+    return [n1, n2, n3, n4, n5, n6, n7, n8]
+
+
+def gmsh_hex8_to_canonical(nodeList, nodeCoords=None, vertical_axis: int = 2, tol: float = 1e-9):
+    """
+    Preferred: coordinate-based reorder if nodeCoords is provided.
+    Fallback: old hard-coded permutation (your existing behavior) if nodeCoords is None.
+    """
+    if nodeCoords is not None:
+        return classify_hex8_nodes(nodeList, nodeCoords, vertical_axis=vertical_axis, tol=tol)
+
+    # Fallback to your legacy mapping if no coordinates available
+    # (This preserves current behavior, so we can switch call sites gradually.)
+    return [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+            nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+
+
 # --------------------------------------------------------------------------------------------------------------
 # Tcl writing utilities
 # --------------------------------------------------------------------------------------------------------------
-
 def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
                   filePrefix="nodes", outputDir=".",
                   elements=None, elementProfileS=None):
@@ -294,7 +448,7 @@ def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
     # ------------------------------------------------------------------------------------------------------------
     nodeDomain = {}
     if elements and elementProfileS:
-        structureTypes = {1, 101}
+        structureTypes = {1, 101, 201, 202}
         for el in elements:
             eType = el["type"]
             domain = "structure" if eType in structureTypes else "soil"
@@ -439,7 +593,9 @@ def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
 
 
 def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
+                     nodeCoords=None,
                      filePrefix="elements_", outputDir='.'):
+
     """
     Writes .tcl files grouped by element type.
 
@@ -448,6 +604,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
     Files are named with the prefix 'elements_' followed by the element key, e.g., elements_quadUP.tcl.
 
     Parameters:
+        nodeCoords: node coordinates
         elements_ (list[dict]): each with keys: 'id', 'type', 'group', 'nodes'
         profiles_ (dict[int, dict]): element type --> profile dict
         mainSoilTags_ (dict[int, int]): per-physical-group soil tag mapping
@@ -805,8 +962,11 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]
 
                     # Same node reordering you use for other 8-node bricks
-                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+                    # nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
+                    #           nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+
+                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
+
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -856,8 +1016,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
+
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -918,8 +1078,9 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+
+                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
+
                     nodes = " ".join(str(n) for n in nodesF)
 
                     f__.write(
@@ -978,8 +1139,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     nodeList = el["nodes"]  # actual list of integers from the mesh
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
-                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
+
                     nodes = " ".join(str(n) for n in nodesF)
 
                     permXSSPbrickUP = {i: permXSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
@@ -1021,8 +1182,7 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     # nodesF = [nodeList[5], nodeList[6], nodeList[2], nodeList[1],
                     #           nodeList[4], nodeList[7], nodeList[3], nodeList[0]]
 
-                    nodesF = [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-                              nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
+                    nodesF = gmsh_hex8_to_canonical(nodeList, nodeCoords=nodeCoords, vertical_axis=2, tol=1e-9)
 
                     nodes = " ".join(str(n) for n in nodesF)
 
@@ -1162,8 +1322,249 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
                     f__.write(line + "\n")
 
+                elif key in ("dispBeamColumn2D", "dispBeamColumn3D"):
+
+                    keyOut = "dispBeamColumn"
+
+                    # REQUIRED by OpenSees for dispBeamColumn:
+                    # element dispBeamColumn $eleTag $iNode $jNode $numIntgrPts $secTag $transfTag ...
+                    numIntgrPts = 5
+                    secTag = 1
+                    transfTag = 1
+
+                    massDens = 0.0     # optional: set > 0.0 to activate -mass
+                    useCMass = False   # optional: True --> add -cMass
+                    intType = None     # optional: e.g., "Legendre", "Lobatto", ...
+
+                    line = (
+                        f"element {keyOut} {el['id']} {nodes} "
+                        f"{numIntgrPts} {secTag} {transfTag}"
+                    )
+
+                    if massDens:
+                        line += f" -mass {massDens}"
+                    if useCMass:
+                        line += " -cMass"
+                    if intType:
+                        line += f" -integration {intType}"
+
+                    f__.write(line + "\n")
+
         written.append(fileName)
     print(f"Wrote element definition files: {', '.join(written)}")
+
+
+# --------------------------------------------------------------------------------------------------------------
+# SSI interface writer (pile-soil) following Rahmani & Pak (2012)
+#   - rigid beam-column connector (same formulation as a pile)
+#   - soil translations slaved to soil-side interface node
+#   - zeroLength between pile-side and soil-side coincident nodes for slip
+# --------------------------------------------------------------------------------------------------------------
+def _next_ids_from_model(nodeCoords, elements):
+    """
+    Returns (nextNodeTag, nextEleTag) that should be safe w.r.t existing tags.
+    """
+    maxNode = max(nodeCoords.keys()) if nodeCoords else 0
+    maxEle = max((el["id"] for el in elements), default=0)
+    return maxNode + 1, maxEle + 1
+
+
+def writeSSIInterfaceTcl(
+    SSI_map,
+    nodeCoords,
+    elements,
+    ndmGlobal,
+    outputDir=".",
+    filePrefix="equalDOF_SSI_interface",
+    # verticalAxis="z",
+    # interface material (paper uses ElasticPP with E=2000 kPa, epsY=0.04)
+    interfaceMatTag=990001,
+    interfaceE=2000.0,
+    interfaceEpsY=0.04,
+    # connector element settings (match your pile formulation)
+    connectorType="dispBeamColumn",   # or "elasticBeamColumn"
+    connectorNumIntPts=5,             # used if dispBeamColumn
+    connectorSecTag=1,
+    connectorTransfTag=1,
+    connectorA=0.25,                  # used if elasticBeamColumn
+    connectorE=2.1e11,
+    connectorG=8.1e10,
+    connectorJ=1.0e-4,
+    connectorIy=2.0e-4,
+    connectorIz=3.0e-4,
+    # id allocation (optional override)
+    startNodeTag=None,
+    startEleTag=None,
+):
+    """
+    Writes a TCL file implementing the pile-soil interface for all entries in SSI_map.
+
+    For each structural (pile) node P:
+      - Create two coincident nodes: Cp (pile-side), Cs (soil-side)
+      - Create rigid connector element: P -- Cp
+      - equalDOF Cs -> each soil node in SSI_map[P] for translational DOFs (1...ndmGlobal)
+      - zeroLength between Cp and Cs in translational directions
+
+    Notes:
+      - We only constrain translations. Rotations of Cp are not connected to soil (consistent with the paper).
+      - For 3D: dirs = 1 2 3 ; for 2D: dirs = 1 2
+    """
+
+    if ndmGlobal not in (2, 3):
+        raise ValueError(f"ndmGlobal must be 2 or 3, got {ndmGlobal}")
+
+    # allocate ids
+    if startNodeTag is None or startEleTag is None:
+        n0, e0 = _next_ids_from_model(nodeCoords, elements)
+        if startNodeTag is None:
+            startNodeTag = n0
+        if startEleTag is None:
+            startEleTag = e0
+
+    nextNode = startNodeTag
+    nextEle = startEleTag
+
+    # directions for translational DOFs
+    if ndmGlobal == 3:
+        dirs = [1, 2, 3]
+    else:
+        dirs = [1, 2]
+
+    outPath = os.path.join(outputDir, f"{filePrefix}.tcl")
+    with open(outPath, "w") as f:
+        f.write("# =================================================================================================\n")
+        f.write("# SSI pile-soil interface constraints/elements\n")
+        # f.write("# Generated by writeSSIInterfaceTcl()\n")
+        f.write("# =================================================================================================\n")
+        f.write("\n")
+
+        # interface material
+        f.write(f"# Interface material (ElasticPP)\n")
+        f.write(f"uniaxialMaterial ElasticPP {interfaceMatTag} {interfaceE} {interfaceEpsY}\n\n")
+
+        for pNode, soilRing in SSI_map.items():
+            if pNode not in nodeCoords:
+                continue
+            if not soilRing:
+                continue
+
+            x, y, z = nodeCoords[pNode]
+
+            # create coincident interface nodes
+            Cp = nextNode
+            nextNode += 1
+            Cs = nextNode
+            nextNode += 1
+
+            if ndmGlobal == 2:
+                f.write(f"node {Cp} {x:.6f} {y:.6f}\n")
+                f.write(f"node {Cs} {x:.6f} {y:.6f}\n")
+            else:
+                f.write(f"node {Cp} {x:.6f} {y:.6f} {z:.6f}\n")
+                f.write(f"node {Cs} {x:.6f} {y:.6f} {z:.6f}\n")
+
+            # connector element (rigid beam-column-like, same as pile formulation)
+            eConn = nextEle
+            nextEle += 1
+            if connectorType == "dispBeamColumn":
+                f.write(
+                    f"element dispBeamColumn {eConn} {pNode} {Cp} "
+                    f"{connectorNumIntPts} {connectorSecTag} {connectorTransfTag}\n"
+                )
+            elif connectorType == "elasticBeamColumn":
+                if ndmGlobal == 2:
+                    # elasticBeamColumn 2D: eleTag i j A E Iz transfTag
+                    f.write(
+                        f"element elasticBeamColumn {eConn} {pNode} {Cp} "
+                        f"{connectorA} {connectorE} {connectorIz} {connectorTransfTag}\n"
+                    )
+                else:
+                    # elasticBeamColumn 3D: eleTag i j A E G J Iy Iz transfTag
+                    f.write(
+                        f"element elasticBeamColumn {eConn} {pNode} {Cp} "
+                        f"{connectorA} {connectorE} {connectorG} {connectorJ} "
+                        f"{connectorIy} {connectorIz} {connectorTransfTag}\n"
+                    )
+            else:
+                raise ValueError(f"Unknown connectorType: {connectorType}")
+
+            # slave soil translations to Cs
+            for sNode in soilRing:
+                if sNode not in nodeCoords:
+                    continue
+                dof_str = " ".join(str(d) for d in dirs)
+                f.write(f"equalDOF {Cs} {sNode} {dof_str}\n")
+
+            # zero-length interface element between Cp and Cs
+            eInt = nextEle
+            nextEle += 1
+            mat_list = " ".join(str(interfaceMatTag) for _ in dirs)
+            dir_list = " ".join(str(d) for d in dirs)
+            f.write(
+                f"element zeroLength {eInt} {Cp} {Cs} -mat {mat_list} -dir {dir_list}\n"
+            )
+
+            f.write("\n")
+
+    print(f"[SSI] Wrote interface TCL: {outPath}")
+    print(f"[SSI] Used node tags [{startNodeTag}..{nextNode-1}] and ele tags [{startEleTag}..{nextEle-1}]")
+    return outPath
+
+
+def inferPileConnectorSpec(elements, ndmGlobal):
+    """
+    Returns kwargs for writeSSIInterfaceTcl that match the pile element formulation used in writeElementsTcl.
+    """
+    # Prefer dispBeamColumn if present; otherwise elasticBeamColumn.
+    types = {el.get("type") for el in elements}
+
+    if ndmGlobal == 3 and ("dispBeamColumn3D" in types or "dispBeamColumn" in types):
+        return dict(
+            connectorType="dispBeamColumn",
+            connectorNumIntPts=5,
+            connectorSecTag=1,
+            connectorTransfTag=1,
+        )
+
+    if ndmGlobal == 3 and ("elasticBeamColumn3D" in types or "elasticBeamColumn" in types):
+        return dict(
+            connectorType="elasticBeamColumn",
+            connectorA=0.25,
+            connectorE=2.1e11,
+            connectorG=8.1e10,
+            connectorJ=1.0e-4,
+            connectorIy=2.0e-4,
+            connectorIz=3.0e-4,
+            connectorTransfTag=1,
+        )
+
+    # 2D variants, if you ever use them
+    if ndmGlobal == 2 and ("dispBeamColumn2D" in types or "dispBeamColumn" in types):
+        return dict(
+            connectorType="dispBeamColumn",
+            connectorNumIntPts=5,
+            connectorSecTag=1,
+            connectorTransfTag=1,
+        )
+
+    if ndmGlobal == 2 and ("elasticBeamColumn2D" in types or "elasticBeamColumn" in types):
+        return dict(
+            connectorType="elasticBeamColumn",
+            connectorA=0.25,
+            connectorE=2.1e11,
+            connectorIz=3.0e-4,
+            connectorTransfTag=1,
+        )
+
+    # fallback: stay consistent with your defaults
+    return dict(connectorType="dispBeamColumn", connectorNumIntPts=5, connectorSecTag=1, connectorTransfTag=1)
+
+# --------------------------------------------------------------------------------------------------------------
+# SSI interface writer (pile-soil) following Rahmani & Pak (2012)
+#   - rigid beam-column connector (same formulation as a pile)
+#   - soil translations slaved to soil-side interface node
+#   - zeroLength between pile-side and soil-side coincident nodes for slip
+# --------------------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -1217,6 +1618,8 @@ elementProfiles = {
     # GMSH TYPE 1 = 2-node line element
     1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
     101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
+    201: {"key": "dispBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
+    202: {"key": "dispBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
     3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
@@ -2001,48 +2404,6 @@ def groupNodesByCoordinate(nodeSet, nodeCoords, axis="y", tol=1e-6):
     return groups
 
 
-def buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords,
-                verticalAxis="y", tol_=1e-6):
-    """
-    Build a mapping: pileNode --> soil face nodes surrounding it.
-
-    Parameters
-    ----------
-    pileNodeSet : set[int]
-        Set of node IDs belonging to pile (2D/3D beam) elements.
-    elements : list[dict]
-        All mesh elements.
-    soilTypes : set[int]
-        Soil element types used to guide the search.
-    nodeCoords : dict[int, tuple]
-        Node coordinates from parseNodesFromMsh.
-    verticalAxis : {"x","y","z"}
-        Which coordinate is considered vertical.
-    tol_ : float
-        Tolerance for geometric checks.
-
-    Returns
-    -------
-    dict[int, list[int]]
-        Mapping: pile node ID --> list of surrounding soil node IDs.
-    """
-
-    SSI_map = {}
-
-    for pNode in pileNodeSet:
-        ring_nodes = soilFaceNodesAroundPile(
-            pNode,
-            elements,
-            soilTypes,
-            nodeCoords,
-            verticalAxis=verticalAxis,
-            tol_=tol_,
-        )
-        SSI_map[pNode] = ring_nodes
-
-    return SSI_map
-
-
 def getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=("x", "y", "z"), dim=None):
     """
     Extract nodes belonging to a physical group and sort them
@@ -2154,6 +2515,48 @@ def selectBuriedStructuralNodes(structuralNodeSet, soil_bbox, nodeCoords, tol):
                 soil_bbox["zMin"] - tol <= z <= soil_bbox["zMax"] + tol):
             buried.add(n)
     return buried
+
+
+def buildSSImap(pileNodeSet, elements, soilTypes, nodeCoords,
+                verticalAxis="y", tol_=1e-6):
+    """
+    Build a mapping: pileNode --> soil face nodes surrounding it.
+
+    Parameters
+    ----------
+    pileNodeSet : set[int]
+        Set of node IDs belonging to pile (2D/3D beam) elements.
+    elements : list[dict]
+        All mesh elements.
+    soilTypes : set[int]
+        Soil element types used to guide the search.
+    nodeCoords : dict[int, tuple]
+        Node coordinates from parseNodesFromMsh.
+    verticalAxis : {"x","y","z"}
+        Which coordinate is considered vertical.
+    tol_ : float
+        Tolerance for geometric checks.
+
+    Returns
+    -------
+    dict[int, list[int]]
+        Mapping: pile node ID --> list of surrounding soil node IDs.
+    """
+
+    SSI_map = {}
+
+    for pNode in pileNodeSet:
+        ring_nodes = soilFaceNodesAroundPile(
+            pNode,
+            elements,
+            soilTypes,
+            nodeCoords,
+            verticalAxis=verticalAxis,
+            tol_=tol_,
+        )
+        SSI_map[pNode] = ring_nodes
+
+    return SSI_map
 
 
 # test

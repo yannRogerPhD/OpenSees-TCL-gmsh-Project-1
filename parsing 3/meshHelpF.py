@@ -2349,3 +2349,532 @@ def selectBuriedStructuralNodes(structuralNodeSet, soil_bbox, nodeCoords, tol):
 # test
 s = "Transfinite Curves {1, 3, 4, 5};"
 print(countINTBraces(s))
+
+
+def isPointInTetrahedron(point, tet_nodes, nodeCoords):
+    """
+    Check if a point is inside a tetrahedron.
+
+    INPUTS:
+    -------
+    point : numpy array (3),
+        The point coordinates [x, y, z]
+
+    tet_nodes : list of 4 integers
+        The 4 node IDs forming the tetrahedron
+
+    nodeCoords : dict
+        Node coordinates {nodeID: (x, y, z)}
+
+    OUTPUTS:
+    --------
+    bool : True if point is inside tetrahedron, False otherwise
+
+    HOW IT WORKS:
+    -------------
+    Uses barycentric coordinates. If all 4 barycentric coordinates are >= 0,
+    the point is inside (or on the boundary of) the tetrahedron.
+    """
+
+    # Get coordinates of the 4 tetrahedron vertices
+    v0 = np.array(nodeCoords[tet_nodes[0]])
+    v1 = np.array(nodeCoords[tet_nodes[1]])
+    v2 = np.array(nodeCoords[tet_nodes[2]])
+    v3 = np.array(nodeCoords[tet_nodes[3]])
+
+    # Compute vectors
+    vec0 = v1 - v0
+    vec1 = v2 - v0
+    vec2 = v3 - v0
+    # vecp = point - v0
+
+    # Compute dot products
+    dot00 = np.dot(vec0, vec0)
+    dot01 = np.dot(vec0, vec1)
+    dot02 = np.dot(vec0, vec2)
+    dot11 = np.dot(vec1, vec1)
+    dot12 = np.dot(vec1, vec2)
+    dot22 = np.dot(vec2, vec2)
+    # dot0p = np.dot(vec0, vecp)
+    # dot1p = np.dot(vec1, vecp)
+    # dot2p = np.dot(vec2, vecp)
+
+    # Compute matrix determinant (6x volume of tetrahedron)
+    M = np.array([
+        [dot00, dot01, dot02],
+        [dot01, dot11, dot12],
+        [dot02, dot12, dot22]
+    ])
+
+    det = np.linalg.det(M)
+
+    # Check for degenerate tetrahedron
+    if abs(det) < 1e-12:
+        return False
+
+    # Solve for barycentric coordinates
+    # We use a simplified check: compute signed volumes
+    def signedVolume(a, b, c, d):
+        """Compute signed volume of tetrahedron abcd"""
+        mat = np.column_stack([b - a, c - a, d - a])
+        return np.linalg.det(mat) / 6.0
+
+    V = signedVolume(v0, v1, v2, v3)
+    if abs(V) < 1e-12:
+        return False  # Degenerate tetrahedron
+
+    V0 = signedVolume(point, v1, v2, v3)
+    V1 = signedVolume(v0, point, v2, v3)
+    V2 = signedVolume(v0, v1, point, v3)
+    V3 = signedVolume(v0, v1, v2, point)
+
+    # Barycentric coordinates
+    u0 = V0 / V
+    u1 = V1 / V
+    u2 = V2 / V
+    u3 = V3 / V
+
+    # Check if all barycentric coordinates are >= -tolerance
+    tol = -1e-6  # Small negative tolerance for numerical errors
+    return u0 >= tol and u1 >= tol and u2 >= tol and u3 >= tol
+
+
+# ==============================================================================
+# decompose 8-node brick into 5 tetrahedra
+# ==============================================================================
+
+def decomposeBrickIntoTetrahedra(brickNodes):
+    """
+    Decompose an 8-node brick into 5 tetrahedra.
+
+    INPUTS:
+    -------
+    brickNodes : list of 8 integers
+        The 8 node IDs of the brick element, ordered as:
+
+              7--------6
+             /|       /|
+            / |      / |
+           4--------5  |
+           |  3-----|--2
+           | /      | /
+           |/       |/
+           0--------1
+
+    OUTPUTS:
+    --------
+    tetrahedra : list of 5 lists
+        Each inner list contains 4 node IDs forming a tetrahedron
+
+    DECOMPOSITION SCHEME:
+    ---------------------
+    There are multiple ways to decompose a brick into tetrahedra.
+    We use a standard scheme that creates 5 tetrahedra:
+
+    Tet 1: [0, 1, 2, 5]
+    Tet 2: [0, 2, 7, 5]
+    Tet 3: [0, 2, 3, 7]
+    Tet 4: [0, 5, 7, 4]
+    Tet 5: [2, 7, 5, 6]
+    """
+
+    # Extract node IDs
+    n0, n1, n2, n3, n4, n5, n6, n7 = brickNodes
+
+    # Define 5 tetrahedra
+    tetrahedra = [
+        [n0, n1, n2, n5],
+        [n0, n2, n7, n5],
+        [n0, n2, n3, n7],
+        [n0, n5, n7, n4],
+        [n2, n7, n5, n6]
+    ]
+
+    return tetrahedra
+
+
+# ==============================================================================
+# find tetrahedron containing pile node
+# ==============================================================================
+
+def findTetrahedronForPileNode(pileNode, nodeCoords, elements, soilTypes, searchRadius=5.0):
+    """
+    Find the tetrahedron (4 nodes) from nearby soil bricks that contains the pile node.
+
+    PURPOSE:
+    --------
+    For 8-node brick soil elements, we need to:
+    1. Find nearby brick elements
+    2. Decompose each brick into 5 tetrahedra
+    3. Test which tetrahedron contains the pile node
+    4. Return those 4 nodes for ASDEmbeddedNodeElement
+
+    INPUTS:
+    -------
+    pileNode : int
+        The pile node ID
+
+    nodeCoords : dict
+        Node coordinates {nodeID: (x, y, z)}
+
+    elements : list of dict
+        All mesh elements
+
+    soilTypes : set of int
+        Soil element types (e.g., {5, 17, 105})
+
+    searchRadius : float
+        How far to search for soil elements (meters)
+        Default: 5.0 m
+
+    OUTPUTS:
+    --------
+    tetNodes : list of 4 integers or None
+        The 4 node IDs forming the tetrahedron that contains the pile node.
+        Returns None if no containing tetrahedron found.
+
+    EXAMPLE:
+    --------
+    # >>> tetNodes1 = findTetrahedronForPileNode(1001, nodeCoords, elements, {5, 17})
+    # >>> if tetNodes1:
+    # >>>     print(f"Found tetrahedron: {tetNodes1}")
+    # >>> else:
+    # >>>     print("No tetrahedron found!")
+    """
+
+    # Get pile node coordinates
+    pileCoord = np.array(nodeCoords[pileNode])
+
+    # Find all soil brick elements
+    soilBricks = [el for el in elements if el['type'] in soilTypes]
+
+    # Search for containing tetrahedron
+    for brick in soilBricks:
+        # Get brick nodes (should be 8 nodes)
+        brickNodes = brick['nodes']
+
+        if len(brickNodes) != 8:
+            print(f"WARNING: Soil element {brick['id']} has {len(brickNodes)} nodes, expected 8. Skipping.")
+            continue
+
+        # Compute brick centroid to check distance
+        brickCoords = [nodeCoords[n] for n in brickNodes]
+        centroid = np.mean(brickCoords, axis=0)
+        distance = np.linalg.norm(pileCoord - centroid)
+
+        # Skip if brick is too far
+        if distance > searchRadius:
+            continue
+
+        # Decompose brick into 5 tetrahedra
+        tetrahedra = decomposeBrickIntoTetrahedra(brickNodes)
+
+        # Check each tetrahedron
+        for tetNodes in tetrahedra:
+            if isPointInTetrahedron(pileCoord, tetNodes, nodeCoords):
+                # Found it!
+                return tetNodes
+
+    # No containing tetrahedron found
+    return None
+
+
+# ==============================================================================
+# write ASDEmbeddedNodeElement for brick meshes
+# ==============================================================================
+
+def writeEmbeddedElementsForBricks(pileNodes, nodeCoords, elements, soilTypes,
+                                   penaltyStiffness, searchRadius, outputFile):
+    """
+    Generate ASDEmbeddedNodeElement commands for pile nodes in 8-node brick mesh.
+
+    PURPOSE:
+    --------
+    This is the modified version of writeEmbeddedElements specifically for
+    8-node brick soil elements. It automatically finds the correct 4 nodes
+    (tetrahedron) for each pile node.
+
+    INPUTS:
+    -------
+    pileNodes : set or list of int
+        All pile node IDs
+
+    nodeCoords : dict
+        Node coordinates {nodeID: (x, y, z)}
+
+    elements : list of dict
+        All mesh elements
+
+    soilTypes : set of int
+        Soil element types (e.g., {5, 17, 105, 1005, 1055})
+
+    penaltyStiffness : float
+        Penalty parameter K (typical: E_soil * 1e4)
+
+    searchRadius : float
+        Search radius for soil elements (meters)
+
+    outputFile : str
+        Path to output TCL file
+
+    OUTPUTS:
+    --------
+    nCreated : int
+        Number of elements created
+
+    EXAMPLE:
+    --------
+    # >>> nCreated1 = writeEmbeddedElementsForBricks(
+    # ...     pileNodes={1001, 1002, 1003},
+    # ...     nodeCoords=nodeCoords,
+    # ...     elements=elements,
+    # ...     soilTypes={5, 17, 105},
+    # ...     penaltyStiffness=2e12,
+    # ...     searchRadius=5.0,
+    # ...     outputFile="embedded_pile_elements.tcl"
+    # ... )
+    # >>> print(f"Created {nCreated1} embedded elements")
+    """
+
+    eleTag = 9000000  # Start element IDs from high number
+    nCreated = 0
+    nFailed = 0
+
+    print(f"  Processing {len(pileNodes)} pile nodes...")
+
+    with open(outputFile, 'w') as f:
+        f.write("# ==============================================================================================\n")
+        f.write("# ASDEmbeddedNodeElement for Pile Nodes\n")
+        f.write("# automatically finds tetrahedra from 8-node bricks\n")
+        f.write("# ==============================================================================================\n\n")
+
+        f.write(f"set K_penalty {penaltyStiffness:.6e}\n\n")
+
+        for pileNode in sorted(pileNodes):
+            # Find the tetrahedron containing this pile node
+            tetNodes = findTetrahedronForPileNode(
+                pileNode, nodeCoords, elements, soilTypes, searchRadius
+            )
+
+            if tetNodes is None:
+                print(f"  WARNING: No tetrahedron found for pile node {pileNode}")
+                nFailed += 1
+                continue
+
+            # Write the TCL command
+            f.write(f"# Pile node {pileNode} embedded in tetrahedron {tetNodes}\n")
+            f.write(f"element ASDEmbeddedNodeElement {eleTag} {pileNode}")
+
+            # Write the 4 tetrahedron nodes
+            for node in tetNodes:
+                f.write(f" {node}")
+
+            f.write(f" -K $K_penalty\n\n")
+
+            eleTag += 1
+            nCreated += 1
+
+    print(f"  ✓ Created {nCreated} ASDEmbeddedNodeElement")
+    if nFailed > 0:
+        print(f"  Failed for {nFailed} pile nodes (increase searchRadius?)")
+
+    return nCreated
+
+
+def computePileNormal(pileNode, pileNodes, nodeCoords, verticalAxis='z'):
+    """
+    Compute outward normal vector for a pile node.
+
+    For a vertical pile, this is the radial direction (perpendicular to pile axis).
+    """
+
+    axis_idx = {'x': 0, 'y': 1, 'z': 2}
+    vert_idx = axis_idx[verticalAxis]
+    horiz_indices = [i for i in [0, 1, 2] if i != vert_idx]
+
+    # Get all pile node coordinates
+    pileCoords = np.array([nodeCoords[n] for n in pileNodes])
+
+    # Compute pile axis center (average horizontal position)
+    center = np.mean(pileCoords[:, horiz_indices], axis=0)
+
+    # Get this node's horizontal position
+    thisCoord = np.array(nodeCoords[pileNode])
+    thisHoriz = thisCoord[horiz_indices]
+
+    # Vector from axis to this node (in horizontal plane)
+    radial = thisHoriz - center
+
+    # Normalize
+    radial_norm = np.linalg.norm(radial)
+    if radial_norm < 1e-10:
+        # Node is on axis - use arbitrary radial direction
+        radial_unit = np.array([1.0, 0.0])
+    else:
+        radial_unit = radial / radial_norm
+
+    # Build 3D normal vector
+    normal = np.zeros(3)
+    normal[horiz_indices] = radial_unit
+    # Vertical component is zero for cylinder
+
+    return normal
+
+
+def writeContactElements(pileNodes, nodeCoords, elements, soilTypes,
+                         Kn, Kt, mu, verticalAxis, outputFile):
+    """
+    Generate TCL file with ZeroLengthContactASDimplex commands.
+
+    PURPOSE:
+    --------
+    This creates the second layer of interface: friction, gap, and slip.
+    Each pile node gets a contact element with friction coefficient mu.
+
+    INPUTS:
+    -------
+    pileNodes : set or list of int
+        All pile node IDs
+
+    nodeCoords : dict
+        Node coordinates
+
+    elements : list of dict
+        Element list
+
+    soilTypes : set of int
+        Soil element types
+
+    Kn : float
+        Normal stiffness (typical: E_soil * 1000)
+
+    Kt : float
+        Tangential stiffness (typical: E_soil * 100)
+
+    mu : float
+        Friction coefficient
+        Typical: (2/3) * tan(phi_soil)
+        For phi=35°: mu ≈ 0.47
+
+    verticalAxis : str
+        'x', 'y', or 'z'
+
+    outputFile : str
+        Path to output TCL file
+
+    OUTPUTS:
+    --------
+    Creates a .tcl file with contact element commands
+    Returns: number of elements created
+
+    EXAMPLE:
+    --------
+    # >>> nCreated1 = writeContactElements(
+    # ...     pileNodes={1001, 1002, 1003},
+    # ...     nodeCoords=nodeCoords,
+    # ...     elements=elements,
+    # ...     soilTypes={5, 17},
+    # ...     Kn=2e11,
+    # ...     Kt=2e10,
+    # ...     mu=0.47,
+    # ...     verticalAxis='z',
+    # ...     outputFile="contact_elements.tcl"
+    # ... )
+    """
+
+    eleTag = 8000000  # Different range from embedded elements
+    nCreated = 0
+
+    # Get all soil nodes
+    soilElements = [el for el in elements if el['type'] in soilTypes]
+    allSoilNodes = set()
+    for el in soilElements:
+        allSoilNodes.update(el['nodes'])
+
+    soilNodesList = sorted(list(allSoilNodes))
+    soilCoords = np.array([nodeCoords[n] for n in soilNodesList])
+
+    with open(outputFile, 'w') as f:
+        f.write("# ================================================================================================\n")
+        f.write("# ZeroLengthContactASDimplex for Pile Interface\n")
+        f.write("# Adds friction, gap opening, slip behavior\n")
+        f.write("# ===============================================================================================\n\n")
+
+        f.write(f"set Kn {Kn:.6e}  ;# Normal stiffness\n")
+        f.write(f"set Kt {Kt:.6e}  ;# Tangential stiffness\n")
+        f.write(f"set mu {mu:.6f}      ;# Friction coefficient\n\n")
+
+        for pileNode in sorted(pileNodes):
+            # Get pile node coordinate
+            pileCoord = np.array(nodeCoords[pileNode])
+
+            # Find nearest soil node (simple approach)
+            distances = np.linalg.norm(soilCoords - pileCoord, axis=1)
+            nearestIdx = np.argmin(distances)
+            nearestSoilNode = soilNodesList[nearestIdx]
+
+            # Compute normal direction
+            normal = computePileNormal(pileNode, pileNodes, nodeCoords, verticalAxis)
+
+            # Write TCL command
+            f.write(f"element zeroLengthContactASDimplex {eleTag} ")
+            f.write(f"{pileNode} {nearestSoilNode} ")
+            f.write(f"$Kn $Kt $mu ")  # ← Move BEFORE -orient
+            f.write(f"-orient {normal[0]:.6f} {normal[1]:.6f} {normal[2]:.6f}\n\n")
+            # f.write(f'-orient "from link direction"\n\n')
+
+            eleTag += 1
+            nCreated += 1
+
+    print(f"[INFO] Created {nCreated} ZeroLengthContactASDimplex in {outputFile}")
+    return nCreated
+
+
+def generatePileInterfaceForBricks(pileNodes, nodeCoords, elements, soilTypes,
+                                   E_soil, phi_soil, verticalAxis='z',
+                                   searchRadius=5.0, outputDir='.'):
+    """MAIN FUNCTION for generating pile interface."""
+
+    import os
+
+    print("\n" + "=" * 70)
+    print("GENERATING PILE INTERFACE ELEMENTS (8-Node Brick Mesh)")
+    print("=" * 70)
+
+    K_penalty = E_soil * 1e1
+    Kn = E_soil * 1e0
+    Kt = E_soil * 1e-1
+    mu = (2.0 / 3.0) * np.tan(np.radians(phi_soil))
+
+    print(f"\nPile nodes: {len(pileNodes)}")
+    print(f"Soil E: {E_soil / 1e6:.1f} MPa")
+    print(f"Soil φ: {phi_soil:.1f}°")
+    print(f"Interface μ: {mu:.3f}")
+    print(f"Search radius: {searchRadius:.1f} m")
+
+    embeddedFile = os.path.join(outputDir, "embeddedPileElements.tcl")
+    contactFile = os.path.join(outputDir, "contactPileElements.tcl")
+
+    print("\n[STEP 1] Generating ASDEmbeddedNodeElement...")
+    nEmbedded = writeEmbeddedElementsForBricks(
+        pileNodes, nodeCoords, elements, soilTypes,
+        K_penalty, searchRadius, embeddedFile
+    )
+
+    print("\n[STEP 2] Generating ZeroLengthContactASDimplex...")
+    nContact = writeContactElements(
+        pileNodes, nodeCoords, elements, soilTypes,
+        Kn, Kt, mu, verticalAxis, contactFile
+    )
+
+    print("\n" + "=" * 70)
+    print("PILE INTERFACE GENERATION COMPLETE")
+    print("=" * 70)
+    print(f"ASDEmbeddedNodeElement:      {nEmbedded}")
+    print(f"ZeroLengthContactASDimplex:  {nContact}")
+    print(f"\nOutput files:")
+    print(f"  - {embeddedFile}")
+    print(f"  - {contactFile}")
+    print("=" * 70 + "\n")
+
+    return nEmbedded, nContact

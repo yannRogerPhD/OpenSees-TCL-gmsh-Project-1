@@ -9,11 +9,11 @@ XMIN_SOIL = -0.5; XMAX_SOIL = 0.5;
 YMIN_SOIL = -0.5; YMAX_SOIL = 0.5;
 ZMIN_SOIL = -0.5; ZMAX_SOIL = 0;
 
-tAbsB = 20; nAbsB = 0;
-tAbsL = 20; nAbsL = 0;
-tAbsR = 20; nAbsR = 0;
-tAbsF = 20; nAbsF = 0;
-tAbsK = 20; nAbsK = 0;
+tAbsB = 20; nAbsB = 1;
+tAbsL = 20; nAbsL = 1;
+tAbsR = 20; nAbsR = 1;
+tAbsF = 20; nAbsF = 1;
+tAbsK = 20; nAbsK = 1;
 
 
 // Coherence after absorbing layers
@@ -65,4 +65,17 @@ For vi In {0:#allVols[]-1}
   Transfinite Surface {ss[]};
   Recombine Surface {ss[]};
   Transfinite Volume {vtag};
-EndFor
+EndFor//+
+Point(9) = {0, 0, -0.25, 1.0};
+//+
+Point(10) = {0, 0, 0, 1.0};
+//+
+Point(11) = {0, 0, 0.15, 1.0};
+//+
+Line(13) = {9, 10};
+//+
+Line(14) = {10, 11};
+//+
+Transfinite Curve {13} = 3 Using Progression 1;
+//+
+Transfinite Curve {14} = 3 Using Progression 1;
