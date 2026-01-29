@@ -1,3 +1,29 @@
+def generate_asd3d_groups(start):
+    """
+    Generate 3D absorbing condition groups_ starting from a given base number.
+    Order: B, L, R, F, K, BL, BR, BF, BK, LF, LK, RF, RK, BLF, BLK, BRF, BRK
+    """
+    # Define the sizes of each group
+    sizes = [25, 20, 20, 20, 20, 5, 5, 5, 5, 4, 4, 4, 4, 1, 1, 1, 1]
+    names = ['B', 'L', 'R', 'F', 'K', 'BL', 'BR', 'BF', 'BK',
+             'LF', 'LK', 'RF', 'RK', 'BLF', 'BLK', 'BRF', 'BRK']
+
+    groups_ = {}
+    current = start
+
+    for name_, size in zip(names, sizes):
+        groups_[f'ASD3D{name_}Grp'] = set(range(current, current + size))
+        current += size
+
+    return groups_
+
+
+# Example usage:
+if __name__ == "__main__":
+    lastVol = 180
+    groups = generate_asd3d_groups(lastVol+1)
+    for name, grp in groups.items():
+        print(f"{name} = set(range({min(grp)}, {max(grp) + 1}))")
 """
 # !!!!----
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!! SELECTING A GROUP OF NODES IN A UNION MANNER !!!!!!!!!!!!!!!!!!!!!!!!!!!!

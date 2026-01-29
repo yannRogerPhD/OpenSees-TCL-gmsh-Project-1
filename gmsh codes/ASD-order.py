@@ -84,6 +84,7 @@ def emit_absorbing_id_definitions(nx: int, ny: int, nz: int, abs_layers: int = 1
 
 # Example (your case)
 if __name__ == "__main__":
-    print(emit_absorbing_id_definitions(nx=5, ny=5, nz=4, abs_layers=1))
+    # DO NOT FORGET TO CONSIDER IN CASE OF SYMMETRY IN CASE THERE IS (multiply by 02 in the symmetry direction)
+    print(emit_absorbing_id_definitions(nx=5*2, ny=6, nz=3, abs_layers=1))
 
-print(set(range(244, 245)))
+# print(set(range(244, 245)))
