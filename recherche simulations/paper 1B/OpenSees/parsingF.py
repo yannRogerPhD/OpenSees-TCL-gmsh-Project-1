@@ -217,3 +217,5 @@ generateAdaptiveAnalysisTcl(
     permUpdateInterval=60,
     filename="dynamicAnalysis_adaptive.tcl"
 )
+
+print(soilTypes)

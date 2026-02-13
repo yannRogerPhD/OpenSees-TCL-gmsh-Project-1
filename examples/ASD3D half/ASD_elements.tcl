@@ -1,0 +1,17 @@
+source TCL-Files/model/elements_ASD3DB.tcl
+source TCL-Files/model/elements_ASD3DBF.tcl
+source TCL-Files/model/elements_ASD3DBK.tcl
+source TCL-Files/model/elements_ASD3DBL.tcl
+source TCL-Files/model/elements_ASD3DBLF.tcl
+source TCL-Files/model/elements_ASD3DBLK.tcl
+source TCL-Files/model/elements_ASD3DBR.tcl
+source TCL-Files/model/elements_ASD3DBRF.tcl
+source TCL-Files/model/elements_ASD3DBRK.tcl
+source TCL-Files/model/elements_ASD3DF.tcl
+source TCL-Files/model/elements_ASD3DK.tcl
+source TCL-Files/model/elements_ASD3DL.tcl
+source TCL-Files/model/elements_ASD3DLF.tcl
+source TCL-Files/model/elements_ASD3DLK.tcl
+source TCL-Files/model/elements_ASD3DR.tcl
+source TCL-Files/model/elements_ASD3DRF.tcl
+source TCL-Files/model/elements_ASD3DRK.tcl

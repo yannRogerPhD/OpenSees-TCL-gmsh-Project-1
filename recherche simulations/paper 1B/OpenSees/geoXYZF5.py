@@ -821,10 +821,10 @@ if __name__ == "__main__":
     y_center = 0.0
 
     x_widths = [3*5, 1*2.68, 2*1.34, 1*0.5, 1*0.335, 1*0.335, 1*0.5, 2*1.34, 1*2.68, 3*5]
-    y_widths = [2*2.68, 1*0.5, 1*0.335, 1*0.335, 1*0.5, 2*2.68]
+    y_widths = [2*2.68, 1*0.5, 1*0.335]
 
     XMeshSizes = [5, 2.68, 1.34, 0.5, 0.335, 0.335, 0.5, 1.34, 2.68, 5]
-    YMeshSizes = [2.68, 0.5, 0.335, 0.335, 0.5, 2.68]
+    YMeshSizes = [2.68, 0.5, 0.335]
 
     # x_widths = [260 / 5, 260 / 5, 260 / 5, 260 / 5, 260 / 5]
     # y_widths = [260 / 5, 260 / 5, 260 / 5, 260 / 5, 260 / 5]
@@ -871,7 +871,7 @@ if __name__ == "__main__":
     ]
 
     # order = ["B", "L", "R", "F", "K", "BL", "BR", "BF", "BK", "LF", "LK", "RF", "RK", "BLF", "BLK", "BRF", "BRK"]
-    order = ["B", "L", "R", "F", "K", "BL", "BR", "BF", "BK", "LF", "LK", "RF", "RK", "BLF", "BLK", "BRF", "BRK"]
+    order = ["B", "L", "R", "F", "BL", "BR", "BF", "LF", "RF", "BLF", "BRF"]
     # order = []
     geo = emit_geo(
         boxes,
@@ -882,5 +882,5 @@ if __name__ == "__main__":
         btypes=set(order),
     )
 
-    with open("model.geo", "w", encoding="utf-8") as f:
+    with open("model22.geo", "w", encoding="utf-8") as f:
         f.write(geo)

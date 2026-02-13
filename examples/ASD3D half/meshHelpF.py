@@ -82,11 +82,7 @@ def remapElementTypes(elements, groupSets):
 
         # Beam remapping
         if t == 1:
-            if g in groupSets.get("dispBeam2DGrp", set()):
-                el["type"] = 201
-            elif g in groupSets.get("dispBeam3DGrp", set()):
-                el["type"] = 202
-            elif g in groupSets["beam2DGrp"]:
+            if g in groupSets["beam2DGrp"]:
                 el["type"] = 1
             elif g in groupSets["beam3DGrp"]:
                 el["type"] = 101
@@ -144,8 +140,6 @@ def summarizeRemaps(elements):
         # 1D beams
         1: "elasticBeamColumn2D",
         101: "elasticBeamColumn3D",
-        201: "displacementBeam2D",
-        202: "displacementBeam3D",
 
         # 2D elements
         3: "quad (plain 2D)",
@@ -253,7 +247,7 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
         dofMap = ruleFunc(el["nodes"])
 
         # classify as structure or soil by group membership
-        if eType in (1, 101, 201, 202) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
+        if eType in (1, 101) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
             target = nodeDOFs_struct
         else:
             target = nodeDOFs_soil
@@ -269,7 +263,7 @@ def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
 def _axis_pair_indices(vertical_axis: int):
     """
     For a chosen vertical axis (0=x,1=y,2=z), returns the two in-plane axis indices.
-    Example: vertical_axis=2 (z up) --> in-plane axes are x(0), y(1).
+    Example: vertical_axis=2 (z up) -> in-plane axes are x(0), y(1).
     """
     axes = [0, 1, 2]
     axes.remove(vertical_axis)
@@ -357,10 +351,10 @@ def classify_hex8_nodes(nodeList, nodeCoords, vertical_axis: int = 2, tol: float
         return best[0]  # node id
 
     # Bottom nodes in diagram order
-    n1 = pick(bottom, a_min, b_min)
     n2 = pick(bottom, a_max, b_min)
     n3 = pick(bottom, a_max, b_max)
     n4 = pick(bottom, a_min, b_max)
+    n1 = pick(bottom, a_min, b_min)
 
     # Top nodes: prefer vertical pairing (closest in a, b to the corresponding bottom node)
     top_ids = [p[0] for p in top]
@@ -448,7 +442,7 @@ def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
     # ------------------------------------------------------------------------------------------------------------
     nodeDomain = {}
     if elements and elementProfileS:
-        structureTypes = {1, 101, 201, 202}
+        structureTypes = {1, 101}
         for el in elements:
             eType = el["type"]
             domain = "structure" if eType in structureTypes else "soil"
@@ -998,7 +992,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     PermXBrickUP = 5.0e-4
                     PermYBrickUP = 5.0e-4
                     PermZBrickUP = 5.0e-4
-
                     # alpha_ = 4 # in degrees already! always convert in degrees
                     PermXBrickUP = {i: PermXBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
                     PermYBrickUP = {i: PermYBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
@@ -1109,8 +1102,8 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     # in this case, only "Planes 2 and 3" will have customized porosity (perhaps different from 1.0)
 
                     porosityCustom = {
-                        1: 0.409,
-                        2: 0.377
+                        2: 1.01,
+                        3: 1.02
                     }
 
                     # ensure all other groups get default 1.0 if not explicitly listed
@@ -1121,49 +1114,15 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
                     Bf = 2.2e6  # kN/m^2 (for pure water)
 
-                    bulkSSPbrickUP = {i: Bf for i in mainSoilTags_}  # fluid bulk modulus
+                    bulkSSPbrickUP = {i: Bf / porosity[i] for i in mainSoilTags_}  # fluid bulk modulus
                     fMassSSPbrickUP = {i: 1.0 for i in mainSoilTags_}  # fluid density
 
-                    # permeability defined per physical group (same pattern as porosity)
-                    # default raw permeability (m/s) for any group not explicitly listed
-                    permDefaultX, permDefaultY, permDefaultZ = 6.05e-5, 6.05e-5, 6.05e-5
+                    permXSSPbrickUP = 5.0e-4  # isotropic permeability (m/s)
+                    permYSSPbrickUP = 5.0e-4
+                    permZSSPbrickUP = 5.0e-4
 
-                    # Override specific physical groups (example values)
-                    permCustomX = {
-                        1: 6.05e-5,  # layer 1 (e.g. loose)
-                        2: 3.70e-5   # layer 2 (e.g. dense)
-                    }
-                    permCustomY = {
-                        1: 6.05e-5,
-                        2: 3.70e-5
-                    }
-                    permCustomZ = {
-                        1: 6.05e-5,
-                        2: 3.70e-5
-                    }
-
-                    # Build full permeability maps for all groups in mainSoilTags_
-                    permRawX, permRawY, permRawZ = {}, {}, {}
-                    for i in mainSoilTags_:
-                        ii = int(i)
-                        permRawX[ii] = float(permCustomX.get(ii, permDefaultX))
-                        permRawY[ii] = float(permCustomY.get(ii, permDefaultY))
-                        permRawZ[ii] = float(permCustomZ.get(ii, permDefaultZ))
-
-                    # voids (or void ratio / void fraction): defined per physical group like porosity
-                    voidsDefault = 0.7
-
-                    # recall: void ratio e = n / (1 - n); n = porosity
-                    voidsCustom = {
-                        1: 0.692,  # layer 1 (e.g. loose)
-                        2: 0.605   # layer 2 (e.g. dense)
-                    }
-
-                    voidsSSPbrickUP = {}
-                    for i in mainSoilTags_:
-                        voidsSSPbrickUP[i] = float(voidsCustom.get(int(i), voidsDefault))
-
-                    alphaParamSSPbrickUP = {i: 2.0e-6 for i in mainSoilTags_}  # stabilization parameter
+                    voidsSSPbrickUP = {i: 0.7 for i in mainSoilTags_}
+                    alphaParamSSPbrickUP = {i: 2.4e-6 for i in mainSoilTags_}  # stabilization parameter
 
                     alpha__ = 0.0  # in degrees
                     alphaVal = np.deg2rad(alpha__)
@@ -1178,9 +1137,9 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
                     nodes = " ".join(str(n) for n in nodesF)
 
-                    permXSSPbrickUP = {i: permRawX[i] / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
-                    permYSSPbrickUP = {i: permRawY[i] / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
-                    permZSSPbrickUP = {i: permRawZ[i] / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
+                    permXSSPbrickUP = {i: permXSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
+                    permYSSPbrickUP = {i: permYSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
+                    permZSSPbrickUP = {i: permZSSPbrickUP / (gVal_ * fMassSSPbrickUP[i]) for i in mainSoilTags_}
 
                     f__.write(
                         f"element "
@@ -1357,40 +1316,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
 
                     f__.write(line + "\n")
 
-                elif key in ("dispBeamColumn2D", "dispBeamColumn3D"):
-
-                    keyOut = "dispBeamColumn"
-
-                    # REQUIRED by OpenSees for dispBeamColumn:
-                    # element dispBeamColumn $eleTag $iNode $jNode $numIntgrPts $secTag $transfTag ...
-                    numIntgrPts = 5
-                    secTag = 1
-                    transfTag = 1
-
-                    rhoPile = 2.4
-                    outerDiamP = 0.67
-                    thickPile = 0.019
-
-                    pileArea = (np.pi/4) * ((outerDiamP ** 2) - (outerDiamP - 2 * thickPile) ** 2)
-
-                    massDens = pileArea * rhoPile    # optional: set > 0.0 to activate -mass
-                    useCMass = False                 # optional: True --> add -cMass
-                    intType = None                   # optional: e.g., "Legendre", "Lobatto", ...
-
-                    line = (
-                        f"element {keyOut} {el['id']} {nodes} "
-                        f"{numIntgrPts} {secTag} {transfTag}"
-                    )
-
-                    if massDens:
-                        line += f" -mass {massDens}"
-                    if useCMass:
-                        line += " -cMass"
-                    if intType:
-                        line += f" -integration {intType}"
-
-                    f__.write(line + "\n")
-
         written.append(fileName)
     print(f"Wrote element definition files: {', '.join(written)}")
 
@@ -1446,8 +1371,6 @@ elementProfiles = {
     # GMSH TYPE 1 = 2-node line element
     1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
     101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
-    201: {"key": "dispBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    202: {"key": "dispBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
 
     # SOIL ELEMENTS NOW
     3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
@@ -1555,118 +1478,101 @@ def parseElementsFromMsh(meshFile):
     return elements
 
 
-def getBoundaryNodesFromMsh(meshFile, phyGroupIDs=None, dim=None):
+def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None, dim=None):
     """
-    returns the nodes belonging to elements of a specified geometric dimension
-    (1=line, 2=surface, 3=volume); if no dimension is given, defaults to the
+    Returns the nodes belonging to elements of a specified geometric dimension
+    (1=line, 2=surface, 3=volume); If no dimension is given, defaults to the
     'before last' element type (for backward compatibility).
 
-    :param meshFile: (str) path to .msh file
-    :param phyGroupIDs: (list[int]|None) if given, restricts nodes to these (or this) physical group(s)
-    :param dim: (int, optional) geometric dimension to extract (1=line, 2=surface, 3=volume)
+    Args:
+        meshFile_ (str): path to .msh file
+        phyGroupID (int, optional): if given, restricts nodes to this physical group
+        dim (int, optional): geometric dimension to extract (1=line, 2=surface, 3=volume)
 
-    :return: (set) node tags associated with the chosen element type(s)
+    Returns:
+        set[int]: node tags associated with the chosen element type(s)
     """
 
-    # empty list mean "return empty"
-    if not phyGroupIDs:
-        return set()
-
-    phyGroupSet = None if phyGroupIDs is None else set(phyGroupIDs)
-
-    # map common element types to their geometric dimensions
-    eleTypeToDim = {
-        1: 1,    # 2-node line
-        2: 2,    # 3-node triangle
-        3: 2,    # 4-node quadrilateral
-        4: 3,    # 4-node tetrahedron
-        5: 3,    # 8-node hexahedron
-        6: 3,    # 6-node prism
-        7: 3,    # 5-node pyramid
-        8: 1,    # 3-node quadratic line
-        9: 2,    # 6-node quadratic triangle
-        10: 2,   # 9-node quadratic quad
-        11: 3,   # 10-node quadratic tetra
-        16: 2,   # 8-node serendipity quad
-        17: 3,   # 20-node serendipity hex
+    # !!! Map common element types to their geometric dimensions !!!
+    eleType_to_dim = {
+        1: 1,  # 2-node line
+        2: 2,  # 3-node triangle
+        3: 2,  # 4-node quadrilateral
+        4: 3,  # 4-node tetrahedron
+        5: 3,  # 8-node hexahedron
+        6: 3,  # 6-node prism
+        7: 3,  # 5-node pyramid
+        8: 1,  # 3-node quadratic line
+        9: 2,  # 6-node quadratic triangle
+        10: 2,  # 9-node quadratic quad
+        11: 3,  # 10-node quadratic tetra
+        16: 2,  # 8-node serendipity quad
+        17: 3,  # 20-node serendipity hex
     }
 
-    # step 1: collect element types from the mesh
-    with open(meshFile) as f:
-        lines = f.readlines()
-
+    # !!! Step 1. Collect element types from the mesh !!!
     eleTypesRaw = []
-    inElements = False
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) > 1:
+                    try:
+                        eleType_ = int(parts_[1])
+                        eleTypesRaw.append(eleType_)
+                    except ValueError:
+                        continue
 
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) > 1:
-                try:
-                    eleType = int(parts[1])
-                    eleTypesRaw.append(eleType)
-                except ValueError:
-                    continue
-
-    # get distinct types in order of appearance
     distinctTypes = []
     for t in eleTypesRaw:
         if not distinctTypes or t != distinctTypes[-1]:
             distinctTypes.append(t)
 
     if not distinctTypes:
-        raise RuntimeError(f"no elements found in {meshFile}")
+        raise RuntimeError(f"No elements found in {meshFile_}")
 
-    # step 2: determine which element types to target
+    # !!! Step 2. Determine which element types to target !!!
     if dim is not None:
-        # filter element types by requested dimension
-        targetTypes = [t for t in distinctTypes if eleTypeToDim.get(t) == dim]
+        # Filter element types by requested dimension
+        targetTypes = [t for t in distinctTypes if eleType_to_dim.get(t) == dim]
         if not targetTypes:
-            raise ValueError(f"no elements of dimension {dim} found in {meshFile}")
+            raise ValueError(f"No elements of dimension {dim} found in {meshFile_}")
     else:
-        # default behavior: before-last distinct type
+        # Default behavior: before-last distinct type
         eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
         targetTypes = [eleTypeBL]
 
-    # step 3: collect nodes from matching elements
+    # !!! Step 3. Collect nodes from matching elements !!!
     boundaryNodes = set()
-
-    # with open(meshFile) as f:
-    #     lines = f.readlines()
-
-    inElements = False
-
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) >= 7:
-                try:
-                    eleType = int(parts[1])
-                    phyGroup = int(parts[4])
-
-                    groupOK = (phyGroupSet is None) or (phyGroup in phyGroupSet)
-
-                    if eleType in targetTypes and groupOK:
-                        nodesB = [int(n) for n in parts[5:]]
-                        boundaryNodes.update(nodesB)
-                except ValueError:
-                    continue
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) >= 7:
+                    try:
+                        eleType = int(parts_[1])
+                        phyGroup = int(parts_[4])
+                        if eleType in targetTypes and (phyGroupID is None or phyGroup == phyGroupID):
+                            nodesB = [int(n) for n in parts_[5:]]
+                            boundaryNodes.update(nodesB)
+                    except ValueError:
+                        continue
 
     return boundaryNodes
 
@@ -2318,7 +2224,7 @@ def getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=("x", "y", "z"),
     """
 
     # step 1: extract raw group nodes
-    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[phyGroupID], dim=dim)
+    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=dim)
 
     # step 2: sort according to user-defined axis sequence
     sortedNodes = rawNodes
@@ -2407,1301 +2313,3 @@ def selectBuriedStructuralNodes(structuralNodeSet, soil_bbox, nodeCoords, tol):
 # test
 s = "Transfinite Curves {1, 3, 4, 5};"
 print(countINTBraces(s))
-
-
-def isPointInTetrahedron(point, tet_nodes, nodeCoords):
-    """
-    Check if a point is inside a tetrahedron.
-
-    INPUTS:
-    -------
-    point : numpy array (3),
-        The point coordinates [x, y, z]
-
-    tet_nodes : list of 4 integers
-        The 4 node IDs forming the tetrahedron
-
-    nodeCoords : dict
-        Node coordinates {nodeID: (x, y, z)}
-
-    OUTPUTS:
-    --------
-    bool : True if point is inside tetrahedron, False otherwise
-
-    HOW IT WORKS:
-    -------------
-    Uses barycentric coordinates. If all 4 barycentric coordinates are >= 0,
-    the point is inside (or on the boundary of) the tetrahedron.
-    """
-
-    # Get coordinates of the 4 tetrahedron vertices
-    v0 = np.array(nodeCoords[tet_nodes[0]])
-    v1 = np.array(nodeCoords[tet_nodes[1]])
-    v2 = np.array(nodeCoords[tet_nodes[2]])
-    v3 = np.array(nodeCoords[tet_nodes[3]])
-
-    # Compute vectors
-    vec0 = v1 - v0
-    vec1 = v2 - v0
-    vec2 = v3 - v0
-    # vecp = point - v0
-
-    # Compute dot products
-    dot00 = np.dot(vec0, vec0)
-    dot01 = np.dot(vec0, vec1)
-    dot02 = np.dot(vec0, vec2)
-    dot11 = np.dot(vec1, vec1)
-    dot12 = np.dot(vec1, vec2)
-    dot22 = np.dot(vec2, vec2)
-    # dot0p = np.dot(vec0, vecp)
-    # dot1p = np.dot(vec1, vecp)
-    # dot2p = np.dot(vec2, vecp)
-
-    # Compute matrix determinant (6x volume of tetrahedron)
-    M = np.array([
-        [dot00, dot01, dot02],
-        [dot01, dot11, dot12],
-        [dot02, dot12, dot22]
-    ])
-
-    det = np.linalg.det(M)
-
-    # Check for degenerate tetrahedron
-    if abs(det) < 1e-12:
-        return False
-
-    # Solve for barycentric coordinates
-    # We use a simplified check: compute signed volumes
-    def signedVolume(a, b, c, d):
-        """Compute signed volume of tetrahedron abcd"""
-        mat = np.column_stack([b - a, c - a, d - a])
-        return np.linalg.det(mat) / 6.0
-
-    V = signedVolume(v0, v1, v2, v3)
-    if abs(V) < 1e-12:
-        return False  # Degenerate tetrahedron
-
-    V0 = signedVolume(point, v1, v2, v3)
-    V1 = signedVolume(v0, point, v2, v3)
-    V2 = signedVolume(v0, v1, point, v3)
-    V3 = signedVolume(v0, v1, v2, point)
-
-    # Barycentric coordinates
-    u0 = V0 / V
-    u1 = V1 / V
-    u2 = V2 / V
-    u3 = V3 / V
-
-    # Check if all barycentric coordinates are >= -tolerance
-    tol = -1e-6  # Small negative tolerance for numerical errors
-    return u0 >= tol and u1 >= tol and u2 >= tol and u3 >= tol
-
-
-# ==============================================================================
-# decompose 8-node brick into 5 tetrahedra
-# ==============================================================================
-
-def decomposeBrickIntoTetrahedra(brickNodes):
-    """
-    Decompose an 8-node brick into 5 tetrahedra.
-
-    INPUTS:
-    -------
-    brickNodes : list of 8 integers
-        The 8 node IDs of the brick element, ordered as:
-
-              7--------6
-             /|       /|
-            / |      / |
-           4--------5  |
-           |  3-----|--2
-           | /      | /
-           |/       |/
-           0--------1
-
-    OUTPUTS:
-    --------
-    tetrahedra : list of 5 lists
-        Each inner list contains 4 node IDs forming a tetrahedron
-
-    DECOMPOSITION SCHEME:
-    ---------------------
-    There are multiple ways to decompose a brick into tetrahedra.
-    We use a standard scheme that creates 5 tetrahedra:
-
-    Tet 1: [0, 1, 2, 5]
-    Tet 2: [0, 2, 7, 5]
-    Tet 3: [0, 2, 3, 7]
-    Tet 4: [0, 5, 7, 4]
-    Tet 5: [2, 7, 5, 6]
-    """
-
-    # Extract node IDs
-    n0, n1, n2, n3, n4, n5, n6, n7 = brickNodes
-
-    # Define 5 tetrahedra
-    tetrahedra = [
-        [n0, n1, n2, n5],
-        [n0, n2, n7, n5],
-        [n0, n2, n3, n7],
-        [n0, n5, n7, n4],
-        [n2, n7, n5, n6]
-    ]
-
-    return tetrahedra
-
-
-# ==============================================================================
-# find tetrahedron containing pile node
-# ==============================================================================
-
-def findTetrahedronForPileNode(pileNode, nodeCoords, elements, soilTypes, searchRadius=5.0):
-    """
-    Find the tetrahedron (4 nodes) from nearby soil bricks that contains the pile node.
-
-    PURPOSE:
-    --------
-    For 8-node brick soil elements, we need to:
-    1. Find nearby brick elements
-    2. Decompose each brick into 5 tetrahedra
-    3. Test which tetrahedron contains the pile node
-    4. Return those 4 nodes for ASDEmbeddedNodeElement
-
-    INPUTS:
-    -------
-    pileNode : int
-        The pile node ID
-
-    nodeCoords : dict
-        Node coordinates {nodeID: (x, y, z)}
-
-    elements : list of dict
-        All mesh elements
-
-    soilTypes : set of int
-        Soil element types (e.g., {5, 17, 105})
-
-    searchRadius : float
-        How far to search for soil elements (meters)
-        Default: 5.0 m
-
-    OUTPUTS:
-    --------
-    tetNodes : list of 4 integers or None
-        The 4 node IDs forming the tetrahedron that contains the pile node.
-        Returns None if no containing tetrahedron found.
-
-    EXAMPLE:
-    --------
-    # >>> tetNodes1 = findTetrahedronForPileNode(1001, nodeCoords, elements, {5, 17})
-    # >>> if tetNodes1:
-    # >>>     print(f"Found tetrahedron: {tetNodes1}")
-    # >>> else:
-    # >>>     print("No tetrahedron found!")
-    """
-
-    # Get pile node coordinates
-    pileCoord = np.array(nodeCoords[pileNode])
-
-    # Find all soil brick elements
-    soilBricks = [el for el in elements if el['type'] in soilTypes]
-
-    # Search for containing tetrahedron
-    for brick in soilBricks:
-        # Get brick nodes (should be 8 nodes)
-        brickNodes = brick['nodes']
-
-        if len(brickNodes) != 8:
-            print(f"WARNING: Soil element {brick['id']} has {len(brickNodes)} nodes, expected 8. Skipping.")
-            continue
-
-        # Compute brick centroid to check distance
-        brickCoords = [nodeCoords[n] for n in brickNodes]
-        centroid = np.mean(brickCoords, axis=0)
-        distance = np.linalg.norm(pileCoord - centroid)
-
-        # Skip if brick is too far
-        if distance > searchRadius:
-            continue
-
-        # Decompose brick into 5 tetrahedra
-        tetrahedra = decomposeBrickIntoTetrahedra(brickNodes)
-
-        # Check each tetrahedron
-        for tetNodes in tetrahedra:
-            if isPointInTetrahedron(pileCoord, tetNodes, nodeCoords):
-                # Found it!
-                return tetNodes
-
-    # No containing tetrahedron found
-    return None
-
-
-# ==============================================================================
-# write ASDEmbeddedNodeElement for brick meshes
-# ==============================================================================
-
-def writeEmbeddedElementsForBricks(pileNodes, nodeCoords, elements, soilTypes,
-                                   penaltyStiffness, searchRadius, outputFile):
-    """
-    Generate ASDEmbeddedNodeElement commands for pile nodes in 8-node brick mesh.
-
-    PURPOSE:
-    --------
-    This is the modified version of writeEmbeddedElements specifically for
-    8-node brick soil elements. It automatically finds the correct 4 nodes
-    (tetrahedron) for each pile node.
-
-    INPUTS:
-    -------
-    pileNodes : set or list of int
-        All pile node IDs
-
-    nodeCoords : dict
-        Node coordinates {nodeID: (x, y, z)}
-
-    elements : list of dict
-        All mesh elements
-
-    soilTypes : set of int
-        Soil element types (e.g., {5, 17, 105, 1005, 1055})
-
-    penaltyStiffness : float
-        Penalty parameter K (typical: E_soil * 1e4)
-
-    searchRadius : float
-        Search radius for soil elements (meters)
-
-    outputFile : str
-        Path to output TCL file
-
-    OUTPUTS:
-    --------
-    nCreated : int
-        Number of elements created
-
-    EXAMPLE:
-    --------
-    # >>> nCreated1 = writeEmbeddedElementsForBricks(
-    # ...     pileNodes={1001, 1002, 1003},
-    # ...     nodeCoords=nodeCoords,
-    # ...     elements=elements,
-    # ...     soilTypes={5, 17, 105},
-    # ...     penaltyStiffness=2e12,
-    # ...     searchRadius=5.0,
-    # ...     outputFile="embedded_pile_elements.tcl"
-    # ... )
-    # >>> print(f"Created {nCreated1} embedded elements")
-    """
-
-    eleTag = 9000000  # Start element IDs from high number
-    nCreated = 0
-    nFailed = 0
-
-    print(f"  Processing {len(pileNodes)} pile nodes...")
-
-    with open(outputFile, 'w') as f:
-        f.write("# ==============================================================================================\n")
-        f.write("# ASDEmbeddedNodeElement for Pile Nodes\n")
-        f.write("# automatically finds tetrahedra from 8-node bricks\n")
-        f.write("# ==============================================================================================\n\n")
-
-        f.write(f"set K_penalty {penaltyStiffness:.6e}\n\n")
-
-        for pileNode in sorted(pileNodes):
-            # Find the tetrahedron containing this pile node
-            tetNodes = findTetrahedronForPileNode(
-                pileNode, nodeCoords, elements, soilTypes, searchRadius
-            )
-
-            if tetNodes is None:
-                print(f"  WARNING: No tetrahedron found for pile node {pileNode}")
-                nFailed += 1
-                continue
-
-            # Write the TCL command
-            f.write(f"# Pile node {pileNode} embedded in tetrahedron {tetNodes}\n")
-            f.write(f"element ASDEmbeddedNodeElement {eleTag} {pileNode}")
-
-            # Write the 4 tetrahedron nodes
-            for node in tetNodes:
-                f.write(f" {node}")
-
-            f.write(f" -K $K_penalty\n\n")
-
-            eleTag += 1
-            nCreated += 1
-
-    print(f"  ✓ Created {nCreated} ASDEmbeddedNodeElement")
-    if nFailed > 0:
-        print(f"  Failed for {nFailed} pile nodes (increase searchRadius?)")
-
-    return nCreated
-
-
-def computePileNormal(pileNode, pileNodes, nodeCoords, verticalAxis='z'):
-    """
-    Compute outward normal vector for a pile node.
-
-    For a vertical pile, this is the radial direction (perpendicular to pile axis).
-    """
-
-    axis_idx = {'x': 0, 'y': 1, 'z': 2}
-    vert_idx = axis_idx[verticalAxis]
-    horiz_indices = [i for i in [0, 1, 2] if i != vert_idx]
-
-    # Get all pile node coordinates
-    pileCoords = np.array([nodeCoords[n] for n in pileNodes])
-
-    # Compute pile axis center (average horizontal position)
-    center = np.mean(pileCoords[:, horiz_indices], axis=0)
-
-    # Get this node's horizontal position
-    thisCoord = np.array(nodeCoords[pileNode])
-    thisHoriz = thisCoord[horiz_indices]
-
-    # Vector from axis to this node (in horizontal plane)
-    radial = thisHoriz - center
-
-    # Normalize
-    radial_norm = np.linalg.norm(radial)
-    if radial_norm < 1e-10:
-        # Node is on axis - use arbitrary radial direction
-        radial_unit = np.array([1.0, 0.0])
-    else:
-        radial_unit = radial / radial_norm
-
-    # Build 3D normal vector
-    normal = np.zeros(3)
-    normal[horiz_indices] = radial_unit
-    # Vertical component is zero for cylinder
-
-    return normal
-
-
-def writeContactElements(pileNodes, nodeCoords, elements, soilTypes,
-                         Kn, Kt, mu, verticalAxis, outputFile):
-    """
-    Generate TCL file with ZeroLengthContactASDimplex commands.
-
-    PURPOSE:
-    --------
-    This creates the second layer of interface: friction, gap, and slip.
-    Each pile node gets a contact element with friction coefficient mu.
-
-    INPUTS:
-    -------
-    pileNodes : set or list of int
-        All pile node IDs
-
-    nodeCoords : dict
-        Node coordinates
-
-    elements : list of dict
-        Element list
-
-    soilTypes : set of int
-        Soil element types
-
-    Kn : float
-        Normal stiffness (typical: E_soil * 1000)
-
-    Kt : float
-        Tangential stiffness (typical: E_soil * 100)
-
-    mu : float
-        Friction coefficient
-        Typical: (2/3) * tan(phi_soil)
-        For phi=35°: mu ≈ 0.47
-
-    verticalAxis : str
-        'x', 'y', or 'z'
-
-    outputFile : str
-        Path to output TCL file
-
-    OUTPUTS:
-    --------
-    Creates a .tcl file with contact element commands
-    Returns: number of elements created
-
-    EXAMPLE:
-    --------
-    # >>> nCreated1 = writeContactElements(
-    # ...     pileNodes={1001, 1002, 1003},
-    # ...     nodeCoords=nodeCoords,
-    # ...     elements=elements,
-    # ...     soilTypes={5, 17},
-    # ...     Kn=2e11,
-    # ...     Kt=2e10,
-    # ...     mu=0.47,
-    # ...     verticalAxis='z',
-    # ...     outputFile="contact_elements.tcl"
-    # ... )
-    """
-
-    eleTag = 8000000  # Different range from embedded elements
-    nCreated = 0
-
-    # Get all soil nodes
-    soilElements = [el for el in elements if el['type'] in soilTypes]
-    allSoilNodes = set()
-    for el in soilElements:
-        allSoilNodes.update(el['nodes'])
-
-    soilNodesList = sorted(list(allSoilNodes))
-    soilCoords = np.array([nodeCoords[n] for n in soilNodesList])
-
-    with open(outputFile, 'w') as f:
-        f.write("# ================================================================================================\n")
-        f.write("# ZeroLengthContactASDimplex for Pile Interface\n")
-        f.write("# Adds friction, gap opening, slip behavior\n")
-        f.write("# ===============================================================================================\n\n")
-
-        f.write(f"set Kn {Kn:.6e}  ;# Normal stiffness\n")
-        f.write(f"set Kt {Kt:.6e}  ;# Tangential stiffness\n")
-        f.write(f"set mu {mu:.6f}      ;# Friction coefficient\n\n")
-
-        for pileNode in sorted(pileNodes):
-            # Get pile node coordinate
-            pileCoord = np.array(nodeCoords[pileNode])
-
-            # Find nearest soil node (simple approach)
-            distances = np.linalg.norm(soilCoords - pileCoord, axis=1)
-            nearestIdx = np.argmin(distances)
-            nearestSoilNode = soilNodesList[nearestIdx]
-
-            # Compute normal direction
-            normal = computePileNormal(pileNode, pileNodes, nodeCoords, verticalAxis)
-
-            # Write TCL command
-            f.write(f"element zeroLengthContactASDimplex {eleTag} ")
-            f.write(f"{pileNode} {nearestSoilNode} ")
-            f.write(f"$Kn $Kt $mu ")  # ← Move BEFORE -orient
-            f.write(f"-orient {normal[0]:.6f} {normal[1]:.6f} {normal[2]:.6f}\n\n")
-            # f.write(f'-orient "from link direction"\n\n')
-
-            eleTag += 1
-            nCreated += 1
-
-    print(f"[INFO] Created {nCreated} ZeroLengthContactASDimplex in {outputFile}")
-    return nCreated
-
-
-def generatePileInterfaceForBricks(pileNodes, nodeCoords, elements, soilTypes,
-                                   E_soil, phi_soil, verticalAxis='z',
-                                   searchRadius=5.0, outputDir='.'):
-    """MAIN FUNCTION for generating pile interface."""
-
-    import os
-
-    print("\n" + "=" * 70)
-    print("GENERATING PILE INTERFACE ELEMENTS (8-Node Brick Mesh)")
-    print("=" * 70)
-
-    K_penalty = E_soil * 1e1
-    E_interface = 2000
-    alpha = 5.0  # alpha in [1, 10]
-    beta = 0.05  # [0.01, 0.2]
-    Kn = alpha * E_interface
-    Kt = beta * Kn
-    mu = (2.0 / 3.0) * np.tan(np.radians(phi_soil))
-
-    print(f"\nPile nodes: {len(pileNodes)}")
-    print(f"Soil E: {E_soil / 1e6:.1f} MPa")
-    print(f"Soil φ: {phi_soil:.1f}°")
-    print(f"Interface μ: {mu:.3f}")
-    print(f"Search radius: {searchRadius:.1f} m")
-
-    embeddedFile = os.path.join(outputDir, "embeddedPileElements.tcl")
-    contactFile = os.path.join(outputDir, "contactPileElements.tcl")
-
-    print("\n[STEP 1] Generating ASDEmbeddedNodeElement...")
-    nEmbedded = writeEmbeddedElementsForBricks(
-        pileNodes, nodeCoords, elements, soilTypes,
-        K_penalty, searchRadius, embeddedFile
-    )
-
-    print("\n[STEP 2] Generating ZeroLengthContactASDimplex...")
-    nContact = writeContactElements(
-        pileNodes, nodeCoords, elements, soilTypes,
-        Kn, Kt, mu, verticalAxis, contactFile
-    )
-
-    print("\n" + "=" * 70)
-    print("PILE INTERFACE GENERATION COMPLETE")
-    print("=" * 70)
-    print(f"ASDEmbeddedNodeElement:      {nEmbedded}")
-    print(f"ZeroLengthContactASDimplex:  {nContact}")
-    print(f"\nOutput files:")
-    print(f"  - {embeddedFile}")
-    print(f"  - {contactFile}")
-    print("=" * 70 + "\n")
-
-    return nEmbedded, nContact
-
-
-def computeElementCentroid(elemNodes, nodeCoords):
-    """
-    Compute the centroid (center point) of an element.
-    Goal: assign each element a representative point in space so as to estimate its depth
-          and eventually compute the initial vertical effective stress
-
-    Parameters:
-    -----------
-    elemNodes : list of int
-        Node IDs of the element (e.g., [1, 609, 2318, 598, 589, 2302, 3234, 2294])
-    nodeCoords : dict
-        Dictionary mapping node ID to (x, y, z) coordinates
-
-    Returns:
-    --------
-    tuple : (cx, cy, cz) centroid coordinates
-
-    Example:
-    --------
-    # >>> nodes = [1, 609, 2318, 598, 589, 2302, 3234, 2294]
-    # >>> centroid = computeElementCentroid(nodes, nodeCoords)
-    # >>> print(centroid)
-    (0.5, 0.5, -5.5)
-    """
-    coords = [nodeCoords[n] for n in elemNodes if n in nodeCoords]
-    if not coords:
-        return 0.0, 0.0, 0.0
-
-    cx = sum(c[0] for c in coords) / len(coords)
-    cy = sum(c[1] for c in coords) / len(coords)
-    cz = sum(c[2] for c in coords) / len(coords) if len(coords[0]) > 2 else 0.0
-
-    return cx, cy, cz
-
-
-def computeInitialEffectiveStress(depth, gammaSat, gammaWater=10.0, waterTableDepth=0.0, gammaUnsat=None):
-    """
-    Compute initial effective vertical stress at a given depth.
-
-    sigma'v0 = gamma' x depth (below water table)
-
-    where gamma' = gammaSat - gammaWater (submerged unit weight)
-
-    Parameters:
-    -----------
-    depth : float
-        Depth below ground surface (positive value, in meters)
-    gammaSat : float
-        Saturated unit weight of soil (kN/m^3), e.g., 19.87 for Nevada Sand
-    gammaWater : float
-        Unit weight of water (kN/m^3), default = 10.0
-    waterTableDepth : float
-        Depth of water table below surface (m), default = 0.0 (at surface)
-
-    Returns:
-    --------
-    float : Initial effective vertical stress σ'v0 (sigma'v0) in kPa
-
-    Example:
-    --------
-    # >>> sigma = computeInitialEffectiveStress(depth=5.0, gammaSat=19.87)
-    # >>> print(sigma)
-    49.35  # kPa
-    """
-    if depth <= 0:
-        return 1.0  # minimum to avoid division by zero
-
-    gammaSub = gammaSat - gammaWater  # submerged unit weight
-
-    # default: if you don't know unsat unit weight, fall back to gammaSat
-    if gammaUnsat is None:
-        gammaUnsat = gammaSat
-
-    if depth <= waterTableDepth:
-        # above water table: use total unit weight
-        sigma_v0 = gammaUnsat * depth
-    else:
-        sigma_v0 = gammaUnsat * waterTableDepth + gammaSub * (depth - waterTableDepth)
-
-    return max(sigma_v0, 1.0)  # minimum 1 kPa to avoid division issues
-
-
-# ==============================================================================================================
-# VARIABLE PERMEABILITY FUNCTIONS
-# ==============================================================================================================
-
-def generateVariablePermeabilityFiles(
-        elements,
-        nodeCoords,
-        mainSoilTags,
-        verticalAxis,
-        outputDir,
-        # material parameters (dict: matTag -> value)
-        gamma_sat_dict,
-        kInit_dict,
-        gamma_water=10.0,
-        waterTableDepth=0.0,
-        surfaceElevation=0.0,
-        # Shahir and Pak model parameters
-        alpha=20.0,
-        beta1=1.0,
-        beta2=8.9,
-):
-    """
-    Generate variable permeability TCL data file for SSPbrickUP elements.
-
-    Based on Shahir & Pak (2009) / Rahmani & Pak (2012):
-    Article: Dynamic behavior of pile foundations under cyclic loading in liquefiable soils
-        k/k_init = 1 + (alpha - 1) * ru^beta
-        where ru = Δu / σ'v0 (excess pore pressure ratio)
-
-    This function generates ONLY the data file (variablePermeabilityData.tcl).
-    For the analysis script, use generateAdaptiveAnalysisTcl().
-
-    Parameters:
-    -----------
-    elements : list of dict
-        Element list from parseElementsFromMsh()
-    nodeCoords : dict
-        Node coordinates {nodeId: (x, y, z)}
-    mainSoilTags : dict
-        Mapping physical group -> material tag
-    verticalAxis : str
-        'x', 'y', or 'z'
-    outputDir : str
-        Output directory for TCL files
-    gamma_sat_dict : dict
-        Saturated unit weight per material {matTag: gamma_sat in kN/m³}
-        Example: {1: 19.87, 2: 20.41}
-    kInit_dict : dict
-        Initial permeability per material {matTag: k_init}
-        Example: {1: 6.17e-06, 2: 3.77e-06}
-    gamma_water : float
-        Unit weight of water (kN/m³), default 10.0
-    waterTableDepth : float
-        Depth of water table below surface (m), default 0.0
-    surfaceElevation : float
-        Elevation of ground surface (m), default 0.0
-    alpha : float
-        Maximum permeability ratio at full liquefaction, default 20.0
-    beta1 : float
-        Exponent during pore pressure buildup, default 1.0
-    beta2 : float
-        Exponent during consolidation, default 8.9
-
-    Returns:
-    --------
-    str : Path to generated varPermFile, or None if no SSPbrickUP elements found
-    """
-
-    print("\n" + "=" * 70)
-    print("variable permeability data")
-    print("based on Shahir & Pak (2009) / Rahmani & Pak (2012)")
-    print("=" * 70)
-
-    # find SSPbrickUP elements (type 1005)
-    sspElements = [el for el in elements if el["type"] == 1005]
-    print(f"\n[INFO] Found {len(sspElements)} SSPbrickUP elements")
-
-    if not sspElements:
-        print("[WARNING] No SSPbrickUP elements found. Skipping variable permeability generation.")
-        return None
-
-    # Determine axis index
-    axisIdx = {"x": 0, "y": 1, "z": 2}[verticalAxis.lower()]
-
-    # Print info
-    print(f"[INFO] Surface elevation: {surfaceElevation:.2f} m")
-    print(f"[INFO] Vertical axis: {verticalAxis}")
-    print(f"[INFO] Water table depth: {waterTableDepth} m")
-    for matTag, gamma_sat in gamma_sat_dict.items():
-        gamma_sub = gamma_sat - gamma_water
-        print(f"[INFO] Material {matTag}: γ_sat={gamma_sat} kN/m³, γ'={gamma_sub:.2f} kN/m³")
-
-    # ========================================================================
-    # generation of variablePermeabilityData.tcl
-    # ========================================================================
-    varPermFile = os.path.join(outputDir, "variablePermeabilityData.tcl")
-
-    with open(varPermFile, "w") as f:
-        # header
-        f.write("# ============================================================================\n")
-        f.write("# variable permeability data\n")
-        f.write("# ============================================================================\n")
-        f.write("# Based on Shahir & Pak (2009) / Rahmani & Pak (2012)\n")
-        f.write("#\n")
-        f.write("# Formula: k/k_init = 1 + (alpha - 1) * ru^beta\n")
-        f.write("#   where ru = Δu / σ'v0 (excess pore pressure ratio)\n")
-        f.write("#\n")
-        f.write(f"# Soil parameters:\n")
-        for matTag, gamma_sat in gamma_sat_dict.items():
-            gamma_sub = gamma_sat - gamma_water
-            f.write(f"#   material {matTag}: gamma_sat={gamma_sat} kN/m³, gamma'={gamma_sub:.2f} kN/m³\n")
-        f.write(f"#   gamma_water = {gamma_water} kN/m³\n")
-        f.write(f"#   surface elevation = {surfaceElevation:.2f} m\n")
-        f.write(f"#   water table depth = {waterTableDepth} m\n")
-        f.write("# ============================================================================\n\n")
-
-        # Shahir & Pak parameters
-        f.write("# parameters\n")
-        f.write(f"set alpha  {alpha}     ;# maximum permeability ratio at full liquefaction\n")
-        f.write(f"set beta1   {beta1}    ;# exponent during pore pressure buildup\n")
-        f.write(f"set beta2   {beta2}    ;# exponent during consolidation\n\n")
-
-        # Element range
-        elemIds = sorted([el["id"] for el in sspElements])
-        f.write("# SSPbrickUP element range\n")
-        f.write(f"set firstSSPelem {min(elemIds)}\n")
-        f.write(f"set lastSSPelem {max(elemIds)}\n")
-        f.write(f"set numSSPelems {len(elemIds)}\n\n")
-
-        # Element data header
-        f.write("# ============================================================================\n")
-        f.write("# element data\n")
-        f.write("# ============================================================================\n\n")
-
-        # process each element
-        for el in sspElements:
-            elemId = el["id"]
-            nodes = el["nodes"]
-
-            # Get material tag
-            matTag = mainSoilTags.get(el["group"], 1)
-
-            # Get material properties (with fallback to first available)
-            if matTag in kInit_dict:
-                kInit = kInit_dict[matTag]
-            else:
-                kInit = list(kInit_dict.values())[0]
-                print(f"[WARNING] No kInit for material {matTag}, using default")
-
-            if matTag in gamma_sat_dict:
-                gamma_sat = gamma_sat_dict[matTag]
-            else:
-                gamma_sat = list(gamma_sat_dict.values())[0]
-                print(f"[WARNING] No gamma_sat for material {matTag}, using default")
-
-            # compute element centroid
-            centroid = computeElementCentroid(nodes, nodeCoords)
-
-            # compute depth
-            elemVertCoord = centroid[axisIdx]
-            depth = surfaceElevation - elemVertCoord
-
-            # compute initial effective stress
-            sigmaV0 = computeInitialEffectiveStress(depth, gamma_sat, gamma_water, waterTableDepth)
-
-            # write element data
-            nodeStr = " ".join(str(n) for n in nodes)
-            f.write(f"# Element {elemId}: depth={depth:.2f}m, sigma_v0={sigmaV0:.2f}kPa, mat={matTag}\n")
-            f.write(f"set elemNodes({elemId}) {{{nodeStr}}}\n")
-            f.write(f"set elemKinit({elemId}) {kInit:.15e}\n")
-            f.write(f"set sigmaV0({elemId}) {sigmaV0:.6f}\n")
-            f.write(f"set ruPrev({elemId}) 0.0\n\n")
-
-        # Write procedures
-        f.write("# ============================================================================\n")
-        f.write("# PROCEDURES\n")
-        f.write("# ============================================================================\n\n")
-
-        f.write("""proc getElementPWP {elemTag} {
-    global elemNodes
-    if {![info exists elemNodes($elemTag)]} { return 0.0 }
-    set nodeList $elemNodes($elemTag)
-    set sumPWP 0.0
-    set count 0
-    foreach nd $nodeList {
-        if {[catch {set pwp [nodeVel $nd 4]} err]} { continue }
-        set sumPWP [expr $sumPWP + $pwp]
-        incr count
-    }
-    if {$count > 0} { return [expr $sumPWP / $count] }
-    return 0.0
-}
-
-proc updateElementPermeability {elemTag} {
-    global alpha beta1 beta2 sigmaV0 ruPrev elemKinit
-    if {![info exists sigmaV0($elemTag)]} { return [list 0.0 1.0 0.0] }
-
-    # STEP 1: Get pore pressure
-    set pwp [getElementPWP $elemTag]
-
-    # STEP 2: Calculate ru
-    if {$sigmaV0($elemTag) > 0.0} {
-        set ru [expr abs($pwp) / $sigmaV0($elemTag)]
-    } else {
-        set ru 0.0
-    }
-    if {$ru < 0.0} {set ru 0.0}
-    if {$ru > 1.0} {set ru 1.0}
-
-    # STEP 3: Calculate new permeability
-    if {$ru >= $ruPrev($elemTag)} {
-        set beta $beta1
-    } else {
-        set beta $beta2
-    }
-    if {$ru < 0.001} {
-        set kRatio 1.0
-    } else {
-        set kRatio [expr 1.0 + ($alpha - 1.0) * pow($ru, $beta)]
-    }
-    set kNew [expr $elemKinit($elemTag) * $kRatio]
-
-    # STEP 4: Update element
-    setParameter -value $kNew -ele $elemTag xPerm
-    setParameter -value $kNew -ele $elemTag yPerm
-    setParameter -value $kNew -ele $elemTag zPerm
-    set ruPrev($elemTag) $ru
-
-    return [list $ru $kRatio $kNew]
-}
-
-proc updateAllPermeabilities {} {
-    global firstSSPelem lastSSPelem
-    for {set e $firstSSPelem} {$e <= $lastSSPelem} {incr e} {
-        updateElementPermeability $e
-    }
-}
-
-puts "\\[INFO\\] Variable permeability data loaded: $numSSPelems SSPbrickUP elements"
-puts "\\[INFO\\] Parameters: alpha=$alpha, beta1=$beta1, beta2=$beta2"
-""")
-
-    print(f"[INFO] Generated: {varPermFile}")
-
-    print("\n" + "=" * 70)
-    print("variable permeability data generated")
-    print("=" * 70)
-    print(f"\nFile created: {varPermFile}")
-    print("  - Element data (nodes, kInit, sigmaV0)")
-    print("  - Procedures (getElementPWP, updateElementPermeability, updateAllPermeabilities)")
-    print("\nUsage in main.tcl:")
-    print(f"  source {varPermFile}")
-    print("=" * 70 + "\n")
-
-    return varPermFile
-
-
-# ==============================================================================================================
-# ADAPTIVE TIME STEPPING
-# ==============================================================================================================
-
-def writeAdaptiveAnalysisProcedure(f):
-    """
-    Write the adaptive time stepping TCL procedure to an open file handle.
-
-    This procedure handles:
-    - Automatic time step reduction on convergence failure
-    - Time step recovery after consecutive successes
-    - Minimum time step threshold to avoid infinite reduction
-    - Progress reporting
-
-    Parameters:
-    -----------
-    f : file handle
-        Open file to write to
-    """
-    f.write("""
-# ============================================================================
-# ADAPTIVE TIME STEPPING PROCEDURE
-# ============================================================================
-# Features:
-#   - Reduces dT on convergence failure (halves each time)
-#   - Increases dT after N consecutive successes (doubles, up to dT_max)
-#   - Stops if dT falls below dT_min
-#   - Reports progress every 100 steps
-#
-# Usage:
-#   set ok [adaptiveAnalyze $totalTime $dT_initial $dT_min $dT_max $N_success]
-#   - totalTime:    total duration to analyze (s)
-#   - dT_initial:   starting time step (s)
-#   - dT_min:       minimum allowed time step (default: dT_initial/64)
-#   - dT_max:       maximum allowed time step (default: dT_initial)
-#   - N_success:    consecutive successes before increasing dT (default: 10)
-# ============================================================================
-
-proc adaptiveAnalyze {totalTime dT_initial {dT_min ""} {dT_max ""} {N_success 10}} {
-
-    # set defaults if not provided
-    if {$dT_min eq ""} {set dT_min [expr $dT_initial / 64.0]}
-    if {$dT_max eq ""} {set dT_max $dT_initial}
-
-    set dT $dT_initial
-    set currentTime [getTime]
-    set startTime $currentTime
-    set targetTime [expr $currentTime + $totalTime]
-    set successCount 0
-    set totalSteps 0
-    set reductions 0
-    set increases 0
-
-    puts ""
-    puts "=============================================="
-    puts "ADAPTIVE TIME STEPPING"
-    puts "=============================================="
-    puts "Start time:     [format %.4f $currentTime] s"
-    puts "Target time:    [format %.4f $targetTime] s"
-    puts "Duration:       $totalTime s"
-    puts "Initial dT:     [format %.2e $dT_initial] s"
-    puts "Min dT:         [format %.2e $dT_min] s"
-    puts "Max dT:         [format %.2e $dT_max] s"
-    puts "Success threshold: $N_success steps"
-    puts "=============================================="
-    puts ""
-
-    set analysisStartT [clock seconds]
-
-    while {$currentTime < [expr $targetTime - 1.0e-12]} {
-
-        # don't overshoot the target time
-        if {[expr $currentTime + $dT] > $targetTime} {
-            set dT [expr $targetTime - $currentTime]
-        }
-
-        # try one step
-        set ok [analyze 1 $dT]
-
-        if {$ok == 0} {
-            # SUCCESS
-            set currentTime [getTime]
-            incr successCount
-            incr totalSteps
-
-            # try to increase dT after N consecutive successes
-            if {$successCount >= $N_success && $dT < [expr $dT_max - 1.0e-12]} {
-                set dT_new [expr $dT * 2.0]
-                if {$dT_new > $dT_max} {set dT_new $dT_max}
-                if {$dT_new > [expr $dT + 1.0e-12]} {
-                    set dT $dT_new
-                    incr increases
-                    puts "  t=[format %.4f $currentTime]s: increasing dT to [format %.2e $dT]"
-                }
-                set successCount 0
-            }
-
-            # progress report every 100 steps
-            if {[expr $totalSteps % 100] == 0} {
-                set elapsed [expr [clock seconds] - $analysisStartT]
-                set pct [expr int(100.0 * ($currentTime - $startTime) / $totalTime)]
-                puts "  Progress: $pct% | t=[format %.4f $currentTime]s | dT=[format %.2e $dT] | steps=$totalSteps | ${elapsed}s"
-            }
-
-        } else {
-            # FAILURE - reduce time step
-            set successCount 0
-            set dT [expr $dT / 2.0]
-            incr reductions
-
-            puts "  t=[format %.4f $currentTime]s: no convergence, reducing dT to [format %.2e $dT]"
-
-            # check if dT is too small
-            if {$dT < $dT_min} {
-                puts ""
-                puts "ERROR: dT below minimum ([format %.2e $dT_min]). Analysis aborted."
-                puts "  Total steps completed: $totalSteps"
-                puts "  Time reached: [format %.4f $currentTime] s"
-                puts ""
-                return -1
-            }
-        }
-    }
-
-    set analysisEndT [clock seconds]
-    set wallTime [expr $analysisEndT - $analysisStartT]
-
-    # final report
-    puts ""
-    puts "=============================================="
-    puts "ADAPTIVE ANALYSIS COMPLETE"
-    puts "=============================================="
-    puts "Final time:     [format %.4f $currentTime] s"
-    puts "Total steps:    $totalSteps"
-    puts "dT reductions:  $reductions"
-    puts "dT increases:   $increases"
-    puts "Final dT:       [format %.2e $dT] s"
-    puts "Wall time:      $wallTime seconds"
-    puts "=============================================="
-    puts ""
-
-    return 0
-}
-
-""")
-
-
-def generateAdaptiveAnalysisTcl(
-        outputDir,
-        totalTime,
-        dT_initial,
-        dT_min=None,
-        dT_max=None,
-        N_success=10,
-        # analysis setup parameters
-        constraints_type="Transformation",
-        test_type="NormDispIncr",
-        test_tol=1.0e-3,
-        test_iter=30,
-        algorithm="KrylovNewton",
-        numberer="RCM",
-        system="UmfPack",
-        integrator_gamma=0.5,
-        integrator_beta=0.25,
-        rayleigh_a0="$a0",
-        rayleigh_a1="$a1",
-        # optional: variable permeability
-        useVariablePerm=False,
-        permUpdateInterval=50,
-        filename="dynamicAnalysis_adaptive.tcl"
-):
-    """
-    Generate a TCL file for dynamic analysis with adaptive time stepping.
-
-    Parameters:
-    -----------
-    outputDir : str
-        Output directory for the TCL file
-    totalTime : float
-        Total analysis duration (seconds)
-    dT_initial : float
-        Initial time step (seconds)
-    dT_min : float, optional
-        Minimum allowed time step (default: dT_initial/64)
-    dT_max : float, optional
-        Maximum allowed time step (default: dT_initial)
-    N_success : int
-        Consecutive successes before increasing dT (default: 10)
-    constraints_type : str
-        Constraints handler type (default: "Transformation")
-    test_type : str
-        Convergence test type (default: "NormDispIncr")
-    test_tol : float
-        Convergence tolerance (default: 1.0e-3)
-    test_iter : int
-        Maximum iterations (default: 30)
-    algorithm : str
-        Solution algorithm (default: "KrylovNewton")
-    numberer : str
-        DOF numberer (default: "RCM")
-    system : str
-        System of equations (default: "UmfPack")
-    integrator_gamma : float
-        Newmark gamma (default: 0.5)
-    integrator_beta : float
-        Newmark beta (default: 0.25)
-    rayleigh_a0 : str
-        Rayleigh damping a0 (default: "$a0", assumes variable defined elsewhere)
-    rayleigh_a1 : str
-        Rayleigh damping a1 (default: "$a1", assumes variable defined elsewhere)
-    useVariablePerm : bool
-        Include variable permeability updates (default: False)
-    permUpdateInterval : int
-        Steps between permeability updates (default: 50)
-    filename : str
-        Output filename (default: "dynamicAnalysis_adaptive.tcl")
-
-    Returns:
-    --------
-    str : Path to generated file
-    """
-
-    if dT_min is None:
-        dT_min = dT_initial / 64.0
-    if dT_max is None:
-        dT_max = dT_initial
-
-    outFile = os.path.join(outputDir, filename)
-
-    with open(outFile, "w") as f:
-        # header
-        f.write("# !!!!!!!!!!!!!=======================================================================!!!!!!!!!!!!!\n")
-        f.write("#                    DYNAMIC ANALYSIS WITH ADAPTIVE TIME STEPPING\n")
-        f.write("# !!!!!!!!!!!!!=======================================================================!!!!!!!!!!!!!\n")
-        f.write("#\n")
-        f.write("# Features:\n")
-        f.write("#   - Automatic time step reduction on convergence failure\n")
-        f.write("#   - Time step recovery after consecutive successes\n")
-        f.write("#   - Progress reporting\n")
-        if useVariablePerm:
-            f.write("#   - Variable permeability updates (Shahir & Pak model)\n")
-        f.write("#\n")
-        f.write("# ============================================================================\n\n")
-
-        # write the adaptive procedure
-        writeAdaptiveAnalysisProcedure(f)
-
-        # analysis parameters
-        f.write("# ============================================================================\n")
-        f.write("# ANALYSIS PARAMETERS\n")
-        f.write("# ============================================================================\n\n")
-        f.write(f"set totalTime    {totalTime}       ;# total analysis duration (s)\n")
-        f.write(f"set dT_initial   {dT_initial}   ;# initial time step (s)\n")
-        f.write(f"set dT_min       {dT_min:.2e}   ;# minimum time step (s)\n")
-        f.write(f"set dT_max       {dT_max:.2e}   ;# maximum time step (s)\n")
-        f.write(f"set N_success    {N_success}          ;# successes before increasing dT\n\n")
-
-        # analysis setup
-        f.write("# ============================================================================\n")
-        f.write("# ANALYSIS SETUP\n")
-        f.write("# ============================================================================\n\n")
-        f.write(f"constraints {constraints_type}\n")
-        f.write(f"test {test_type} {test_tol} {test_iter} 1\n")
-        f.write(f"algorithm {algorithm}\n")
-        f.write(f"numberer {numberer}\n")
-        f.write(f"system {system}\n")
-        f.write(f"integrator Newmark {integrator_gamma} {integrator_beta}\n")
-        f.write(f"rayleigh {rayleigh_a0} 0.0 {rayleigh_a1} 0.0\n")
-        f.write("analysis Transient\n\n")
-
-        # variable permeability wrapper (if enabled)
-        if useVariablePerm:
-            f.write("# ============================================================================\n")
-            f.write("# ADAPTIVE ANALYSIS WITH VARIABLE PERMEABILITY\n")
-            f.write("# ============================================================================\n\n")
-            f.write(f"set permUpdateInterval {permUpdateInterval}\n\n")
-            f.write("""# wrapper procedure that combines adaptive stepping with permeability updates
-proc adaptiveAnalyzeWithPerm {totalTime dT_initial dT_min dT_max N_success permInterval} {
-    global firstSSPelem lastSSPelem
-
-    set dT $dT_initial
-    set currentTime [getTime]
-    set startTime $currentTime
-    set targetTime [expr $currentTime + $totalTime]
-    set successCount 0
-    set totalSteps 0
-    set reductions 0
-    set increases 0
-    set permUpdates 0
-    set stepsSincePermUpdate 0
-
-    puts ""
-    puts "=============================================="
-    puts "ADAPTIVE ANALYSIS + VARIABLE PERMEABILITY"
-    puts "=============================================="
-    puts "Start time:         [format %.4f $currentTime] s"
-    puts "Target time:        [format %.4f $targetTime] s"
-    puts "Initial dT:         [format %.2e $dT_initial] s"
-    puts "Perm update every:  $permInterval steps"
-    puts "=============================================="
-    puts ""
-
-    set analysisStartT [clock seconds]
-
-    # output file for permeability evolution
-    file mkdir results
-    set permLog [open "results/permeability_evolution.csv" w]
-    puts $permLog "Time,Steps,dT,Reductions,SampleRu"
-    set sampleElem [expr ($firstSSPelem + $lastSSPelem) / 2]
-
-    while {$currentTime < [expr $targetTime - 1.0e-12]} {
-
-        # don't overshoot
-        if {[expr $currentTime + $dT] > $targetTime} {
-            set dT [expr $targetTime - $currentTime]
-        }
-
-        # try one step
-        set ok [analyze 1 $dT]
-
-        if {$ok == 0} {
-            # SUCCESS
-            set currentTime [getTime]
-            incr successCount
-            incr totalSteps
-            incr stepsSincePermUpdate
-
-            # update permeabilities periodically
-            if {$stepsSincePermUpdate >= $permInterval} {
-                updateAllPermeabilities
-                incr permUpdates
-                set stepsSincePermUpdate 0
-            }
-
-            # try to increase dT
-            if {$successCount >= $N_success && $dT < [expr $dT_max - 1.0e-12]} {
-                set dT_new [expr $dT * 2.0]
-                if {$dT_new > $dT_max} {set dT_new $dT_max}
-                if {$dT_new > [expr $dT + 1.0e-12]} {
-                    set dT $dT_new
-                    incr increases
-                    puts "  t=[format %.4f $currentTime]s: increasing dT to [format %.2e $dT]"
-                }
-                set successCount 0
-            }
-
-            # progress report
-            if {[expr $totalSteps % 100] == 0} {
-                set elapsed [expr [clock seconds] - $analysisStartT]
-                set pct [expr int(100.0 * ($currentTime - $startTime) / $totalTime)]
-
-                # get sample ru value
-                global ruPrev
-                if {[info exists ruPrev($sampleElem)]} {
-                    set sampleRu $ruPrev($sampleElem)
-                    puts "  Progress: $pct% | t=[format %.4f $currentTime]s | dT=[format %.2e $dT] | ru=[format %.3f $sampleRu] | ${elapsed}s"
-                    puts $permLog "[format %.4f $currentTime],$totalSteps,[format %.2e $dT],$reductions,[format %.4f $sampleRu]"
-                } else {
-                    puts "  Progress: $pct% | t=[format %.4f $currentTime]s | dT=[format %.2e $dT] | ${elapsed}s"
-                    puts $permLog "[format %.4f $currentTime],$totalSteps,[format %.2e $dT],$reductions,0.0"
-                }
-                flush $permLog
-            }
-
-        } else {
-            # FAILURE
-            set successCount 0
-            set dT [expr $dT / 2.0]
-            incr reductions
-
-            puts "  t=[format %.4f $currentTime]s: no convergence, reducing dT to [format %.2e $dT]"
-
-            if {$dT < $dT_min} {
-                puts ""
-                puts "ERROR: dT below minimum. Analysis aborted."
-                close $permLog
-                return -1
-            }
-        }
-    }
-
-    close $permLog
-    set wallTime [expr [clock seconds] - $analysisStartT]
-
-    puts ""
-    puts "=============================================="
-    puts "ANALYSIS COMPLETE"
-    puts "=============================================="
-    puts "Final time:         [format %.4f $currentTime] s"
-    puts "Total steps:        $totalSteps"
-    puts "dT reductions:      $reductions"
-    puts "dT increases:       $increases"
-    puts "Perm updates:       $permUpdates"
-    puts "Wall time:          $wallTime seconds"
-    puts "=============================================="
-    puts ""
-
-    return 0
-}
-
-# run the analysis
-puts "Starting adaptive analysis with variable permeability..."
-set ok [adaptiveAnalyzeWithPerm $totalTime $dT_initial $dT_min $dT_max $N_success $permUpdateInterval]
-
-if {$ok != 0} {
-    puts "Analysis failed to complete!"
-} else {
-    puts "Analysis completed successfully."
-}
-""")
-        else:
-            # simple adaptive analysis without variable permeability
-            f.write("# ============================================================================\n")
-            f.write("# RUN ADAPTIVE ANALYSIS\n")
-            f.write("# ============================================================================\n\n")
-            f.write("puts \"Starting adaptive analysis...\"\n")
-            f.write("set ok [adaptiveAnalyze $totalTime $dT_initial $dT_min $dT_max $N_success]\n\n")
-            f.write("if {$ok != 0} {\n")
-            f.write("    puts \"Analysis failed to complete!\"\n")
-            f.write("} else {\n")
-            f.write("    puts \"Analysis completed successfully.\"\n")
-            f.write("}\n")
-
-    print(f"[INFO] Generated: {outFile}")
-    return outFile

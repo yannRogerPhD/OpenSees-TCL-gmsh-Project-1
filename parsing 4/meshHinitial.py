@@ -998,7 +998,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     PermXBrickUP = 5.0e-4
                     PermYBrickUP = 5.0e-4
                     PermZBrickUP = 5.0e-4
-
                     # alpha_ = 4 # in degrees already! always convert in degrees
                     PermXBrickUP = {i: PermXBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
                     PermYBrickUP = {i: PermYBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
@@ -1555,118 +1554,101 @@ def parseElementsFromMsh(meshFile):
     return elements
 
 
-def getBoundaryNodesFromMsh(meshFile, phyGroupIDs=None, dim=None):
+def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None, dim=None):
     """
-    returns the nodes belonging to elements of a specified geometric dimension
-    (1=line, 2=surface, 3=volume); if no dimension is given, defaults to the
+    Returns the nodes belonging to elements of a specified geometric dimension
+    (1=line, 2=surface, 3=volume); If no dimension is given, defaults to the
     'before last' element type (for backward compatibility).
 
-    :param meshFile: (str) path to .msh file
-    :param phyGroupIDs: (list[int]|None) if given, restricts nodes to these (or this) physical group(s)
-    :param dim: (int, optional) geometric dimension to extract (1=line, 2=surface, 3=volume)
+    Args:
+        meshFile_ (str): path to .msh file
+        phyGroupID (int, optional): if given, restricts nodes to this physical group
+        dim (int, optional): geometric dimension to extract (1=line, 2=surface, 3=volume)
 
-    :return: (set) node tags associated with the chosen element type(s)
+    Returns:
+        set[int]: node tags associated with the chosen element type(s)
     """
 
-    # empty list mean "return empty"
-    if not phyGroupIDs:
-        return set()
-
-    phyGroupSet = None if phyGroupIDs is None else set(phyGroupIDs)
-
-    # map common element types to their geometric dimensions
-    eleTypeToDim = {
-        1: 1,    # 2-node line
-        2: 2,    # 3-node triangle
-        3: 2,    # 4-node quadrilateral
-        4: 3,    # 4-node tetrahedron
-        5: 3,    # 8-node hexahedron
-        6: 3,    # 6-node prism
-        7: 3,    # 5-node pyramid
-        8: 1,    # 3-node quadratic line
-        9: 2,    # 6-node quadratic triangle
-        10: 2,   # 9-node quadratic quad
-        11: 3,   # 10-node quadratic tetra
-        16: 2,   # 8-node serendipity quad
-        17: 3,   # 20-node serendipity hex
+    # !!! Map common element types to their geometric dimensions !!!
+    eleType_to_dim = {
+        1: 1,  # 2-node line
+        2: 2,  # 3-node triangle
+        3: 2,  # 4-node quadrilateral
+        4: 3,  # 4-node tetrahedron
+        5: 3,  # 8-node hexahedron
+        6: 3,  # 6-node prism
+        7: 3,  # 5-node pyramid
+        8: 1,  # 3-node quadratic line
+        9: 2,  # 6-node quadratic triangle
+        10: 2,  # 9-node quadratic quad
+        11: 3,  # 10-node quadratic tetra
+        16: 2,  # 8-node serendipity quad
+        17: 3,  # 20-node serendipity hex
     }
 
-    # step 1: collect element types from the mesh
-    with open(meshFile) as f:
-        lines = f.readlines()
-
+    # !!! Step 1. Collect element types from the mesh !!!
     eleTypesRaw = []
-    inElements = False
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) > 1:
+                    try:
+                        eleType_ = int(parts_[1])
+                        eleTypesRaw.append(eleType_)
+                    except ValueError:
+                        continue
 
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) > 1:
-                try:
-                    eleType = int(parts[1])
-                    eleTypesRaw.append(eleType)
-                except ValueError:
-                    continue
-
-    # get distinct types in order of appearance
     distinctTypes = []
     for t in eleTypesRaw:
         if not distinctTypes or t != distinctTypes[-1]:
             distinctTypes.append(t)
 
     if not distinctTypes:
-        raise RuntimeError(f"no elements found in {meshFile}")
+        raise RuntimeError(f"No elements found in {meshFile_}")
 
-    # step 2: determine which element types to target
+    # !!! Step 2. Determine which element types to target !!!
     if dim is not None:
-        # filter element types by requested dimension
-        targetTypes = [t for t in distinctTypes if eleTypeToDim.get(t) == dim]
+        # Filter element types by requested dimension
+        targetTypes = [t for t in distinctTypes if eleType_to_dim.get(t) == dim]
         if not targetTypes:
-            raise ValueError(f"no elements of dimension {dim} found in {meshFile}")
+            raise ValueError(f"No elements of dimension {dim} found in {meshFile_}")
     else:
-        # default behavior: before-last distinct type
+        # Default behavior: before-last distinct type
         eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
         targetTypes = [eleTypeBL]
 
-    # step 3: collect nodes from matching elements
+    # !!! Step 3. Collect nodes from matching elements !!!
     boundaryNodes = set()
-
-    # with open(meshFile) as f:
-    #     lines = f.readlines()
-
-    inElements = False
-
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) >= 7:
-                try:
-                    eleType = int(parts[1])
-                    phyGroup = int(parts[4])
-
-                    groupOK = (phyGroupSet is None) or (phyGroup in phyGroupSet)
-
-                    if eleType in targetTypes and groupOK:
-                        nodesB = [int(n) for n in parts[5:]]
-                        boundaryNodes.update(nodesB)
-                except ValueError:
-                    continue
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) >= 7:
+                    try:
+                        eleType = int(parts_[1])
+                        phyGroup = int(parts_[4])
+                        if eleType in targetTypes and (phyGroupID is None or phyGroup == phyGroupID):
+                            nodesB = [int(n) for n in parts_[5:]]
+                            boundaryNodes.update(nodesB)
+                    except ValueError:
+                        continue
 
     return boundaryNodes
 
@@ -2318,7 +2300,7 @@ def getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=("x", "y", "z"),
     """
 
     # step 1: extract raw group nodes
-    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[phyGroupID], dim=dim)
+    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=dim)
 
     # step 2: sort according to user-defined axis sequence
     sortedNodes = rawNodes

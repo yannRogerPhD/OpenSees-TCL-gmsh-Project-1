@@ -2,596 +2,6 @@ import os
 import numpy as np
 
 
-def outputFolder(meshFilE):
-    baseName = os.path.splitext(os.path.basename(meshFilE))[0]
-    outPutFolder = os.path.join("TCL-Files", baseName)
-    os.makedirs(outPutFolder, exist_ok=True)
-    return outPutFolder
-
-
-defaultTol = 1e-6
-
-
-# --------------------------------------------------------------------------------------------------------------
-# Node sorting helpers
-# --------------------------------------------------------------------------------------------------------------
-def sortNodesByX(nodes, nodeCoords):
-    # return nodes sorted by their x-coordinate
-    return sorted(nodes, key=lambda n: nodeCoords[n][0])
-
-
-def sortNodesByY(nodes, nodeCoords):
-    # return nodes sorted by their y-coordinate
-    return sorted(nodes, key=lambda n: nodeCoords[n][1])
-
-
-def sortNodesByZ(nodes, nodeCoords):
-    # return nodes sorted by their z-coordinate (for 3D)
-    return sorted(nodes, key=lambda n: nodeCoords[n][2])
-
-
-# inside meshHelpF.py
-def filterElementsByDIM(elements, beam2DGrp, beam3DGrp):
-    gmsh3DTypes = {
-        5, 17
-    }
-    other3DDerivatives = {
-        105, 1005, 1055, 10051, 10052, 10053, 10054, 10055, 10056, 10057, 10058,
-        10059, 10060, 10061, 10062, 10063, 10064, 10065, 10066, 10067
-    }
-
-    gmsh2DTypes = {
-        1, 3, 10
-    }
-    other2DDerivatives = {
-        103, 1003, 10031, 10032, 10033, 10034, 10035
-    }
-
-    # Correct: use union ("|"), NOT 'or'
-    has3D = any(el["type"] in (gmsh3DTypes | other3DDerivatives) for el in elements)
-
-    if has3D:
-        filtered = \
-            [
-                el for el in elements
-                if el["type"] in (gmsh3DTypes | other3DDerivatives)
-                or (el["type"] == 1 and (el["group"] in beam2DGrp or el["group"] in beam3DGrp))
-            ]
-        print("Detected 3D mesh --> ignoring surface elements (type 3)...")
-
-    else:
-        filtered = \
-            [
-                el for el in elements
-                if el["type"] in (gmsh2DTypes | other2DDerivatives)
-                and (el["type"] != 1 or el["group"] in beam2DGrp)
-            ]
-        print("Detected 2D mesh --> keeping quads and beam line groups only...")
-
-    return filtered, has3D
-
-
-# inside meshHelpF.py
-def remapElementTypes(elements, groupSets):
-    """
-    Applies type remapping rules to elements based on their physical group.
-    groupSets: dict of named sets like bbarQuadUPGrp, quadUPGrp, etc.
-    """
-    for el in elements:
-        t, g = el["type"], el["group"]
-
-        # Beam remapping
-        if t == 1:
-            if g in groupSets.get("dispBeam2DGrp", set()):
-                el["type"] = 201
-            elif g in groupSets.get("dispBeam3DGrp", set()):
-                el["type"] = 202
-            elif g in groupSets["beam2DGrp"]:
-                el["type"] = 1
-            elif g in groupSets["beam3DGrp"]:
-                el["type"] = 101
-            else:
-                continue
-
-        # 2D types
-        elif t == 3:
-            mapping2D = {
-                "bbarQuadUPGrp": 103,
-                "quadUPGrp": 1003,
-                "ASDLeftGrp": 10031,
-                "ASDBottomGrp": 10032,
-                "ASDRightGrp": 10033,
-                "ASDBottomLeftGrp": 10034,
-                "ASDBottomRightGrp": 10035,
-            }
-            for name, newType in mapping2D.items():
-                if g in groupSets.get(name, set()):
-                    el["type"] = newType
-                    break
-
-        # 3D types
-        elif t == 5:
-            mapping3D = {
-                "bbarBrickUPGrp": 105,
-                "sspBrickUPGrp": 1005,
-                "sspBrickGrp": 1055,
-                "ASD3DLGrp": 10051, "ASD3DRGrp": 10052, "ASD3DKGrp": 10053, "ASD3DFGrp": 10054,
-                "ASD3DBLGrp": 10055, "ASD3DBRGrp": 10056, "ASD3DBKGrp": 10057, "ASD3DBFGrp": 10058,
-                "ASD3DLKGrp": 10059, "ASD3DBLKGrp": 10060, "ASD3DRKGrp": 10061, "ASD3DBRKGrp": 10062,
-                "ASD3DLFGrp": 10063, "ASD3DBLFGrp": 10064, "ASD3DRFGrp": 10065, "ASD3DBRFGrp": 10066,
-                "ASD3DBGrp": 10067,
-            }
-            for name, newType in mapping3D.items():
-                if g in groupSets.get(name, set()):
-                    el["type"] = newType
-                    break
-    return elements
-
-
-# compact summary of the remapping (2D + 3D)
-def summarizeRemaps(elements):
-    total = len(elements)
-    if total == 0:
-        print("No elements to summarize.")
-        return
-
-    counts = {}
-    for el in elements:
-        t = el["type"]
-        counts[t] = counts.get(t, 0) + 1
-
-    labels = {
-        # 1D beams
-        1: "elasticBeamColumn2D",
-        101: "elasticBeamColumn3D",
-        201: "displacementBeam2D",
-        202: "displacementBeam3D",
-
-        # 2D elements
-        3: "quad (plain 2D)",
-        10: "plane element (generic)",
-        103: "bbarQuadUP",
-        1003: "quadUP",
-        10031: "ASD Left",
-        10032: "ASD Bottom",
-        10033: "ASD Right",
-        10034: "ASD Bottom-Left",
-        10035: "ASD Bottom-Right",
-
-        # 3D elements
-        5: "brick (plain 3D)",
-        105: "bbarBrickUP",
-        1005: "SSPbrickUP",
-        1055: "SSPbrick",
-        10051: "ASD3DL",
-        10052: "ASD3DR",
-        10053: "ASD3DK",
-        10054: "ASD3DF",
-        10055: "ASD3DBL",
-        10056: "ASD3DBR",
-        10057: "ASD3DBK",
-        10058: "ASD3DBF",
-        10059: "ASD3DLK",
-        10060: "ASD3DBLK",
-        10061: "ASD3DRK",
-        10062: "ASD3DBRK",
-        10063: "ASD3DLF",
-        10064: "ASD3DBLF",
-        10065: "ASD3DRF",
-        10066: "ASD3DBRF",
-        10067: "ASD3DB",
-    }
-
-    print(f"\nSummary of element remaps ({total} total):")
-    for t, label in labels.items():
-        if t in counts:
-            pct = (counts[t] / total) * 100
-            print(f"  {counts[t]:6d} --> {label:25s} ({t:6d})   [{pct:6.2f}%]")
-
-    # (NEW): total percentage check
-    total_pct = sum((counts[t] / total) * 100 for t in counts)
-    print(f"Total percentage = {total_pct:.2f}%")
-
-    # (optional): report any unexpected type numbers
-    known = set(labels)
-    leftovers = {t: c for t, c in counts.items() if t not in known}
-    if leftovers:
-        print("\n[Info] Unrecognized or extra types detected:")
-        for t, c in leftovers.items():
-            pct = (c / total) * 100
-            print(f"  {c:6d} elements of type {t:6d}   [{pct:6.2f}%]")
-
-
-def detect_ndm_ndf(elements, elementProfiles_):
-    """
-    Determine ndmGlobal and ndfGlobal based on active element types.
-    """
-    usedProfiles = {el["type"] for el in elements if el["type"] in elementProfiles_}
-    print()
-    print("usedProfiles:", usedProfiles)
-
-    if not usedProfiles:
-        return 2, 2  # default if nothing is mapped
-
-    ndmGlobal = max(elementProfiles_[t]["ndm"] for t in usedProfiles)
-    hasUP = any(elementProfiles_[t]["needsP"] for t in usedProfiles)
-    hasBeam2D = any(elementProfiles_[t]["key"] == "elasticBeamColumn2D" for t in usedProfiles)
-    hasBeam3D = any(elementProfiles_[t]["key"] == "elasticBeamColumn3D" for t in usedProfiles)
-
-    if ndmGlobal == 2:
-        if hasBeam2D or hasUP:
-            ndfGlobal = 3
-        else:
-            ndfGlobal = 2
-    elif ndmGlobal == 3:
-        if hasBeam3D:
-            ndfGlobal = 6
-        elif hasUP:
-            ndfGlobal = 4
-        else:
-            ndfGlobal = 3
-    else:
-        ndmGlobal, ndfGlobal = 2, 2
-
-    return ndmGlobal, ndfGlobal
-
-
-def classifyNodeDOFs(elements, elementProfiles_, beam2DGrp, beam3DGrp):
-    """
-    Build dictionaries of DOFs for soil and structure nodes.
-    Returns: nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
-    """
-    nodeDOFs_soil = {}
-    nodeDOFs_struct = {}
-
-    for el in elements:
-        eType = el["type"]
-        if eType not in elementProfiles_:
-            continue
-
-        ruleFunc = elementProfiles_[eType]["dofRule"]
-        dofMap = ruleFunc(el["nodes"])
-
-        # classify as structure or soil by group membership
-        if eType in (1, 101, 201, 202) or el["group"] in beam2DGrp or el["group"] in beam3DGrp:
-            target = nodeDOFs_struct
-        else:
-            target = nodeDOFs_soil
-
-        for nodeTag, dofCount in dofMap.items():
-            if nodeTag not in target or dofCount > target[nodeTag]:
-                target[nodeTag] = dofCount
-
-    nodeDOFs = {**nodeDOFs_soil, **nodeDOFs_struct}
-    return nodeDOFs_soil, nodeDOFs_struct, nodeDOFs
-
-
-def _axis_pair_indices(vertical_axis: int):
-    """
-    For a chosen vertical axis (0=x,1=y,2=z), returns the two in-plane axis indices.
-    Example: vertical_axis=2 (z up) --> in-plane axes are x(0), y(1).
-    """
-    axes = [0, 1, 2]
-    axes.remove(vertical_axis)
-    return axes[0], axes[1]
-
-
-def _get_coord(node_id, nodeCoords):
-    if nodeCoords is None:
-        raise ValueError("nodeCoords is required for coordinate-based hex reordering.")
-
-    assert nodeCoords is not None
-
-    if isinstance(nodeCoords, dict):
-        coords = nodeCoords.get(node_id)
-        if coords is None:
-            raise KeyError(f"Node id {node_id} not found in nodeCoords.")
-        return coords
-
-    # list/tuple-like
-    return nodeCoords[node_id]
-
-
-def classify_hex8_nodes(nodeList, nodeCoords, vertical_axis: int = 2, tol: float = 1e-9):
-    """
-    Reorders an 8-node hex to match the provided diagram convention:
-
-    Bottom face (min vertical):
-      1: (max a min b)
-      2: (max a max b)
-      3: (min a max b)
-      4: (min a min b)
-
-    Top face (max vertical), directly above:
-      5 above 1, 6 above 2, 7 above 3, 8 above 4.
-
-    where (a,b) are the two axes orthogonal to vertical_axis.
-    """
-    if len(nodeList) != 8:
-        raise ValueError(f"Expected 8 nodes for Hex8, got {len(nodeList)}")
-
-    a_axis, b_axis = _axis_pair_indices(vertical_axis)
-
-    # Collect (node_id, coords)
-    pts = []
-    for nid in nodeList:
-        x, y, z = _get_coord(nid, nodeCoords)
-        pts.append((nid, (x, y, z)))
-
-    # Split into bottom/top by vertical coordinate
-    v_vals = [p[1][vertical_axis] for p in pts]
-    v_min = min(v_vals)
-    v_max = max(v_vals)
-
-    bottom = [p for p in pts if abs(p[1][vertical_axis] - v_min) <= tol]
-    top = [p for p in pts if abs(p[1][vertical_axis] - v_max) <= tol]
-
-    # If tolerance is too strict, fall back to sorting by vertical coordinate
-    if len(bottom) != 4 or len(top) != 4:
-        pts_sorted = sorted(pts, key=lambda p: p[1][vertical_axis])
-        bottom = pts_sorted[:4]
-        top = pts_sorted[4:]
-
-    if len(bottom) != 4 or len(top) != 4:
-        raise ValueError("Could not split hex nodes into 4 bottom + 4 top. Check geometry/tol.")
-
-    # On each face, classify corners by (a,b)
-    def ab(p):
-        return p[1][a_axis], p[1][b_axis]
-
-    a_vals = [ab(p)[0] for p in bottom]
-    b_vals = [ab(p)[1] for p in bottom]
-    a_min, a_max = min(a_vals), max(a_vals)
-    b_min, b_max = min(b_vals), max(b_vals)
-
-    def pick(face, a_target, b_target):
-        # pick the closest node on that face to the target (a,b) corner
-        best = None
-        best_d2 = None
-        for p in face:
-            pa, pb = ab(p)
-            d2 = (pa - a_target) ** 2 + (pb - b_target) ** 2
-            if best is None or d2 < best_d2:
-                best = p
-                best_d2 = d2
-        return best[0]  # node id
-
-    # Bottom nodes in diagram order
-    n1 = pick(bottom, a_min, b_min)
-    n2 = pick(bottom, a_max, b_min)
-    n3 = pick(bottom, a_max, b_max)
-    n4 = pick(bottom, a_min, b_max)
-
-    # Top nodes: prefer vertical pairing (closest in a, b to the corresponding bottom node)
-    top_ids = [p[0] for p in top]
-    # top_map = {}
-
-    def closest_top_to(n_bottom):
-        bx, by, bz = _get_coord(n_bottom, nodeCoords)
-        ba = (bx, by, bz)[a_axis]
-        bb = (bx, by, bz)[b_axis]
-        best = None
-        best_d2 = None
-        for tid in top_ids:
-            tx, ty, tz = _get_coord(tid, nodeCoords)
-            ta = (tx, ty, tz)[a_axis]
-            tb = (tx, ty, tz)[b_axis]
-            d2 = (ta - ba) ** 2 + (tb - bb) ** 2
-            if best is None or d2 < best_d2:
-                best = tid
-                best_d2 = d2
-        return best
-
-    n5 = closest_top_to(n1)
-    n6 = closest_top_to(n2)
-    n7 = closest_top_to(n3)
-    n8 = closest_top_to(n4)
-
-    # Ensure uniqueness (if degeneracy causes duplicates, fall back to corner picking on top)
-    if len({n5, n6, n7, n8}) != 4:
-        ta_vals = [ab(p)[0] for p in top]
-        tb_vals = [ab(p)[1] for p in top]
-        ta_min, ta_max = min(ta_vals), max(ta_vals)
-        tb_min, tb_max = min(tb_vals), max(tb_vals)
-        n5 = pick(top, ta_max, tb_min)
-        n6 = pick(top, ta_max, tb_max)
-        n7 = pick(top, ta_min, tb_max)
-        n8 = pick(top, ta_min, tb_min)
-
-    return [n1, n2, n3, n4, n5, n6, n7, n8]
-
-
-def gmsh_hex8_to_canonical(nodeList, nodeCoords=None, vertical_axis: int = 2, tol: float = 1e-9):
-    """
-    Preferred: coordinate-based reorder if nodeCoords is provided.
-    Fallback: old hard-coded permutation (your existing behavior) if nodeCoords is None.
-    """
-    if nodeCoords is not None:
-        return classify_hex8_nodes(nodeList, nodeCoords, vertical_axis=vertical_axis, tol=tol)
-
-    # Fallback to your legacy mapping if no coordinates available
-    # (This preserves current behavior, so we can switch call sites gradually.)
-    return [nodeList[2], nodeList[6], nodeList[7], nodeList[3],
-            nodeList[1], nodeList[5], nodeList[4], nodeList[0]]
-
-
-# --------------------------------------------------------------------------------------------------------------
-# Tcl writing utilities
-# --------------------------------------------------------------------------------------------------------------
-def writeNodesTcl(nodeCoordS, ndmGLOBAL, nodeDOFS=None,
-                  filePrefix="nodes", outputDir=".",
-                  elements=None, elementProfileS=None):
-    """
-    Writes a unified .tcl file defining all nodes
-
-    Each node line includes coordinates (2D or 3D) and a comment indicating the DOF set,
-    e.g. '# 3 DOFs (u,v,p)'
-
-    Parameters:
-        nodeCoordS (dict): mapping nodeTag --> (x, y, z)
-        ndmGLOBAL (int): number of spatial dimensions (2 or 3)
-        nodeDOFS (dict, optional): mapping nodeTag --> DOF count
-        filePrefix (str): output file prefix (default "nodes")
-        outputDir (str): folder where file is written
-        elements
-        elementProfileS
-
-    This produces one file (nodes2D.tcl or nodes3D.tcl), unlike writeSeparatedNodeFiles(),
-    which generates one per DOF category.
-    """
-
-    if nodeDOFS is None:
-        nodeDOFS = {}
-
-    # ------------------------------------------------------------------------------------------------------------
-    # Build per-node domain classification from element types
-    # ------------------------------------------------------------------------------------------------------------
-    nodeDomain = {}
-    if elements and elementProfileS:
-        structureTypes = {1, 101, 201, 202}
-        for el in elements:
-            eType = el["type"]
-            domain = "structure" if eType in structureTypes else "soil"
-            for n in el["nodes"]:
-                # if node belongs to both, structure overrides soil
-                if n not in nodeDomain or domain == "structure":
-                    nodeDomain[n] = domain
-
-    # choose filename
-    fileName = os.path.join(
-        outputDir, f"{filePrefix}{'3D' if ndmGLOBAL == 3 else '2D'}.tcl"
-    )
-
-    with open(fileName, "w") as f__:
-        f__.write(f"# !!!!!!!!!!!!!!!!!! Node definitions ({'3D' if ndmGLOBAL == 3 else '2D'}) !!!!!!!!!!!!!!!!!!\n\n")
-
-        for n, coords in sorted(nodeCoordS.items()):
-            # write node line depending on dimension
-            if ndmGLOBAL == 2:
-                x__, y__, _ = coords
-                f__.write(f"node {n:<6} {x__:.6f} {y__:.6f}")
-            elif ndmGLOBAL == 3:
-                x__, y__, z__ = coords
-                f__.write(f"node {n:<6} {x__:.6f} {y__:.6f} {z__:.6f}")
-            else:
-                continue  # skip if dimension undefined
-
-            # add comment showing DOFs if available
-            dofCountT = nodeDOFS.get(n, None)
-            if dofCountT:
-                domain = nodeDomain.get(n, "soil")  # default to soil if unknown
-                if dofCountT == 2:
-                    label = "(u,v)"
-                elif dofCountT == 3 and ndmGLOBAL == 2:
-                    if domain == "structure":
-                        label = "(u,v,θz)"
-                    else:
-                        label = "(u,v,p)"
-                elif dofCountT == 3 and ndmGLOBAL == 3:
-                    label = "(u,v,w)"
-                elif dofCountT == 4:
-                    label = "(u,v,w,p)"
-                else:
-                    label = ""
-
-                f__.write(f"    # {dofCountT} DOFs {label}")
-            f__.write("\n")
-
-    print(f"Wrote {fileName} with {len(nodeCoordS)} nodes "
-          f"(comments show detected DOFs)")
-
-
-def writeSeparatedNodeFiles(nodeCoords_, nodeDOFs_, ndmGlobal_,
-                            filePrefix="nodesByDOF", outputDir=".",
-                            labelPrefix=""):
-    """
-    Separates nodes into groups by DOF count (2, 3, 4, 6, etc.) and writes separate .tcl files
-
-    Automatically handles correct ndm/ndf for each group
-
-    Parameters:
-        nodeCoords_ (dict): mapping nodeTag --> (x, y, z)
-        nodeDOFs_ (dict): mapping nodeTag --> DOF count
-        ndmGlobal_ (int): spatial dimension (2 or 3)
-        filePrefix (str): output file prefix (default "nodesByDOF")
-        outputDir (str): directory for written files
-        labelPrefix (str): to distinguish soil and structure elements
-
-    Automatically handles correct ndm/ndf for each file.
-    """
-
-    # dofGroups = {2: [], 3: [], 4: []}
-
-    uniqueDOFs = sorted(set(nodeDOFs_.values()))
-    written = []
-
-    # for n, dof in nodeDOFs_.items():
-    #     if dof in dofGroups:
-    #         dofGroups[dof].append(n)
-
-    for dofCountT in uniqueDOFs:
-        nodeList = [n for n, d in nodeDOFs_.items() if d == dofCountT]
-        if not nodeList:
-            continue  # skip the empty group
-
-        # prefix structural/soil labels if provided
-        prefixPart = f"{labelPrefix}_" if labelPrefix else ""
-        fileName = os.path.join(outputDir, f"{prefixPart}{filePrefix}_{dofCountT}DOF.tcl")
-        # modelHeader = os.path.join(outputDir, f"{prefixPart}modelHeader_{dofCountT}DOF.tcl")
-
-        # determine appropriate ndf per DOF group
-        # ndf = dofCountT
-        ndm = ndmGlobal_  # assume the same ndm for now (you can adjust later if hybrid 2D/3D)
-
-        # # write model header for this DOF group
-        # with open(modelHeader, "w") as fHeader:
-        #     fHeader.write(f"model BasicBuilder -ndm {ndm} -ndf {ndf}\n")
-        # written.append(modelHeader)
-
-        # build node lines first (prepare node lines)
-        nodeLines = []
-        for n in sorted(nodeList):
-            x_, y_, z_ = nodeCoords_.get(n, (0.0, 0.0, 0.0))
-            if ndm == 2:
-                line = f"node {n:<6} {x_:.6f} {y_:.6f}"
-            else:
-                line = f"node {n:<6} {x_:.6f} {y_:.6f} {z_:.6f}"
-            nodeLines.append(line)
-
-        maxLen = max(len(line) for line in nodeLines)
-
-        # write node definitions with aligned comments
-        with open(fileName, "w") as f__:
-            f__.write(f"# !!!!!!!!!!!!!!!!!!! Nodes with {dofCountT} DOFs !!!!!!!!!!!!!!!!!!!\n\n")
-
-            for line, n in zip(nodeLines, sorted(nodeList)):
-                if dofCountT == 2:
-                    label = "(u,v)"
-                elif dofCountT == 3 and ndm == 2:
-                    label = "(u,v,rz)"
-                elif dofCountT == 3 and ndm == 3:
-                    label = "(u,v,w)"  # could also be (u,v,w) for solid nodes
-                elif dofCountT == 4:
-                    label = "(u,v,w,p)"
-                elif dofCountT == 6:
-                    label = "(u,v,w,rx,ry,rz)"
-                else:
-                    label = ""
-
-                comment = f"# {dofCountT} DOFs {label}"
-                f__.write(f"{line.ljust(maxLen + 4)}{comment}\n")
-
-        written.append(fileName)
-
-    # summary print that perhaps could be useful
-    print("\nSummary by DOF group:")
-    for dofCountT in uniqueDOFs:
-        count = sum(1 for d in nodeDOFs_.values() if d == dofCountT)
-        print(f"  {dofCountT}-DOF nodes: {count}")
-
-    print("Wrote separated node files for all DOF groups detected.")
-
-
 def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                      nodeCoords=None,
                      filePrefix="elements_", outputDir='.'):
@@ -998,7 +408,6 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
                     PermXBrickUP = 5.0e-4
                     PermYBrickUP = 5.0e-4
                     PermZBrickUP = 5.0e-4
-
                     # alpha_ = 4 # in degrees already! always convert in degrees
                     PermXBrickUP = {i: PermXBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
                     PermYBrickUP = {i: PermYBrickUP / (gVal_ * fMassBrickUP[i]) for i in mainSoilTags_}
@@ -1395,320 +804,113 @@ def writeElementsTcl(elements_, profiles_, mainSoilTags_, gVal_,
     print(f"Wrote element definition files: {', '.join(written)}")
 
 
-# ----------------------------------------------------------------------------------------------------------------
-# DOF rules functions (we define here so the dictionary can use them)
-# ----------------------------------------------------------------------------------------------------------------
-def beam2D_DOFs(ns_):
-    # 2D beam nodes: u, v, and rotation θz
-    return {n: 3 for n in ns_}
 
 
-def beam3D_DOFs(ns_):
-    # 3D beam nodes: u, v, w, and rotations θx, θy, θz
-    return {n: 6 for n in ns_}
-
-
-def only2DOFs(ns_):
-    # every nodes get 2 DOFs: u, v
-    return {n: 2 for n in ns_}
-
-
-def both2and3DOFs(ns_):
-    # 9_4_QuadUP: 4 corner nodes = 3 DOFs, middle nodes = 2 DOFs
-    return {**{n: 3 for n in ns_[:4]}, **{n: 2 for n in ns_[4:]}}
-
-
-def threeDOFs(ns_):
-    # every node gets 3 DOFs (u, v, p)
-    return {n: 3 for n in ns_}
-
-
-def threeDOFs3D(ns_):
-    # 3D displacement-only nodes: u, v, w
-    return {n: 3 for n in ns_}
-
-
-def fourDOFs3D(ns_):
-    # for BrickUP: u, v, w, p; that is 4 DOFs per node
-    return {n: 4 for n in ns_}
-
-
-def twentyEightBrickDOFs(ns_):
-    # 20_8_Node_BrickUP (Gmsh type 17): 1st-8 nodes (corners) have 4 DOFs (u,v,w,p), rest 12 nodes have 3 DOFs (u,v,w)
-    return {**{n: 4 for n in ns_[:8]}, **{n: 3 for n in ns_[8:]}}
-
-
-# --------------------------------------------------------------------------------------------------------------
-# ELEMENT PROFILE MAP (GMSH element type --> metadata)
-# --------------------------------------------------------------------------------------------------------------
-elementProfiles = {
-    # BEAM ELEMENTS (1D structural members)
-    # GMSH TYPE 1 = 2-node line element
-    1: {"key": "elasticBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    101: {"key": "elasticBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
-    201: {"key": "dispBeamColumn2D", "ndm": 2, "needsP": False, "dofRule": beam2D_DOFs},
-    202: {"key": "dispBeamColumn3D", "ndm": 3, "needsP": False, "dofRule": beam3D_DOFs},
-
-    # SOIL ELEMENTS NOW
-    3: {"key": "quad4", "ndm": 2, "needsP": False, "dofRule": only2DOFs},
-    103: {"key": "bbarQuadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-    1003: {"key": "quadUP", "ndm": 2, "needsP": True, "dofRule": threeDOFs},
-
-    # !!! 2D boundary absorbing START !!!
-    10031: {"key": "ASDLeft", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Left
-    10032: {"key": "ASDBottom", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom
-    10033: {"key": "ASDRight", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Right
-    10034: {"key": "ASDBottomL", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom left
-    10035: {"key": "ASDBottomR", "ndm": 2, "needsP": False, "dofRule": only2DOFs},  # ASDBoundary Bottom right
-    # !!! 2D boundary absorbing END !!!
-
-    10: {"key": "9_4_QuadUP", "ndm": 2, "needsP": True, "dofRule": both2and3DOFs},
-
-    # !!!
-    5: {"key": "brickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # 8-node 3D u-p
-    105: {"key": "bbarBrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    1005: {"key": "SSPbrickUP", "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},  # best for huge 3D dynamic pbs
-    1055: {"key": "SSPbrick", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-
-    # !!! 3D boundary absorbing START !!!
-    10051: {"key": "ASD3DL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10052: {"key": "ASD3DR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10053: {"key": "ASD3DK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10054: {"key": "ASD3DF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10055: {"key": "ASD3DBL", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10056: {"key": "ASD3DBR", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10057: {"key": "ASD3DBK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10058: {"key": "ASD3DBF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10059: {"key": "ASD3DLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10060: {"key": "ASD3DBLK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10061: {"key": "ASD3DRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10062: {"key": "ASD3DBRK", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10063: {"key": "ASD3DLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10064: {"key": "ASD3DBLF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10065: {"key": "ASD3DRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10066: {"key": "ASD3DBRF", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    10067: {"key": "ASD3DB", "ndm": 3, "needsP": False, "dofRule": threeDOFs3D},
-    # 10068: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # 10069: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # 10070: {"key": "ASD3DF",       "ndm": 3, "needsP": True, "dofRule": fourDOFs3D},
-    # !!! 3D boundary absorbing END !!!
-    17: {"key": "20_8_BrickUP", "ndm": 3, "needsP": True, "dofRule": twentyEightBrickDOFs},
-}
 
 
 # --------------------------------------------------------------------------------------------------------------
 # MESH PARSING UTILITIES
 # --------------------------------------------------------------------------------------------------------------
-def parseElementsFromMsh(meshFile):
+
+def getBoundaryNodesFromMsh(meshFile_, phyGroupID=None, dim=None):
     """
-    Parse the $Elements section from a Gmsh .msh file.
-
-    Returns:
-        list of dicts, each with:
-            {
-                "id": int,
-                "type": int,
-                "group": int,
-                "nodes": list[int]
-            }
-    """
-    elements = []
-
-    with open(meshFile) as f:
-        lines = f.readlines()
-
-    inElements = False
-
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-
-            if len(parts) > 4:
-                try:
-                    eleTag = int(parts[0])
-                    elementType = int(parts[1])
-                    numTags = int(parts[2])
-                    phyGroup = int(parts[4])
-                    ns = [int(n) for n in parts[3 + numTags:]]
-
-                    elements.append(
-                        {
-                            "id": eleTag,
-                            "type": elementType,
-                            "group": phyGroup,
-                            "nodes": ns
-                        }
-                    )
-
-                except (ValueError, IndexError):
-                    continue
-
-    return elements
-
-
-def getBoundaryNodesFromMsh(meshFile, phyGroupIDs=None, dim=None):
-    """
-    returns the nodes belonging to elements of a specified geometric dimension
-    (1=line, 2=surface, 3=volume); if no dimension is given, defaults to the
+    Returns the nodes belonging to elements of a specified geometric dimension
+    (1=line, 2=surface, 3=volume); If no dimension is given, defaults to the
     'before last' element type (for backward compatibility).
 
-    :param meshFile: (str) path to .msh file
-    :param phyGroupIDs: (list[int]|None) if given, restricts nodes to these (or this) physical group(s)
-    :param dim: (int, optional) geometric dimension to extract (1=line, 2=surface, 3=volume)
+    Args:
+        meshFile_ (str): path to .msh file
+        phyGroupID (int, optional): if given, restricts nodes to this physical group
+        dim (int, optional): geometric dimension to extract (1=line, 2=surface, 3=volume)
 
-    :return: (set) node tags associated with the chosen element type(s)
+    Returns:
+        set[int]: node tags associated with the chosen element type(s)
     """
 
-    # empty list mean "return empty"
-    if not phyGroupIDs:
-        return set()
-
-    phyGroupSet = None if phyGroupIDs is None else set(phyGroupIDs)
-
-    # map common element types to their geometric dimensions
-    eleTypeToDim = {
-        1: 1,    # 2-node line
-        2: 2,    # 3-node triangle
-        3: 2,    # 4-node quadrilateral
-        4: 3,    # 4-node tetrahedron
-        5: 3,    # 8-node hexahedron
-        6: 3,    # 6-node prism
-        7: 3,    # 5-node pyramid
-        8: 1,    # 3-node quadratic line
-        9: 2,    # 6-node quadratic triangle
-        10: 2,   # 9-node quadratic quad
-        11: 3,   # 10-node quadratic tetra
-        16: 2,   # 8-node serendipity quad
-        17: 3,   # 20-node serendipity hex
+    # !!! Map common element types to their geometric dimensions !!!
+    eleType_to_dim = {
+        1: 1,  # 2-node line
+        2: 2,  # 3-node triangle
+        3: 2,  # 4-node quadrilateral
+        4: 3,  # 4-node tetrahedron
+        5: 3,  # 8-node hexahedron
+        6: 3,  # 6-node prism
+        7: 3,  # 5-node pyramid
+        8: 1,  # 3-node quadratic line
+        9: 2,  # 6-node quadratic triangle
+        10: 2,  # 9-node quadratic quad
+        11: 3,  # 10-node quadratic tetra
+        16: 2,  # 8-node serendipity quad
+        17: 3,  # 20-node serendipity hex
     }
 
-    # step 1: collect element types from the mesh
-    with open(meshFile) as f:
-        lines = f.readlines()
-
+    # !!! Step 1. Collect element types from the mesh !!!
     eleTypesRaw = []
-    inElements = False
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) > 1:
+                    try:
+                        eleType_ = int(parts_[1])
+                        eleTypesRaw.append(eleType_)
+                    except ValueError:
+                        continue
 
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) > 1:
-                try:
-                    eleType = int(parts[1])
-                    eleTypesRaw.append(eleType)
-                except ValueError:
-                    continue
-
-    # get distinct types in order of appearance
     distinctTypes = []
     for t in eleTypesRaw:
         if not distinctTypes or t != distinctTypes[-1]:
             distinctTypes.append(t)
 
     if not distinctTypes:
-        raise RuntimeError(f"no elements found in {meshFile}")
+        raise RuntimeError(f"No elements found in {meshFile_}")
 
-    # step 2: determine which element types to target
+    # !!! Step 2. Determine which element types to target !!!
     if dim is not None:
-        # filter element types by requested dimension
-        targetTypes = [t for t in distinctTypes if eleTypeToDim.get(t) == dim]
+        # Filter element types by requested dimension
+        targetTypes = [t for t in distinctTypes if eleType_to_dim.get(t) == dim]
         if not targetTypes:
-            raise ValueError(f"no elements of dimension {dim} found in {meshFile}")
+            raise ValueError(f"No elements of dimension {dim} found in {meshFile_}")
     else:
-        # default behavior: before-last distinct type
+        # Default behavior: before-last distinct type
         eleTypeBL = distinctTypes[-2] if len(distinctTypes) >= 2 else distinctTypes[0]
         targetTypes = [eleTypeBL]
 
-    # step 3: collect nodes from matching elements
+    # !!! Step 3. Collect nodes from matching elements !!!
     boundaryNodes = set()
-
-    # with open(meshFile) as f:
-    #     lines = f.readlines()
-
-    inElements = False
-
-    for line in lines:
-        line = line.strip()
-
-        if line == "$Elements":
-            inElements = True
-            continue
-        elif line == "$EndElements":
-            break
-
-        if inElements:
-            parts = line.split()
-            if len(parts) >= 7:
-                try:
-                    eleType = int(parts[1])
-                    phyGroup = int(parts[4])
-
-                    groupOK = (phyGroupSet is None) or (phyGroup in phyGroupSet)
-
-                    if eleType in targetTypes and groupOK:
-                        nodesB = [int(n) for n in parts[5:]]
-                        boundaryNodes.update(nodesB)
-                except ValueError:
-                    continue
+    with open(meshFile_) as f_:
+        lines_ = f_.readlines()
+        inElem = False
+        for line_ in lines_:
+            line_ = line_.strip()
+            if line_ == "$Elements":
+                inElem = True
+                continue
+            elif line_ == "$EndElements":
+                break
+            if inElem:
+                parts_ = line_.split()
+                if len(parts_) >= 7:
+                    try:
+                        eleType = int(parts_[1])
+                        phyGroup = int(parts_[4])
+                        if eleType in targetTypes and (phyGroupID is None or phyGroup == phyGroupID):
+                            nodesB = [int(n) for n in parts_[5:]]
+                            boundaryNodes.update(nodesB)
+                    except ValueError:
+                        continue
 
     return boundaryNodes
 
 
-def parseNodesFromMsh(meshFile, precision=6):
-    """
-    Parse the $Nodes section from a Gmsh .msh file.
-
-    Parameters:
-        meshFile (str): Path to the .msh file
-        precision (int): Decimal rounding for node coordinates
-
-    Returns:
-        dict: {nodeTag: (xC, yC, zC)}
-    """
-    nodeCoords = {}
-    with open(meshFile) as f:
-        lines = f.readlines()
-
-    inNodes = False
-    for line in lines:
-        line = line.strip()
-        if line == "$Nodes":
-            inNodes = True
-            continue
-        elif line == "$EndNodes":
-            break
-
-        if inNodes:
-            parts = line.split()
-            if len(parts) >= 4:
-                try:
-                    nodeTag = int(parts[0])
-                    x, y, *z = map(float, parts[1:])
-                    x = round(x, precision)
-                    y = round(y, precision)
-                    z_val = round(z[0], precision) if z else 0.0
-                    nodeCoords[nodeTag] = (x, y, z_val)
-                except ValueError:
-                    continue
-
-    return nodeCoords
 
 
 def detectMaxPhyGroup(meshFile):
@@ -1753,27 +955,6 @@ def detectMaxPhyGroup(meshFile):
                     continue
     return maxPhyGroup
 
-
-def getElementsTagByType(elements_, targetTypes):
-    return [el["id"] for el in elements_ if el["type"] in targetTypes]
-
-
-def classifyChosenNodesByDOF(nodeList, nodeDOFs):
-    """
-    Classify an existing list of nodes according to their DOF count.
-
-    nodeList : list of node tags (e.g. from getBoundaryNodesFromMsh)
-    nodeDOFs : dict {nodeTag: dofCount}
-
-    Returns dict {dofCount: [nodeTags]}
-    """
-    groups = {}
-    for node in nodeList:
-        dof = nodeDOFs.get(node)
-        if dof is None:
-            continue
-        groups.setdefault(dof, []).append(node)
-    return groups
 
 
 class FuzzyFloat(float):
@@ -2318,7 +1499,7 @@ def getAndSortGroupNodes(meshFile, phyGroupID, nodeCoords, axes=("x", "y", "z"),
     """
 
     # step 1: extract raw group nodes
-    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[phyGroupID], dim=dim)
+    rawNodes = getBoundaryNodesFromMsh(meshFile, phyGroupID=phyGroupID, dim=dim)
 
     # step 2: sort according to user-defined axis sequence
     sortedNodes = rawNodes
