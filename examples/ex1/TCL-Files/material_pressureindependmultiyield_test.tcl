@@ -1,1 +1,0 @@
-nDMaterial PressureIndependMultiYield 1 2 2.0 32142.857142857145 150000.00000000003 30 0.1 20
