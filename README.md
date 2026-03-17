@@ -43,50 +43,6 @@ The Python scripts in `parsing 4/final/` represent the most up-to-date version o
 
 ---
 
-## Repository Structure
-
-```
-OpenSees-Geotechnical/
-│
-├── examples/                    # Ready-to-run simulation examples
-│   ├── 1DfreeField/             # 1D free-field soil response analysis
-│   ├── ASD2D/                   # 2D SSI with absorbing boundaries (ASD)
-│   ├── ASD3D/                   # 3D SSI with absorbing boundaries
-│   ├── ASD3D-1/                 # 3D SSI variant 1
-│   ├── ASD3D half/              # 3D SSI half-domain model
-│   ├── ASD3D-SP/                # 3D SSI soil-pile model
-│   ├── soil-pile-3D/            # 3D soil-pile interaction
-│   ├── SSI test/                # SSI benchmark test
-│   ├── ex1/                     # Basic gmsh+parsing example 1
-│   └── ex2/                     # Basic gmsh+parsing example 2
-│
-├── gmsh codes/                  # Standalone Gmsh geometry scripts
-│
-├── parsing 1- 2/                # Parsing development — iterations 1 & 2
-├── parsing 3/                   # Parsing development — iteration 3
-├── parsing 4/                   # Parsing development — iteration 4
-│   └── final/                   # Current (final) parsing pipeline
-│       ├── meshHelper.py        # Mesh reading and node/element extraction
-│       ├── elWriters.py         # Element TCL file writers
-│       ├── geoXYZF5.py          # Geometry/coordinate helpers
-│       ├── testFXNs.py          # Testing functions
-│       ├── parsingF.py          # Main parsing entry point
-│       ├── model.geo            # Example geometry
-│       └── model.msh            # Example mesh
-│
-├── simulations/                 # Research simulations
-│   ├── paper 1/                 # Dynamic analysis with variable permeability
-│   ├── paper 1B/                # Extended paper 1 study
-│   └── paper 2/                 # SSI research simulation
-│
-├── geoASD.py                    # ASD geometry generation helper
-├── sourcingASD.tcl              # TCL sourcing script for ASD elements
-├── evolution.txt                # Development notes and changelog
-└── README.md
-```
-
----
-
 ## Examples
 
 | Example | Description | Dimension |
