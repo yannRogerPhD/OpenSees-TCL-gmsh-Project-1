@@ -46,10 +46,17 @@ test NormUnbalance 0.001 10 1
 algorithm Newton
 integrator LoadControl 1.0
 analysis Static
+
+set tGravityStart [clock seconds]
+
 set ok [analyze 5]
 if {$ok != 0} {
     error "Gravity analysis failed"
 }
+
+set tGravityEnd [clock seconds]
+set grativyTime [expr $tGravityEnd - $tGravityStart]
+
 puts "completed the elastic gravity analysis"
 
 loadConst -time 0.0
@@ -74,16 +81,17 @@ integrator TRBDF2
 analysis Transient
 set nSteps [expr int($duration/$dt)]
 set dt [expr $duration/$nSteps.0]
+
+set tDynamicStart [clock seconds]
+
 set ok [analyze $nSteps $dt]
 if {$ok != 0} {
     error "Dynamic analysis failed"
 }
 
-wipe
-# analysis started at 09:00
-# temporary stop at 14:50, iteration 5.24467e-08
-# 15:15 - 14:55 at iteration 2.41984e-08
-# 16:30 - 19:30
+set tDynamicEnd [clock seconds]
+set dynamicTime [expr $tDynamicEnd - $tDynamicStart]
 
-# after refinements
-# analysis start - 08:05 - 09:20
+puts "Dynamic analysis runtime = $dynamicTime seconds"
+
+wipe

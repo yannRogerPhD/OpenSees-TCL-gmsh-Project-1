@@ -1,44 +1,172 @@
-# OpenSees TCL + Gmsh (Pre-Processor) Application Models
+# OpenSees-Geotechnical
 
-This GitHub page aims to primarily illustrate the practical use of **OpenSees TCL** in combination with **Gmsh** to perform:
+A practical toolkit for **geotechnical and soil-structure interaction (SSI) finite element simulations** using [OpenSees TCL](https://opensees.berkeley.edu/) with [Gmsh](https://gmsh.info/) as a pre-processor. Includes a Python-based parsing pipeline that converts Gmsh meshes into ready-to-run OpenSees TCL model files.
 
-- General geotechnical and structural simulations using **OpenSees TCL**
-- Soil-structure interaction (SSI) modeling, with particular attention paid to:  
-  - the modeling of soil-structure interface contact, and
-  - precisely accounting for absorbing boundary conditions due to soil-domain truncation
-- Soil Response Analyses (SRAs)
+---
 
-Most of the examples as well as the methodology are based on resources from:  
-- OpenSees wiki: 
-  - [main geotechnical and structural examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples)
-  - [basic examples](https://opensees.berkeley.edu/wiki/index.php?title=Basic_Examples_Manual)
-  - [advanced (structural) examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples_Manual)
-  - [sensitivity analysis](https://opensees.berkeley.edu/wiki/index.php?title=Sensitivity_Analysis)
-- soilQuake (mainly for material applications):
-  - 25 different examples in various configurations
-  - [PIMY, PDMY, and solid-fluid coupling problems](http://soilquake.net/opensees/version2.1/index.htm)
+## Contents
 
-## Notes about gmsh
+- [Overview](#overview)
+- [Workflow](#workflow)
+- [Repository Structure](#repository-structure)
+- [Examples](#examples)
+- [Parsing Pipeline](#parsing-pipeline)
+- [Dependencies](#dependencies)
+- [Resources](#resources)
 
-In case we want two volumes to share a single, continuous interface so the mesh is conformal across that face.
+---
 
+## Overview
 
-```bash
-SetFactory("OpenCASCADE");
+This project covers:
 
-// ... build your two volumes; they currently have coincident faces
-// e.g., Volume{v1}; Volume{v2}; and the interface appears as Surface{10} in one
-// and Surface{11} in the other
+- General **geotechnical and structural simulations** in OpenSees TCL
+- **Soil-Structure Interaction (SSI)** modeling, including:
+  - Soil-structure interface contact elements
+  - Absorbing boundary conditions (ASDs) for soil-domain truncation
+- **1D/3D Soil Response Analyses (SRAs)**
+- **Solid-fluid coupling** (PIMY, PDMY materials, u-p formulation)
 
-Coherence; // merges duplicate points/curves/surfaces so both volumes share one face
-// Or use Boolean Fragments
-BooleanFragments{{ Volume{{1:{end}}}; Delete; }}{{}
+---
+
+## Workflow
+
+```
+1. Build geometry       →  Gmsh (.geo file)
+2. Generate mesh        →  Gmsh mesh file (.msh)
+3. Parse mesh           →  Python parsing pipeline
+4. Output TCL files     →  OpenSees model files (.tcl)
+5. Run simulation       →  OpenSees TCL
 ```
 
-## Version Control Tip
+The Python scripts in `parsing 4/final/` represent the most up-to-date version of the parsing pipeline.
 
-If you encounter conflicts when trying to pull changes (especially related to IDE configuration files), enforce cleanup by running:
+---
 
+## Repository Structure
+
+```
+OpenSees-Geotechnical/
+│
+├── examples/                    # Ready-to-run simulation examples
+│   ├── 1DfreeField/             # 1D free-field soil response analysis
+│   ├── ASD2D/                   # 2D SSI with absorbing boundaries (ASD)
+│   ├── ASD3D/                   # 3D SSI with absorbing boundaries
+│   ├── ASD3D-1/                 # 3D SSI variant 1
+│   ├── ASD3D half/              # 3D SSI half-domain model
+│   ├── ASD3D-SP/                # 3D SSI soil-pile model
+│   ├── soil-pile-3D/            # 3D soil-pile interaction
+│   ├── SSI test/                # SSI benchmark test
+│   ├── ex1/                     # Basic gmsh+parsing example 1
+│   └── ex2/                     # Basic gmsh+parsing example 2
+│
+├── gmsh codes/                  # Standalone Gmsh geometry scripts
+│
+├── parsing 1- 2/                # Parsing development — iterations 1 & 2
+├── parsing 3/                   # Parsing development — iteration 3
+├── parsing 4/                   # Parsing development — iteration 4
+│   └── final/                   # Current (final) parsing pipeline
+│       ├── meshHelper.py        # Mesh reading and node/element extraction
+│       ├── elWriters.py         # Element TCL file writers
+│       ├── geoXYZF5.py          # Geometry/coordinate helpers
+│       ├── testFXNs.py          # Testing functions
+│       ├── parsingF.py          # Main parsing entry point
+│       ├── model.geo            # Example geometry
+│       └── model.msh            # Example mesh
+│
+├── simulations/                 # Research simulations
+│   ├── paper 1/                 # Dynamic analysis with variable permeability
+│   ├── paper 1B/                # Extended paper 1 study
+│   └── paper 2/                 # SSI research simulation
+│
+├── geoASD.py                    # ASD geometry generation helper
+├── sourcingASD.tcl              # TCL sourcing script for ASD elements
+├── evolution.txt                # Development notes and changelog
+└── README.md
+```
+
+---
+
+## Examples
+
+| Example | Description | Dimension |
+|---|---|---|
+| `1DfreeField` | Free-field 1D SRA with PIMY/elastic material | 1D |
+| `ASD2D` | SSI with 2D absorbing boundaries | 2D |
+| `ASD3D` | SSI with 3D absorbing boundaries | 3D |
+| `ASD3D-1` | 3D SSI — alternate configuration | 3D |
+| `ASD3D half` | 3D SSI on half-domain (symmetry) | 3D |
+| `ASD3D-SP` | 3D SSI with soil-pile system | 3D |
+| `soil-pile-3D` | 3D soil-pile lateral interaction | 3D |
+| `SSI test` | Benchmark SSI test case | 3D |
+
+Each example folder contains:
+- `model.geo` — Gmsh geometry
+- `model.msh` — Gmsh mesh
+- `meshHelpF.py` / `parsingF.py` — parsing scripts
+- `main.tcl` — OpenSees simulation script
+- `updateASD.tcl` / `ASD_elements.tcl` — absorbing boundary setup
+
+---
+
+## Parsing Pipeline
+
+The pipeline converts a Gmsh `.msh` file into OpenSees TCL model files (nodes, elements, boundary conditions, DOF assignments).
+
+**Main scripts (`parsing 4/final/`):**
+
+| Script | Role |
+|---|---|
+| `meshHelper.py` | Reads `.msh`, extracts nodes and elements by physical group |
+| `elWriters.py` | Writes TCL files for each element type (brickUP, ASD3D, etc.) |
+| `geoXYZF5.py` | Coordinate sorting and geometry utilities |
+| `parsingF.py` | Entry point — orchestrates the full parsing workflow |
+| `testFXNs.py` | Unit tests for parsing functions |
+
+**Supported element types:**
+- `brickUP` — 8-node brick, u-p formulation (solid-fluid coupling)
+- `ASD3D` — 3D Absorbing-Scaling Dashpot boundary elements (multiple configurations: B, BF, BK, BL, BLF, BLK, BR, BRF, BRK, F, K, L, LF, LK, R, RF, RK)
+
+---
+
+## Dependencies
+
+- [OpenSees](https://opensees.berkeley.edu/) (TCL interpreter)
+- [Gmsh](https://gmsh.info/) (mesh generation)
+- Python 3.x with:
+  - `gmsh` Python API
+  - `numpy`
+
+Install Python dependencies:
+```bash
+pip install gmsh numpy
+```
+
+---
+
+## Resources
+
+- [OpenSees Wiki — Main Examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples)
+- [OpenSees Wiki — Basic Examples](https://opensees.berkeley.edu/wiki/index.php?title=Basic_Examples_Manual)
+- [OpenSees Wiki — Advanced Structural Examples](https://opensees.berkeley.edu/wiki/index.php?title=Examples_Manual)
+- [OpenSees Wiki — Sensitivity Analysis](https://opensees.berkeley.edu/wiki/index.php?title=Sensitivity_Analysis)
+- [soilQuake — PIMY, PDMY, solid-fluid coupling examples](http://soilquake.net/opensees/version2.1/index.htm)
+- [Gmsh Documentation](https://gmsh.info/doc/texinfo/gmsh.html)
+
+---
+
+## Notes
+
+**Gmsh conformal meshing across shared surfaces:**
+```
+SetFactory("OpenCASCADE");
+// After building volumes with coincident faces:
+Coherence;  // merges duplicate points/curves/surfaces
+// Or use Boolean Fragments:
+BooleanFragments{ Volume{1:N}; Delete; }{}
+```
+
+**Git conflict resolution tip:**
 ```bash
 rm -rf .idea/
 git pull origin master

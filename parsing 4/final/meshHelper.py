@@ -2,7 +2,17 @@ import os
 import numpy as np
 
 """
+STEP to add new elements (non-native GMSH). In such case we will need a custon interger code.
+(1) in "derivativesType" add the element (e.g., "brickUP": {205});
+(2) add this new element in "elementRemapping" --> (5, "brickUP"): 205;
+(3) add to "elementLabels" as well --> 205: "brickUP";
+(4) add to "elementProfiles" --> 205: {"ndm": 3, "ndf": 4, "needsP": True, "dofRule": _fourDOFs3D}
+(5) write the writer function --> def write_brickUP(el, f, matProps, materialTag, nodeCoords=None)
+(6) finally, register in "elementWriters"
+
+___________________________________________________________________________________
 AVAILABLE FUNCTIONS (grouped for efficient testing strategies)
+___________________________________________________________________________________
 
 G0) leaf helpers (mostly deterministic --> we prefer indirect tests unless reused broadly): 17
     (1)  _axis_pair_indices
@@ -182,6 +192,7 @@ derivativesType = {
         10034,             # BL - 2D
         10035              # BR - 2D
     },
+    "brickUP": {205},      # 3D
     "bbarBrickUP": {105},  # 3D
     "SSPbrickUP": {1005},  # 3D
     "SSPbrick": {1055},    # 3D
@@ -214,6 +225,7 @@ elementRemapping = {
     (1, "dispBeam3D"): 202,
 
     # quadrangles (quads), (type 3) ---> 2D
+    (3, "quad"): 3,
     (3, "bbarQuadUP"): 103,
     (3, "quadUP"): 1003,
     (3, "ASD2D_B"): 10031,
@@ -223,6 +235,8 @@ elementRemapping = {
     (3, "ASD2D_BR"): 10035,
 
     # hexahedrons (type 5) ------------> 3D
+    # (5, "brick"): 105,
+    (5, "brickUP"): 205,
     (5, "bbarBrickUP"): 105,
     (5, "SSPbrickUP"): 1005,
     (5, "SSPbrick"): 1055,
@@ -254,8 +268,8 @@ elementLabels = {
     202: "dispBeamColumn3D",
 
     # 2D soil
-    3: "quad (plain 2D)",
-    10: "quad9 (plain 2D)",
+    3: "quad",
+    10: "9_4_QuadUP",
     103: "bbarQuadUP",
     1003: "quadUP",
 
@@ -267,6 +281,7 @@ elementLabels = {
 
     # 3D soil
     5: "brick (plain 3D)",
+    205: "brickUP",
     105: "bbarBrickUP",
     1005: "SSPbrickUP",
     1055: "SSPbrick",
@@ -314,6 +329,7 @@ elementProfiles = {
 
     # 3D soil elements
     5:     {"ndm": 3, "ndf": 3, "needsP": False, "dofRule": _threeDOFs3D},  # plain brick: u, v, w
+    205:   {"ndm": 3, "ndf": 4, "needsP": True, "dofRule": _fourDOFs3D},   # brickUP:     u, v, w, p
     105:   {"ndm": 3, "ndf": 4, "needsP": True, "dofRule": _fourDOFs3D},    # bbarBrickUP: u, v, w, p
     1005:  {"ndm": 3, "ndf": 4, "needsP": True, "dofRule": _fourDOFs3D},    # SSPbrickUP:  u, v, w, p
     1055:  {"ndm": 3, "ndf": 3, "needsP": False, "dofRule": _threeDOFs3D},  # SSPbrick:    u, v, w
@@ -387,6 +403,25 @@ elementProfiles = {
     10066:  (3, 3, False),  # ASD3D_BRF
     10067:  (3, 3, False),  # ASD3D_BRK
 }"""
+
+
+def buildMainSoilTags(meshFile, overrides=None):
+    """
+    auto-build mainSoilTags from 1 to maxPhyGroup.
+    optionally override specific entries.
+
+    :param meshFile: (str) path to the .msh file
+    :param overrides: (dict) optional {groupID: matTag} to override defaults
+
+    :return: (dict) {groupID: matTag}
+    """
+    maxGroup = detectMaxPhyGroup(meshFile)
+    mainSoilTags = {i: i for i in range(1, maxGroup + 1)}
+
+    if overrides:
+        mainSoilTags.update(overrides)
+
+    return mainSoilTags
 
 
 def outputFolder(meshFile):
@@ -1191,6 +1226,86 @@ def classifyChosenNodesByDOF(nodeList, nodeDOFs):
 # ---------------------------- elements section ------------------------ elements section ----------------------------
 # ---------------------------- elements section ------------------------ elements section ----------------------------
 # ---------------------------- elements section ------------------------ elements section ----------------------------
+
+def write_quad(el, f, matProps, materialTag, _nodeCoords=None):
+    g = matProps["gravity"]
+    alpha = np.deg2rad(matProps.get("alphaAngle", 0.0))
+
+    soil = matProps["soil2D"]
+    groupOverrides = matProps.get("groupOverrides", {}).get(el["group"], {})
+    thickness = groupOverrides.get("thickness", soil["thickness"])
+
+    b1 = g * np.sin(alpha)
+    b2 = -g * np.cos(alpha)
+
+    nodes = " ".join(str(n) for n in el["nodes"])
+
+    f.write(
+        f"element quad {el['id']} {nodes} "
+        f"{thickness} PlaneStrain {materialTag} "
+        f"0.0 0.0 {b1} {b2}\n"
+    )
+
+
+def write_brickUP(el, f, matProps, materialTag, nodeCoords=None):
+    """
+    writes a single brickUP element to file
+
+    :param el: element dict with 'id', 'nodes', 'group'
+    :param f: file handle
+    :param matProps: material properties dictionary
+    :param materialTag: OpenSees material tag for this element's group
+    :param nodeCoords: (dict) node coordinates for node reordering
+
+    :return: None
+    """
+
+    g = matProps["gravity"]
+    alpha = np.deg2rad(matProps.get("alphaAngle", 0.0))
+
+    soil = matProps["soil3D"]
+    groupOverrides = matProps.get("groupOverrides", {}).get(el["group"], {})
+
+    porosity = groupOverrides.get("porosity", soil["porosity"])
+    permX = groupOverrides.get("permX", soil["permX"])
+    permY = groupOverrides.get("permY", soil["permY"])
+    permZ = groupOverrides.get("permZ", soil["permZ"])
+
+    fluidBulk = matProps["fluidBulk"]
+    fluidDensity = matProps["fluidDensity"]
+
+    # computed values
+    bulk = fluidBulk / porosity
+    permXScaled = permX / (g * fluidDensity)
+    permYScaled = permY / (g * fluidDensity)
+    permZScaled = permZ / (g * fluidDensity)
+
+    # body forces
+    bx = g * np.sin(alpha)
+    by = 0.0
+    bz = -g * np.cos(alpha)
+
+    # reorder nodes from Gmsh to OpenSees ordering
+    nodesReordered = gmsh_hex8_to_canonical(el["nodes"], nodeCoords=nodeCoords)
+    nodes = " ".join(str(n) for n in nodesReordered)
+
+    f.write(
+        f"element "
+        f"brickUP "
+        f"{el['id']} "
+        f"{nodes} "
+        f"{materialTag} "
+        f"{bulk} "
+        f"{fluidDensity} "
+        f"{permXScaled} "
+        f"{permYScaled} "
+        f"{permZScaled} "
+        f"{bx} "
+        f"{by} "
+        f"{bz}\n"
+    )
+
+
 def write_bbarQuadUP(el, f, matProps, materialTag, _nodeCoords=None):
     """
     writes a singel bbarQuadUP element to file...
@@ -1691,6 +1806,7 @@ def write_20_8_BrickUP(el, f, matProps, materialTag, _nodeCoords=None):
 
 elementWriters = {
     # 2D soil (no node reordering needed)
+    3:      (write_quad, "quad"),
     103:    (write_bbarQuadUP, "bbarQuadUP"),
     1003:   (write_quadUP, "quadUP"),
 
@@ -1702,6 +1818,7 @@ elementWriters = {
     10035:  (lambda el, f, mp, mt, nc: write_ASD2D(el, f, mp, "BR"), "ASD2D_BR"),
 
     # 3D soil (node reordering needed)
+    205:    (write_brickUP, "brickUP"),
     105:    (write_bbarBrickUP, "bbarBrickUP"),
     1005:   (write_SSPbrickUP, "SSPbrickUP"),
     1055:   (write_SSPbrick, "SSPbrick"),
@@ -1917,8 +2034,8 @@ def detectMaxPhyGroup(meshFile):
 
     # element types to consider (native gmsh + derivatives)
     validTypes = (
-        gmshType["line"]
-        | gmshType["quadrangle"]
+        # gmshType["line"] |
+        gmshType["quadrangle"]
         | gmshType["hexahedron"]
         | derivativesType["bbarQuadUP"]
         | derivativesType["quadUP"]
@@ -3767,7 +3884,6 @@ if {$ok != 0} {
 }
 """
 
-
 def writeMainTclGlobal(tclRootDir, modelName, ndm, ndf,
                        damp=0.05, fLower=0.5, fHigher=10.0,
                        gamma=0.5, beta=0.25,
@@ -4015,3 +4131,46 @@ def writeMainTclGlobal(tclRootDir, modelName, ndm, ndf,
         print(f"    - {modelName}/{tclFile}")
 
     return mainPath
+
+def print_index_sets(X, Y, Z):
+    Xs = X - 2
+    Ys = Y - 2
+    Zs = Z - 1
+
+    if Xs <= 0 or Ys <= 0 or Zs <= 0:
+        raise ValueError("Need X>=3, Y>=3, Z>=2")
+
+    start = 1
+
+    def show(name, n):
+        nonlocal start
+        a = start
+        b = start + n - 1
+        print(f'"ASD3D_{name}": set(range({a}, {b + 1})),')
+        start = b + 1
+
+    show("mainSoil",  Xs * Ys * Zs)
+    show("B",  Xs * Ys * 1)
+    show("L",  1  * Ys * Zs)
+    show("R",  1  * Ys * Zs)
+    show("F",  Xs * 1  * Zs)
+    show("K",  Xs * 1  * Zs)
+
+    show("BL", 1  * Ys * 1)
+    show("BR", 1  * Ys * 1)
+    show("BF", Xs * 1  * 1)
+    show("BK", Xs * 1  * 1)
+
+    show("LF", 1  * 1  * Zs)
+    show("LK", 1  * 1  * Zs)
+    show("RF", 1  * 1  * Zs)
+    show("RK", 1  * 1  * Zs)
+
+    show("BLF", 1)
+    show("BLK", 1)
+    show("BRF", 1)
+    show("BRK", 1)
+
+    print(f"TOTAL = set(range(1, {X*Y*Z + 1}))")
+
+print_index_sets(12, 8, 4)

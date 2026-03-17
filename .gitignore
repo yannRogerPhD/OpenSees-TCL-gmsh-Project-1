@@ -18,6 +18,17 @@ venv/
 *.csv
 *.xml
 *.json
+*.db
+*.db.json
+
+# Gmsh options
+*.opt
+
+# Profiling outputs
+gmon.out
+
+# Version lock files
+/examples/*/version
 
 # Temporary or system files
 *.tmp
