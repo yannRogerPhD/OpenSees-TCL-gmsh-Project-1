@@ -4,18 +4,6 @@ A practical toolkit for **geotechnical and soil-structure interaction (SSI) fini
 
 ---
 
-## Contents
-
-- [Overview](#overview)
-- [Workflow](#workflow)
-- [Repository Structure](#repository-structure)
-- [Examples](#examples)
-- [Parsing Pipeline](#parsing-pipeline)
-- [Dependencies](#dependencies)
-- [Resources](#resources)
-
----
-
 ## Overview
 
 This project covers:
