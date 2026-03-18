@@ -5,7 +5,8 @@ import numpy as np
 import meshHelper as mh
 
 # meshFile = os.path.join("testing functions", "G18", "G18-5-2.msh")
-meshFile = os.path.join(os.path.dirname(__file__), "../frozenSoilLayersMainPhD/model.msh")
+path = "/Users/yannroger-ft/Desktop/gitHub/OpenSees-Geotechnical/simulations/test input GM"
+meshFile = os.path.join(path, "model.msh")
 outDir = os.path.join(os.path.dirname(meshFile), "TCL-Files", os.path.splitext(os.path.basename(meshFile))[0])
 
 # define each group category
@@ -20,7 +21,7 @@ groupCategories = {
     "quad": set(), "bbarQuadUP": set(), "quadUP": set(),
 
     # soil 3D
-    "brickUP": set(), "bbarBrickUP": set(), "SSPbrickUP": set(range(1, 8)), "SSPbrick": set(),
+    "brickUP": set(), "bbarBrickUP": set(), "SSPbrickUP": set(range(1, 4)), "SSPbrick": set(),
     "20_8_BrickUP": set(),
 
     # ASD absorbing boundaries 2D
@@ -267,37 +268,42 @@ maxPhyGroup = mh.detectMaxPhyGroup(meshFile)
 
 mh.writeElementsTCL(elmtsRemapped, materialProps, mainSoilTags,
                     nodeCoords=nodeCoords, filePrefix="elements_", outputDir=outDir)
+
 # print(maxPhyGroup)
-baseNodes = mh.getCustomBoundaryNodesFromMsh(meshFile, nodeDOFs, phyGroupIDs=[36], dim=2,
+
+baseNodes = mh.getCustomBoundaryNodesFromMsh(meshFile, nodeDOFs, phyGroupIDs=[5], dim=2,
                                                   returnGrouped=False)
 baseNodes = mh.sortNodesByZ(mh.sortNodesByY(list(baseNodes), nodeCoords), nodeCoords)
 
-with open(os.path.join(os.path.dirname(meshFile), "fixBaseNodes.tcl"), "w") as fBaseN:
+with open(os.path.join(outDir, "fixBaseNodes.tcl"), "w") as fBaseN:
     for i in baseNodes:
-        fBaseN.write(f"fix {i} 1 1 1 0\n")
+        fBaseN.write(f"fix {i} 0 1 1 0\n") 
 
-equalMasterNodes = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[53, 45, 37, 29, 21, 13, 1], dim=1), nodeCoords)
-equalSlaveNodes1 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[54, 46, 38, 30, 22, 14, 3], dim=1), nodeCoords)
-equalSlaveNodes2 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[56, 48, 40, 32, 24, 16, 5], dim=1), nodeCoords)
-equalSlaveNodes3 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[57, 49, 41, 33, 25, 17, 7], dim=1), nodeCoords)
+equalMasterNodes = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[1, 13, 21], dim=1), nodeCoords)
+equalSlaveNodes1 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[5, 16, 24], dim=1), nodeCoords)
+equalSlaveNodes2 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[7, 18, 26], dim=1), nodeCoords)
+equalSlaveNodes3 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[3, 15, 23], dim=1), nodeCoords)
 
+with open(os.path.join(outDir, "baseEqualDOFs.tcl"), "w") as fEqualDOF:
+    i, j, k, l = equalMasterNodes[0], equalSlaveNodes1[0], equalSlaveNodes2[0], equalSlaveNodes3[0]
+    fEqualDOF.write(f"equalDOF {i} {j} 1\nequalDOF {i} {k} 1\nequalDOF {i} {l} 1\n")
 
-with open(os.path.join(os.path.dirname(meshFile), "equalDOFs.tcl"), "w") as fEqualDOF:
+with open(os.path.join(outDir, "baseEqualDOFs.tcl"), "w") as fBaseEqualDOF:
+    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes1[0]} 1\n")
+    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes2[0]} 1\n")
+    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes3[0]} 1\n")
+
+with open(os.path.join(outDir, "equalDOFs.tcl"), "w") as fEqualDOF:
     for i, j, k, l in zip(equalMasterNodes[1:], equalSlaveNodes1[1:], equalSlaveNodes2[1:], equalSlaveNodes3[1:]):
         fEqualDOF.write(f"equalDOF {i} {j} 1 2 3\nequalDOF {i} {k} 1 2 3\nequalDOF {i} {l} 1 2 3\n")
         # print(f"equalDOF {i} {k} 1 2 3")
         # print(f"equalDOF {i} {l} 1 2 3")
 
-with open(os.path.join(os.path.dirname(meshFile), "baseEqualDOFs.tcl"), "w") as fBaseEqualDOF:
-    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes1[0]} 1\n")
-    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes2[0]} 1\n")
-    fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes3[0]} 1\n")
-
 # print(maxPhyGroup)
 
 dryNodes = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[3], dim=3), nodeCoords)
 
-with open(os.path.join(os.path.dirname(meshFile), "fixDryNodes.tcl"), "w") as fDryNodes:
+with open(os.path.join(outDir, "fixDryNodes.tcl"), "w") as fDryNodes:
     for i in dryNodes:
         fDryNodes.write(f"fix {i} 0 0 0 1\n")
 
@@ -309,7 +315,7 @@ elePhyGrp2_ID = mh.getElementsTagByGroup(elmtsRemapped, 2)
 elePhyGrp1_ID = mh.getElementsTagByGroup(elmtsRemapped, 1)
 
 # print(elePhyGrp2and3_ID)
-with open(os.path.join(os.path.dirname(meshFile), "updatePerm.tcl"), "w") as fUpdatePerm:
+with open(os.path.join(outDir, "updatePerm.tcl"), "w") as fUpdatePerm:
     fUpdatePerm.write(f"setParameter -value $xPerm3 -eleRange {elePhyGrp3_ID[0]} {elePhyGrp3_ID[-1]} xPerm\n")
     fUpdatePerm.write(f"setParameter -value $yPerm3 -eleRange {elePhyGrp3_ID[0]} {elePhyGrp3_ID[-1]} yPerm\n")
     fUpdatePerm.write(f"setParameter -value $zPerm3 -eleRange {elePhyGrp3_ID[0]} {elePhyGrp3_ID[-1]} zPerm\n")
@@ -323,4 +329,3 @@ with open(os.path.join(os.path.dirname(meshFile), "updatePerm.tcl"), "w") as fUp
 elePhyGrp1and2and3_ID = mh.getElementsTagByGroup(elmtsRemapped, {1, 2, 3})
 # print(elePhyGrp1and2and3_ID)
 
-print(equalMasterNodes)

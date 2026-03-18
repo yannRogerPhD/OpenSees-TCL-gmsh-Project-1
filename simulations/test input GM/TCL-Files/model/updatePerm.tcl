@@ -1,0 +1,9 @@
+setParameter -value $xPerm3 -eleRange 573 576 xPerm
+setParameter -value $yPerm3 -eleRange 573 576 yPerm
+setParameter -value $zPerm3 -eleRange 573 576 zPerm
+setParameter -value $xPerm2 -eleRange 557 572 xPerm
+setParameter -value $yPerm2 -eleRange 557 572 yPerm
+setParameter -value $zPerm2 -eleRange 557 572 zPerm
+setParameter -value $xPerm1 -eleRange 517 556 xPerm
+setParameter -value $yPerm1 -eleRange 517 556 yPerm
+setParameter -value $zPerm1 -eleRange 517 556 zPerm
