@@ -10,11 +10,8 @@ env/
 venv/
 
 # Simulation outputs
-*.out
 *.log
 *.dat
-*.txt
-!evolution.txt
 *.csv
 *.xml
 *.json
