@@ -12,4 +12,5 @@ Steps:
         - see more instructions in the "getInfoG.py" file
 
 WHEN EVER CONFLICTS HAPPEN WHEN TRYING TO PULL, ENFORCE
-rm -rf .idea/
+rm -rf .idea/ 
+
