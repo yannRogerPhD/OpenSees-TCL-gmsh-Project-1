@@ -1,0 +1,20 @@
+OpenSees: 
+
+1. 135 elements (sElemZ = 2; sElemY = 10; sElemX = 10):
+    Finished with dynamic analysis...
+    Analysis execution time: 356 seconds
+2. 270 elements (sElemZ = 1; sElemY = 10; sElemX = 10)
+    Finished with dynamic analysis...
+    Analysis execution time: 783 seconds
+3. 540 elements (sElemZ = 0.5; sElemY = 10; sElemX = 10)
+    Finished with dynamic analysis...
+    Analysis execution time: 1517 seconds
+4. 72 elements (sElemZ = 4; sElemY = 10; sElemX = 10)
+    Finished with dynamic analysis...
+    Analysis execution time: 1517 seconds
+
+
+OpenSeesSP
+1. 2160 elements (sElemZ = 0.5; sElemY = 5; sElemX = 5)
+   Finished with dynamic analysis...
+   Analysis execution time: 12913 seconds

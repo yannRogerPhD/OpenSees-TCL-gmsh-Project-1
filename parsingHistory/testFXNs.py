@@ -1,6 +1,5 @@
 import os
 import numpy as np
-
 import meshHelper as mh
 
 # meshFile = os.path.join("testing functions", "G18", "G18-5-2.msh")

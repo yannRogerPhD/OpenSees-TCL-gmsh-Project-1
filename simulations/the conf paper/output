@@ -1,0 +1,1245 @@
+mpirun -np 4 OpenSeesSP mainADAPT.tcl 
+Secondary Process Running 1
+Secondary Process Running 2
+Secondary Process Running 3
+Primary Process Running OpenSees Interpreter 0
+
+
+         OpenSees -- Open System For Earthquake Engineering Simulation
+                 Pacific Earthquake Engineering Research Center
+        Version 3.8.0 64-Bit (bb6ae01d65414fbe3c2f0c7944f91bb23ebdc88b)
+
+      (c) Copyright 1999-2016 The Regents of the University of California
+                              All Rights Reserved
+  (Copyright and Disclaimer @ http://www.berkeley.edu/OpenSees/copyright.html)
+
+
+SSPbrickUP element - Written: C.McGann, P.Arduino, P.Mackenzie-Helnwein, U.Washington
+DomainPartitioner::partition() - Start
+DomainPartitioner::partition - Successful partition. Now redistributing data accordingly.
+  * Identifying components to transfer.
+     + Elements.
+     + Nodes.
+     + Boundary Nodes.
+     + MP constraints.
+     + MP constraints (2nd pass).
+  * Sending nodes.
+  * Sending elements.
+  * Sending Load Patterns
+  * Sending homogeneous SP Constraints`
+  * Sending MP Constraints
+DomainPartitioner::partition() - Done
+CTestNormDispIncr::test() - iteration: CTestNormDispIncr::test() - iteration: 1 current Norm: 7.18607e+07 (max: 0.0001, Norm R: 6.88882e-05)
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7.18607e+07 (max: 0.0001, Norm R: 6.88882e-05)
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7.18607e+07 (max: 0.0001, Norm R: 6.88882e-05)
+1 current Norm: 7.18607e+07 (max: 0.0001, Norm R: 6.88882e-05)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000224273 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000224273 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000224273 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000224273 (max: 0.0001, Norm R: 2.70084e-05)
+2.70084e-05)
+2.70084e-05)
+2.70084e-05)
+CTestNormDispIncr::test() - iteration: CTestNormDispIncr::test() - iteration: 3 current Norm: 1.60386e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 1.60386e-05 (max: 0.0001, Norm R: 3 current Norm: 1.60386e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 1.60386e-05 (max: 0.0001, Norm R: 2.8665e-05)
+
+2.8665e-05)
+
+2.8665e-05)
+
+2.8665e-05)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58091e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58091e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58091e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58091e+08 (max: 0.0001, Norm R: 0.000293417)
+0.000293417)
+0.000293417)
+0.000293417)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.0011521 (max: 0.0001, Norm R: 0.000123408)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.0011521 (max: 0.0001, Norm R: 0.000123408)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.0011521 (max: 0.0001, Norm R: 0.000123408)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.0011521 (max: 0.0001, Norm R: 0.000123408)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000204532 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000204532 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000204532 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000204532 (max: 0.0001, Norm R: 0.000115444)
+0.000115444)
+0.0001154440.000115444)
+)
+CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000206575 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000206575 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000206575 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000206575 (max: 0.0001, Norm R: 0.000135108)
+0.000135108)
+0.000135108)
+0.000135108)
+CTestNormDispIncr::test() - iteration: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.96558e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.96558e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.96558e-05 (max: 0.0001, Norm R: 5 current Norm: 8.96558e-05 (max: 0.0001, Norm R: 0.000138870.00013887)
+
+0.00013887)
+
+)
+
+0.00013887)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 3.637e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.637e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.637e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.637e+08 (max: 0.0001, Norm R: 0.000425195)
+0.000425195)
+0.000425195)
+0.000425195)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00166957 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00166957 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00166957 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00166957 (max: 0.0001, Norm R: 0.000250901)
+0.000250901)
+0.000250901)
+0.000250901)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000312699 (max: 0.0001, Norm R: 0.000225507)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000312699 (max: 0.0001, Norm R: 0.000225507)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000312699 (max: 0.0001, Norm R: 0.000225507)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000312699 (max: 0.0001, Norm R: 0.000225507)
+CTestNormDispIncr::test() - iteration: 4 current Norm: 6.74187e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 6.74187e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 6.74187e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 6.74187e-05 (max: 0.0001, Norm R: 0.000226777)
+
+0.000226777)
+
+0.000226777)
+
+0.000226777)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 2.52756e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.52756e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.52756e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.52756e+08 (max: 0.0001, Norm R: 0.000278082)
+0.000278082)
+0.000278082)
+0.000278082)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000922194 (max: 0.0001, Norm R: 0.000217751)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000922194 (max: 0.0001, Norm R: 0.000217751)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000922194 (max: 0.0001, Norm R: 0.000217751)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000922194 (max: 0.0001, Norm R: 0.000217751)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 7.79233e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.79233e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.79233e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.79233e-05 (max: 0.0001, Norm R: 0.000207296)
+
+0.000207296)
+
+0.000207296)
+
+0.000207296)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 1.4932e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.4932e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.4932e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.4932e+08 (max: 0.0001, Norm R: 0.000566241)
+0.000566241)
+0.000566241)
+0.000566241)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00108441 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00108441 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00108441 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00108441 (max: 0.0001, Norm R: 3.53606e-05)
+3.53606e-05)
+3.53606e-05)
+3.53606e-05)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000171328 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000171328 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000171328 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000171328 (max: 0.0001, Norm R: 3.65642e-05)
+3.65642e-05)
+3.65642e-05)
+3.65642e-05)
+CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000115472 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000115472 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000115472 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000115472 (max: 0.0001, Norm R: 3.54392e-05)
+3.54392e-05)
+3.54392e-05)
+3.54392e-05)
+CTestNormDispIncr::test() - iteration: 5 current Norm: 8.84206e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.84206e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.84206e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 8.84206e-05 (max: 0.0001, Norm R: 3.33527e-05)
+
+3.33527e-05)
+
+3.33527e-05)
+
+3.33527e-05)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58889e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58889e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58889e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.58889e+08 (max: 0.0001, Norm R: 0.000321287)
+0.000321287)
+0.000321287)
+0.000321287)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000926025 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000926025 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000926025 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000926025 (max: 0.0001, Norm R: 9.37893e-05)
+9.37893e-05)
+9.37893e-05)
+9.37893e-05)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 7.94541e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.94541e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.94541e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 7.94541e-05 (max: 0.0001, Norm R: 9.46751e-05)
+
+9.46751e-05)
+
+9.46751e-05)
+
+9.46751e-05)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 3.62834e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.62834e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.62834e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 3.62834e+08 (max: 0.0001, Norm R: 0.000629065)
+0.000629065)
+0.000629065)
+0.000629065)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00149983 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00149983 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00149983 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00149983 (max: 0.0001, Norm R: 0.000164515)
+0.000164515)
+0.000164515)
+0.000164515)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000380672 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000380672 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000380672 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 0.000380672 (max: 0.0001, Norm R: 0.000165168)
+0.000165168)
+0.000165168)
+0.000165168)
+CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000123574 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000123574 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000123574 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 4 current Norm: 0.000123574 (max: 0.0001, Norm R: 0.000181068)
+0.000181068)
+0.000181068)
+0.000181068)
+CTestNormDispIncr::test() - iteration: 5 current Norm: 0.000101919 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 0.000101919 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 0.000101919 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 5 current Norm: 0.000101919 (max: 0.0001, Norm R: 0.000179993)
+0.000179993)
+0.000179993)
+0.000179993)
+CTestNormDispIncr::test() - iteration: 6 current Norm: 0.000197372 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 6 current Norm: 0.000197372 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 6 current Norm: 0.000197372 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 6 current Norm: 0.000197372 (max: 0.0001, Norm R: 0.00018309)
+0.00018309)
+0.00018309)
+0.00018309)
+CTestNormDispIncr::test() - iteration: 7 current Norm: 0.000392585 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 7 current Norm: 0.000392585 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 7 current Norm: 0.000392585 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 7 current Norm: 0.000392585 (max: 0.0001, Norm R: 0.000198365)
+0.000198365)
+0.000198365)
+0.000198365)
+CTestNormDispIncr::test() - iteration: 8 current Norm: 0.000202342 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 8 current Norm: 0.000202342 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 8 current Norm: 0.000202342 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 8 current Norm: 0.000202342 (max: 0.0001, Norm R: 0.000188244)
+0.000188244)
+0.000188244)
+0.000188244)
+CTestNormDispIncr::test() - iteration: 9 current Norm: 7.70258e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 9 current Norm: 7.70258e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 9 current Norm: 7.70258e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 9 current Norm: 7.70258e-05 (max: 0.0001, Norm R: 0.000186089)
+
+0.000186089)
+
+0.000186089)
+
+0.000186089)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 2.45614e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.45614e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.45614e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.45614e+08 (max: 0.0001, Norm R: 0.000470315)
+0.000470315)
+0.000470315)
+0.000470315)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00095884 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00095884 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00095884 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00095884 (max: 0.0001, Norm R: 0.000245039)
+0.000245039)
+0.000245039)
+0.000245039)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 2.89664e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 2.89664e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 2.89664e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 2.89664e-05 (max: 0.0001, Norm R: 0.000244421)
+
+0.000244421)
+
+0.000244421)
+
+0.000244421)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 1.53053e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.53053e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.53053e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 1.53053e+08 (max: 0.0001, Norm R: 0.000543225)
+0.000543225)
+0.000543225)
+0.000543225)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00067772 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00067772 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00067772 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.00067772 (max: 0.0001, Norm R: 9.00372e-05)
+9.00372e-05)
+9.00372e-05)
+9.00372e-05)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 4.15223e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 4.15223e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 4.15223e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 4.15223e-05 (max: 0.0001, Norm R: 0.000101142)
+
+0.000101142)
+
+0.000101142)
+
+0.000101142)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 2.6856e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.6856e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.6856e+08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 2.6856e+08 (max: 0.0001, Norm R: 0.000402845)
+0.000402845)
+0.000402845)
+0.000402845)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000930378 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000930378 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000930378 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 0.000930378 (max: 0.0001, Norm R: 8.02229e-05)
+8.02229e-05)
+8.02229e-05)
+8.02229e-05)
+CTestNormDispIncr::test() - iteration: 3 current Norm: 3.60866e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 3.60866e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 3.60866e-05 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 3 current Norm: 3.60866e-05 (max: 0.0001, Norm R: 8.92171e-05)
+
+8.92171e-05)
+
+8.92171e-05)
+
+8.92171e-05)
+
+Finished with elastic gravity analysis...
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 1
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 1
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 1
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 2
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 2
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 2
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 3
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 3
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 3
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 4
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 4
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 4
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 5
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 5
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 6
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 6
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 7
+WARNING: MaterialStageParameter::setDomain() - no effect with material tag 7
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.79 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.79 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.79 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.79 (max: 0.0001, Norm R: 410878)
+410878)
+410878)
+410878)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 1.04256e-07 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 1.04256e-07 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 1.04256e-07 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 1.04256e-07 (max: 0.0001, Norm R: 2.35578)
+
+2.35578)
+
+2.35578)
+
+2.35578)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.84 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.84 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.84 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.84 (max: 0.0001, Norm R: 310590)
+310590)
+310590)
+310590)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70238e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70238e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70238e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70238e-08 (max: 0.0001, Norm R: 1.50894)
+
+1.50894)
+
+1.50894)
+
+1.50894)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.9 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.9 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.9 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.9 (max: 0.0001, Norm R: 314320)
+314320)
+314320)
+314320)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70965e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70965e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70965e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.70965e-08 (max: 0.0001, Norm R: 1.53113)
+
+1.53113)
+
+1.53113)
+
+1.53113)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.94 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.94 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.94 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.94 (max: 0.0001, Norm R: 314384)
+314384)
+314384)
+314384)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 5.71076e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.71076e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.71076e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.71076e-08 (max: 0.0001, Norm R: 1.52721)
+
+1.52721)
+
+1.52721)
+
+1.52721)
+
+CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.99 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.99 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.99 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 1 current Norm: 7325.99 (max: 0.0001, Norm R: 315892)
+315892)
+315892)
+315892)
+CTestNormDispIncr::test() - iteration: 2 current Norm: 5.73498e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.73498e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.73498e-08 (max: 0.0001, Norm R: CTestNormDispIncr::test() - iteration: 2 current Norm: 5.73498e-08 (max: 0.0001, Norm R: 1.61283)
+
+1.61283)
+
+1.61283)
+
+1.61283)
+
+Finished with plastic gravity analysis...
+ 
+Finished updating permeabilities for dynamic analysis...
+ 
+Dynamic loading created...
+ 
+Starting adaptive dynamic analysis...
+Target end time: 39.95 s,  initial dt: 0.005 s
+ 
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00343726 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00343726 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00343726 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00343726 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.54261e-08 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.54261e-08 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.54261e-08 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.54261e-08 (max: 0.001)
+
+ok  | t=0.0050s  dt=0.005  tol=1.0e-3  iSuc=1
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000467796 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000467796 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000467796 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000467796 (max: 0.001)
+
+ok  | t=0.0100s  dt=0.005  tol=1.0e-3  iSuc=2
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000331258 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000331258 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000331258 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000331258 (max: 0.001)
+
+ok  | t=0.0150s  dt=0.005  tol=1.0e-3  iSuc=3
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000259677 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000259677 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000259677 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000259677 (max: 0.001)
+
+ok  | t=0.0200s  dt=0.005  tol=1.0e-3  iSuc=4
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000347364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000347364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000347364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000347364 (max: 0.001)
+
+ok  | t=0.0250s  dt=0.005  tol=1.0e-3  iSuc=5
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000445467 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000445467 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000445467 (max: 0.001)
+
+ current Ratio (dX*dR/dX1*dR1): 0.000445467 (max: 0.001)
+
+ok  | t=0.0300s  dt=0.005  tol=1.0e-3  iSuc=6
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000429654 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000429654 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000429654 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000429654 (max: 0.001)
+
+ok  | t=0.0350s  dt=0.005  tol=1.0e-3  iSuc=7
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0104559 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0104559 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0104559 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0104559 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0111662 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0111662 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0111662 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0111662 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000101181 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000101181 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000101181 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000101181 (max: 0.001)
+
+ok  | t=0.0400s  dt=0.005  tol=1.0e-3  iSuc=8
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000199667 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000199667 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000199667 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000199667 (max: 0.001)
+
+ok  | t=0.0450s  dt=0.005  tol=1.0e-3  iSuc=9
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000203412 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000203412 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000203412 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000203412 (max: 0.001)
+
+ok  | t=0.0500s  dt=0.005  tol=1.0e-3  iSuc=10
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.001)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000189364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000189364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000189364 (max: 0.001)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000189364 (max: 0.001)
+
+ok  | t=0.0550s  dt=0.005  tol=0.0005  iSuc=11
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000386556 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000386556 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000386556 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000386556 (max: 0.0005)
+
+ok  | t=0.0600s  dt=0.005  tol=5.0e-4  iSuc=12
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.77919e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.77919e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.77919e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.77919e-05 (max: 0.0005)
+
+ok  | t=0.0650s  dt=0.005  tol=5.0e-4  iSuc=13
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.25505e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.25505e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.25505e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.25505e-05 (max: 0.0005)
+
+ok  | t=0.0700s  dt=0.005  tol=5.0e-4  iSuc=14
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00012469 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00012469 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000124690.00012469 (max: 0.0005)
+
+ (max: 0.0005)
+
+ok  | t=0.0750s  dt=0.005  tol=5.0e-4  iSuc=15
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 7.78994e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 7.78994e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 7.78994e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 7.78994e-05 (max: 0.0005)
+
+ok  | t=0.0800s  dt=0.005  tol=5.0e-4  iSuc=16
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 5.90622e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 5.90622e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 5.90622e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 5.90622e-05 (max: 0.0005)
+
+ok  | t=0.0850s  dt=0.005  tol=5.0e-4  iSuc=17
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 2.85234e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 2.85234e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 2.85234e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 2.85234e-05 (max: 0.0005)
+
+ok  | t=0.0900s  dt=0.005  tol=5.0e-4  iSuc=18
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 1.2933e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 1.2933e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 1.2933e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 1.2933e-05 (max: 0.0005)
+
+ok  | t=0.0950s  dt=0.005  tol=5.0e-4  iSuc=19
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.55304e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.55304e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.55304e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.55304e-05 (max: 0.0005)
+
+ok  | t=0.1000s  dt=0.005  tol=5.0e-4  iSuc=20
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.53608e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.53608e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.53608e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 3.53608e-05 (max: 0.0005)
+
+ok  | t=0.1050s  dt=0.005  tol=5.0e-4  iSuc=21
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 4.55106e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 4.55106e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 4.55106e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 4.55106e-05 (max: 0.0005)
+
+ok  | t=0.1100s  dt=0.005  tol=5.0e-4  iSuc=22
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.73111e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.73111e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.73111e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 8.73111e-05 (max: 0.0005)
+
+ok  | t=0.1150s  dt=0.005  tol=5.0e-4  iSuc=23
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000175099 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 20.000175099 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1):  current Ratio (dX*dR/dX1*dR1): 0.0001750990.000175099 (max: 0.0005)
+
+ (max: 0.0005)
+
+ok  | t=0.1200s  dt=0.005  tol=5.0e-4  iSuc=24
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000241843 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000241843 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000241843 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000241843 (max: 0.0005)
+
+ok  | t=0.1250s  dt=0.005  tol=5.0e-4  iSuc=25
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000495353 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000495353 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000495353 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000495353 (max: 0.0005)
+
+ok  | t=0.1300s  dt=0.005  tol=5.0e-4  iSuc=26
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+ (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000728978 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000728978 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.000728978 (max: 0.0005)
+0.000728978 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.66598e-08 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.66598e-08 (max: CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.66598e-08 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.66598e-08 (max: 0.0005)
+
+0.0005)
+
+ok  | t=0.1350s  dt=0.005  tol=5.0e-4  iSuc=27
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+ (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00114002 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00114002 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00114002 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00114002 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.91512e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.91512e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.91512e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 8.91512e-05 (max: 0.0005)
+
+ok  | t=0.1400s  dt=0.005  tol=5.0e-4  iSuc=28
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00206688 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00206688 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00206688 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00206688 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.90346e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.90346e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.90346e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.90346e-06 (max: 0.0005)
+
+ok  | t=0.1450s  dt=0.005  tol=5.0e-4  iSuc=29
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00449384 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00449384 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00449384 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00449384 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.27348e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.27348e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.27348e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.27348e-06 (max: 0.0005)
+
+ok  | t=0.1500s  dt=0.005  tol=5.0e-4  iSuc=30
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00525076 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00525076 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00525076 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00525076 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.03156e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.03156e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.03156e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.03156e-06 (max: 0.0005)
+
+ok  | t=0.1550s  dt=0.005  tol=5.0e-4  iSuc=31
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00798015 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00798015 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00798015 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.00798015 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.17994e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.17994e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.17994e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.17994e-06 (max: 0.0005)
+
+ok  | t=0.1600s  dt=0.005  tol=5.0e-4  iSuc=32
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0116552 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0116552 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0116552 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0116552 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 9.43006e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 9.43006e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 9.43006e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 9.43006e-06 (max: 0.0005)
+
+ok  | t=0.1650s  dt=0.005  tol=5.0e-4  iSuc=33
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0224045 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0224045 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0224045 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0224045 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 6.16913e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 6.16913e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 6.16913e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 6.16913e-05 (max: 0.0005)
+
+ok  | t=0.1700s  dt=0.005  tol=5.0e-4  iSuc=34
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0244251 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0244251 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0244251 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0244251 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.70175e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.70175e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.70175e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.70175e-05 (max: 0.0005)
+
+ok  | t=0.1750s  dt=0.005  tol=5.0e-4  iSuc=35
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0345101 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0345101 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0345101 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0345101 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.98603e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.98603e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.98603e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 1.98603e-05 (max: 0.0005)
+
+ok  | t=0.1800s  dt=0.005  tol=5.0e-4  iSuc=36
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0483341 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0483341 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0483341 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0483341 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 2.14967e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 2.14967e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 2.14967e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 2.14967e-05 (max: 0.0005)
+
+ok  | t=0.1850s  dt=0.005  tol=5.0e-4  iSuc=37
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0679887 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0679887 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0679887 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0679887 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 5.28816e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 5.28816e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 5.28816e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 5.28816e-05 (max: 0.0005)
+
+ok  | t=0.1900s  dt=0.005  tol=5.0e-4  iSuc=38
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0958671 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0958671 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0958671 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.0958671 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 7.1125e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 7.1125e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 7.1125e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 7.1125e-05 (max: 0.0005)
+
+ok  | t=0.1950s  dt=0.005  tol=5.0e-4  iSuc=39
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.165233 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.165233 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.165233 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.165233 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00181389 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00181389 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00181389 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00181389 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 7.26343e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 7.26343e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 7.26343e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 7.26343e-06 (max: 0.0005)
+
+ok  | t=0.2000s  dt=0.005  tol=5.0e-4  iSuc=40
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+1 (max: 0.0005)
+1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.188814 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.188814 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.188814 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.188814 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.000322888 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.000322888 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.000322888 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.000322888 (max: 0.0005)
+
+ok  | t=0.2050s  dt=0.005  tol=5.0e-4  iSuc=41
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.268069 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.268069 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.268069 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.268069 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00626074 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00626074 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00626074 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.00626074 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000267845 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000267845 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000267845 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000267845 (max: 0.0005)
+
+ok  | t=0.2100s  dt=0.005  tol=5.0e-4  iSuc=42
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.338875 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.338875 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.338875 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.338875 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0301124 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0301124 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0301124 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0301124 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.00213637 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.00213637 (max: CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.00213637 (max: 0.0005)
+0.00213637 (max: 0.0005)
+0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000256237 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000256237 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000256237 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000256237 (max: 0.0005)
+
+ok  | t=0.2150s  dt=0.005  tol=5.0e-4  iSuc=43
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 1 (max: 0.0005)
+0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.415392 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.415392 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.415392 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.415392 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0923636 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0923636 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0923636 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0923636 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0059523 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0059523 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0059523 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0059523 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000404472 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000404472 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000404472 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.000404472 (max: 0.0005)
+
+ok  | t=0.2200s  dt=0.005  tol=5.0e-4  iSuc=44
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.461796 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.461796 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.461796 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.461796 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.196435 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.196435 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.196435 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.196435 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0358417 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0358417 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0358417 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0358417 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0110236 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0110236 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0110236 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0110236 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.143642 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.143642 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.143642 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.143642 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.514556 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.514556 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.514556 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.514556 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.258369 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.258369 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.258369 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.258369 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.152659 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.152659 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.152659 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.152659 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0298704 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 100.0298704 (max: 0.0005)
+ current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0298704 (max: 0.0005)
+0.0298704 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.000264033 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.000264033 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.000264033 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.000264033 (max: 0.0005)
+
+ok  | t=0.2250s  dt=0.005  tol=5.0e-4  iSuc=45
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.615419 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.615419 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.615419 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.615419 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.321328 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.321328 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.321328 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.321328 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.40171 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.40171 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.40171 (max: 0.0005)
+4 current Ratio (dX*dR/dX1*dR1): 0.40171 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.118996 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.118996 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.118996 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.118996 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.393338 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.393338 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.393338 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.393338 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 3.79911 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 3.79911 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 3.79911 (max: 0.0005)
+3.79911 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.09125 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.09125 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.09125 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.09125 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.33486 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.33486 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.33486 (max: 0.0005)
+0.33486 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 2.38946 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 2.38946 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 2.38946 (max: 0.0005)
+ current Ratio (dX*dR/dX1*dR1): 2.38946 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 1.04077 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 1.04077 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 1.04077 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 1.04077 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.681044 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.681044 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.681044 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.681044 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.868923 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.868923 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.868923 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.868923 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 14 current Ratio (dX*dR/dX1*dR1): 3.03329 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 14 current Ratio (dX*dR/dX1*dR1): 3.03329 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 14 current Ratio (dX*dR/dX1*dR1): 3.03329 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 14 current Ratio (dX*dR/dX1*dR1): 3.03329 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 15 current Ratio (dX*dR/dX1*dR1): 6.92658 (max: 0.0005)
+WARNING: CTestRelativeEnergyIncr::test() - failed to converge 
+after: 15 iterations
+AcceleratedNewton::solveCurrentStep() -The ConvergenceTest object failed in test()
+TransientDomainDecompositionAnalysis::analyze() - the Algorithm failed with domain at load factor 0.23
+CTestRelativeEnergyIncr::test() - iteration: 15 current Ratio (dX*dR/dX1*dR1): 6.92658 (max: 0.0005)
+WARNING: CTestRelativeEnergyIncr::test() - failed to converge 
+after: 15 iterations
+AcceleratedNewton::solveCurrentStep() -The ConvergenceTest object failed in test()
+TransientDomainDecompositionAnalysis::analyze() - the Algorithm failed with domain at load factor 0.23
+CTestRelativeEnergyIncr::test() - iteration: 15 current Ratio (dX*dR/dX1*dR1): 6.92658 (max: 0.0005)
+WARNING: CTestRelativeEnergyIncr::test() - failed to converge 
+after: 15 iterations
+AcceleratedNewton::solveCurrentStep() -The ConvergenceTest object failed in test()
+DirectIntegrationAnalysis::analyze() - the Algorithm failed at time 0.23
+CTestRelativeEnergyIncr::test() - iteration: 15 current Ratio (dX*dR/dX1*dR1): 6.92658 (max: 0.0005)
+WARNING: CTestRelativeEnergyIncr::test() - failed to converge 
+after: 15 iterations
+AcceleratedNewton::solveCurrentStep() -The ConvergenceTest object failed in test()
+TransientDomainDecompositionAnalysis::analyze() - the Algorithm failed with domain at load factor 0.23
+OpenSees > analyze failed, returned: -3 error flag
+FAIL| t=0.2250s  dt=0.0025  tol=5.0e-4  iSuc=0
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.361749 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.361749 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.361749 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.361749 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0623322 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0623322 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0623322 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0623322 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000721436 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000721436 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000721436 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.000721436 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 5.76875e-06 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 5.76875e-06CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1):  (max: 0.0005)
+
+5.76875e-06 (max: 0.0005)
+
+5.76875e-06 (max: 0.0005)
+
+ok  | t=0.2275s  dt=0.0025  tol=5.0e-4  iSuc=1
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.251737 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.251737 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.251737 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.251737 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0710048 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0710048 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0710048 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0710048 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0136519 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0136519 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0136519 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0136519 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0041121 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0041121 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0041121 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.0041121 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.00559404 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.00559404 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.00559404 (max: 0.0005)
+0.00559404 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.00105788 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.00105788 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.00105788 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.00105788 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.42258e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.42258e-05 (max: 0.0005)
+
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 1.42258e-05 (max: 0.0005)
+
+1.42258e-05 (max: 0.0005)
+
+ok  | t=0.2300s  dt=0.0025  tol=5.0e-4  iSuc=2
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 1 current Ratio (dX*dR/dX1*dR1): 1 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.281906 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.281906 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.281906 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 2 current Ratio (dX*dR/dX1*dR1): 0.281906 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0792147 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0792147 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0792147 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 3 current Ratio (dX*dR/dX1*dR1): 0.0792147 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0212464 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0212464 (max: CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 4 current Ratio (dX*dR/dX1*dR1): 0.0212464 (max: 0.0005)
+0.0212464 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.00909244 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.00909244 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.00909244 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 5 current Ratio (dX*dR/dX1*dR1): 0.00909244 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.0179915 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.0179915 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.0179915 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 6 current Ratio (dX*dR/dX1*dR1): 0.0179915 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.0255922 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.0255922 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.0255922 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 7 current Ratio (dX*dR/dX1*dR1): 0.0255922 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.0181324 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.0181324 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.0181324 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 8 current Ratio (dX*dR/dX1*dR1): 0.0181324 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.0181446 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.0181446 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.0181446 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 9 current Ratio (dX*dR/dX1*dR1): 0.0181446 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0277081 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0277081 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0277081 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 10 current Ratio (dX*dR/dX1*dR1): 0.0277081 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.0112361 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.0112361 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.0112361 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 11 current Ratio (dX*dR/dX1*dR1): 0.0112361 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.00264021 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.00264021 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): CTestRelativeEnergyIncr::test() - iteration: 12 current Ratio (dX*dR/dX1*dR1): 0.00264021 (max: 0.00264021 (max: 0.0005)
+0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.000683237 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1): 0.000683237 (max: 0.0005)
+CTestRelativeEnergyIncr::test() - iteration: 13CTestRelativeEnergyIncr::test() - iteration: 13 current Ratio (dX*dR/dX1*dR1):  current Ratio (dX*dR/dX1*dR1): 0.000683237 (max: 0.000683237 (max: 0.0005)
+0.0005)
+

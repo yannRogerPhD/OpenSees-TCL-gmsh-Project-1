@@ -1,55 +1,38 @@
 wipe 
 model BasicBuilder -ndm 3 -ndf 4
 
-# souce nodes
 source TCL-Files/model/soil_nodesByDOF_4DOF.tcl
-
-# define BCs at the base of the soil model (fix and equalDOF)
 source TCL-Files/model/fixBaseNodes.tcl
-source TCL-Files/model/baseEqualDOFs.tcl
-
-# define period BCs
 source TCL-Files/model/equalDOFs.tcl
-
-# define dry nodes
 source TCL-Files/model/fixDryNodes.tcl
+source TCL-Files/model/symmetryPlaneBCs.tcl
 
-# define materials
 source materials.tcl
 
-# define elements
 source TCL-Files/model/elements_SSPbrickUP.tcl
 
-# create base dashpots (LK)
-# source TCL-Files/model/baseDashpot.tcl
-
-# rigid base: fix DOF 1 (X) at all base nodes
-# fix 1 1 1 1 0
-# fix 5 1 1 1 0
-# fix 8 1 1 1 0
-# fix 4 1 1 1 0
-
-# analysis parameters
 source TCL-Files/model/analysisParams.tcl
 
-
 # gravity analysis
-model BasicBuilder -ndm 3 -ndf 4
+# model BasicBuilder -ndm 3 -ndf 4
 
 updateMaterialStage -material 1 -stage 0
 updateMaterialStage -material 2 -stage 0
 updateMaterialStage -material 3 -stage 0
 
-constraints Penalty 1.e14 1.e14
-test        NormDispIncr 1e-5 30 1
+constraints Penalty 1.e10 1.e10
+test        NormDispIncr 1e-4 50 1
 algorithm   Newton
 numberer    RCM
-system      SparseGeneral
+# system      SparseGeneral
+system      Mumps
 integrator  Newmark $gamma $beta 
 analysis    Transient
 
 set startT  [clock seconds]
-analyze     20 5.0e2
+# analyze     20 5.0e2
+# analyze     200 50
+analyze     20 5.0
 
 puts "Finished with elastic gravity analysis..."
 
@@ -58,8 +41,9 @@ updateMaterialStage -material 2 -stage 1
 updateMaterialStage -material 3 -stage 1
 
 # plastic gravity loading
-analyze     40 5.0e-2
-
+# analyze     40 5.0e-2
+# analyze     100 5.0e-2
+analyze 10 1.0e-4
 
 # update permeabilities for post-gravity analyses
 set xPerm3 1.0e-2
@@ -86,25 +70,29 @@ remove recorders
 set recDT [expr 10*$motionDT]
 
 # create recorders
-recorder Node -file results/accelRigidBase.out -time -dT $recDT  -node 15 -dof 1 2 3 accel
-recorder Node -file results/porePressureRB.out -time -dT $recDT  -node 212 -dof 4 vel
+recorder Node -file resultsSP/accelRigidBaseSP4.out -time -dT $recDT  -node 15 -dof 1 2 3 accel
+recorder Node -file resultsSP/porePressureRBSP4.out -time -dT $recDT  -node 212 -dof 4 vel
 
 # define acceleration time history file
 set accelFile accelerationHistory.out
 
 # timeseries object for acceleration input
-set aSeries "Path -dt $motionDT -filePath $accelFile -factor 0.49"
+# NOTE: OpenSeesSP/MP requires timeSeries to be defined separately with a tag;
+# passing an inline series string to pattern UniformExcitation is not supported.
+timeSeries Path 1 -dt $motionDT -filePath $accelFile -factor 0.49
 
 # uniform excitation in X direction (DOF 1)
-pattern UniformExcitation 10 1 -accel $aSeries
+pattern UniformExcitation 10 1 -accel 1
+
 puts "Dynamic loading created..."
  
-constraints Penalty 1.e14 1.e14
+constraints Penalty 1.e10 1.e10
 test        NormDispIncr 1.0e-3 55 1
 algorithm   KrylovNewton
 numberer    RCM
 # numberer AMD; approximate minimum degree
-system      SparseGeneral
+# system      SparseGeneral
+system Mumps
 integrator  Newmark $gamma $beta
 #rayleigh    $a0 $a1 0.0 0.0
 analysis    Transient
