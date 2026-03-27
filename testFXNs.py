@@ -6,7 +6,7 @@ import meshHelper as mh
 # meshFile = os.path.join("testing functions", "G18", "G18-5-2.msh")
 # path = "/Users/yannroger-ft/Desktop/gitHub/OpenSees-Geotechnical/simulations/test SP and MP"
 path = "/home/yafeu/Desktop/GitHub/OpenSees-Geotechnical/simulations/the conf paper"
-meshFile = os.path.join(path, "model.msh")
+meshFile = os.path.join(path, "model1.msh")
 outDir = os.path.join(os.path.dirname(meshFile), "TCL-Files", os.path.splitext(os.path.basename(meshFile))[0])
 
 # define each group category
@@ -227,6 +227,8 @@ materialProps = {
             "Gs":        6.0e4,         
             # or supply directly:
             # "alphaStab": 6.0e-5,
+            "fluidBulk":    8.8e6,      # kN/m^2 (ice)
+            "fluidDensity": 0.917,
         },
         2: {                            
             "void": 0.77,
@@ -238,6 +240,8 @@ materialProps = {
             "Ks":        4.0e4,         
             "Gs":        2.0e4,         
             # "alphaStab": 2.0e-4,
+            "fluidBulk":    8.8e6,      # kN/m^2 (ice)
+            "fluidDensity": 0.917,
         },
         3: {                            
             "void": 0.77,
@@ -248,6 +252,8 @@ materialProps = {
             "Ks":        1.2e5,         
             "Gs":        6.0e4,         
             # "alphaStab": 6.0e-5,
+            "fluidBulk":    8.8e6,      # kN/m^2 (ice)
+            "fluidDensity": 0.917,
         },
         4: {                            
             "void": 0.77,
@@ -258,6 +264,8 @@ materialProps = {
             "Ks":        1.2e5,         
             "Gs":        6.0e4,         
             # "alphaStab": 6.0e-5,
+            "fluidBulk":    8.8e6,      # kN/m^2 (ice)
+            "fluidDensity": 0.917,
         },
         5: {                            
             "void": 0.77,
@@ -298,21 +306,25 @@ materialProps = {
 #     2: 5,                                # group 2 --> material 5
 # })
 
-# mainSoilTags = mh.buildMainSoilTags(meshFile, overrides={
-#     **{i: 1 for i in range(1, 2)},
-#     **{i: 2 for i in range(2, 3)},
-#     **{i: 3 for i in range(3, 4)},
-# })
-
 mainSoilTags = mh.buildMainSoilTags(meshFile, overrides={
-    **{i: 1 for i in list(range(102, 116)) + list(range(200, 212))},
-    **{i: 2 for i in list(range(88, 102)) + list(range(188, 200))},
-    **{i: 3 for i in list(range(74, 88)) + list(range(176, 188))},
-    **{i: 4 for i in list(range(60, 74)) + list(range(164, 176))},
-    **{i: 5 for i in list(range(31, 46)) + list(range(46, 60)) + list(range(140, 152)) + list(range(152, 164))},
-    **{i: 6 for i in list(range(16, 31)) + list(range(128, 140))},
-    **{i: 7 for i in list(range(1, 16)) + list(range(116, 128))},
+    **{i: 1 for i in range(1, 2)},
+    **{i: 2 for i in range(2, 3)},
+    **{i: 3 for i in range(3, 4)},
+    **{i: 4 for i in range(4, 5)},
+    **{i: 5 for i in range(5, 6)},
+    **{i: 6 for i in range(6, 7)},
+    **{i: 7 for i in range(7, 8)},
 })
+
+# mainSoilTags = mh.buildMainSoilTags(meshFile, overrides={
+#     **{i: 1 for i in list(range(102, 116)) + list(range(200, 212))},
+#     **{i: 2 for i in list(range(88, 102)) + list(range(188, 200))},
+#     **{i: 3 for i in list(range(74, 88)) + list(range(176, 188))},
+#     **{i: 4 for i in list(range(60, 74)) + list(range(164, 176))},
+#     **{i: 5 for i in list(range(31, 46)) + list(range(46, 60)) + list(range(140, 152)) + list(range(152, 164))},
+#     **{i: 6 for i in list(range(16, 31)) + list(range(128, 140))},
+#     **{i: 7 for i in list(range(1, 16)) + list(range(116, 128))},
+# })
 
 
 maxPhyGroup = mh.detectMaxPhyGroup(meshFile)
@@ -374,6 +386,7 @@ with open(os.path.join(outDir, "symmetryPlaneBCs.tcl"), "w") as fBaseN:
         fBaseN.write(f"fix {i} 0 1 0 0\n")
     for i in symmetryPlaneB:
         fBaseN.write(f"fix {i} 0 1 0 0\n")
+
 # """
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -388,17 +401,17 @@ with open(os.path.join(outDir, "symmetryPlaneBCs.tcl"), "w") as fBaseN:
 #     fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes2[0]} 1\n")
 #     fBaseEqualDOF.write(f"equalDOF {equalMasterNodes[0]} {equalSlaveNodes3[0]} 1\n")
 
-### equal DOFs at lateral boundaries for 1D soil column
-# equalMasterNodes = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[1, 13, 21], dim=1), nodeCoords)
-# equalSlaveNodes1 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[5, 16, 24], dim=1), nodeCoords)
-# equalSlaveNodes2 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[7, 18, 26], dim=1), nodeCoords)
-# equalSlaveNodes3 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[3, 15, 23], dim=1), nodeCoords)
+## equal DOFs at lateral boundaries for 1D soil column
+equalMasterNodes = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[53, 45, 37, 29, 21, 13, 1], dim=1), nodeCoords)
+equalSlaveNodes1 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[56, 48, 40, 32, 24, 16, 5], dim=1), nodeCoords)
+equalSlaveNodes2 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[57, 49, 41, 33, 25, 17, 7], dim=1), nodeCoords)
+equalSlaveNodes3 = mh.sortNodesByZ(mh.getBoundaryNodesFromMsh(meshFile, phyGroupIDs=[54, 46, 38, 30, 22, 14, 3], dim=1), nodeCoords)
 
-# with open(os.path.join(outDir, "equalDOFs.tcl"), "w") as fEqualDOF:
-#     for i, j, k, l in zip(equalMasterNodes[1:], equalSlaveNodes1[1:], equalSlaveNodes2[1:], equalSlaveNodes3[1:]):
-#         fEqualDOF.write(f"equalDOF {i} {j} 1 2 3\nequalDOF {i} {k} 1 2 3\nequalDOF {i} {l} 1 2 3\n")
-#         # print(f"equalDOF {i} {k} 1 2 3")
-#         # print(f"equalDOF {i} {l} 1 2 3")
+with open(os.path.join(outDir, "equalDOFs1D.tcl"), "w") as fEqualDOF:
+    for i, j, k, l in zip(equalMasterNodes[1:], equalSlaveNodes1[1:], equalSlaveNodes2[1:], equalSlaveNodes3[1:]):
+        fEqualDOF.write(f"equalDOF {i} {j} 1 2 3\nequalDOF {i} {k} 1 2 3\nequalDOF {i} {l} 1 2 3\n")
+        # print(f"equalDOF {i} {k} 1 2 3")
+        # print(f"equalDOF {i} {l} 1 2 3")
 
 
 # print(maxPhyGroup)

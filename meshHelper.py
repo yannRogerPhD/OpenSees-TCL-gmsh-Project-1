@@ -1437,8 +1437,8 @@ def write_brickUP(el, f, matProps, materialTag, nodeCoords=None):
     permY = groupOverrides.get("permY", soil["permY"])
     permZ = groupOverrides.get("permZ", soil["permZ"])
 
-    fluidBulk = matProps["fluidBulk"]
-    fluidDensity = matProps["fluidDensity"]
+    fluidBulk = groupOverrides.get("fluidBulk", matProps["fluidBulk"])
+    fluidDensity = groupOverrides.get("fluidDensity", matProps["fluidDensity"])
 
     # computed values
     bulk = fluidBulk / porosity
@@ -1499,8 +1499,8 @@ def write_bbarQuadUP(el, f, matProps, materialTag, _nodeCoords=None):
     hPerm = groupOverrides.get("hPerm", soil["hPerm"])
     vPerm = groupOverrides.get("vPerm", soil["vPerm"])
 
-    fluidBulk = matProps["fluidBulk"]
-    fluidDensity = matProps["fluidDensity"]
+    fluidBulk = groupOverrides.get("fluidBulk", matProps["fluidBulk"])
+    fluidDensity = groupOverrides.get("fluidDensity", matProps["fluidDensity"])
 
     # computed values
     bulk = fluidBulk / porosity
@@ -1553,8 +1553,8 @@ def write_quadUP(el, f, matProps, materialTag, _nodeCoords=None):
     hPerm = groupOverrides.get("hPerm", soil["hPerm"])
     vPerm = groupOverrides.get("vPerm", soil["vPerm"])
 
-    fluidBulk = matProps["fluidBulk"]
-    fluidDensity = matProps["fluidDensity"]
+    fluidBulk = groupOverrides.get("fluidBulk", matProps["fluidBulk"])
+    fluidDensity = groupOverrides.get("fluidDensity", matProps["fluidDensity"])
 
     # computed values
     bulk = fluidBulk / porosity
@@ -1751,8 +1751,8 @@ def write_SSPbrickUP(el, f, matProps, materialTag, nodeCoords=None):
     groupOverrides = matProps.get("groupOverrides", {}).get(materialTag, {})
 
     # fluid properties (passed raw to the element)
-    fluidBulk    = matProps["fluidBulk"]       # $fBulk: raw bulk modulus of pore fluid
-    fluidDensity = matProps["fluidDensity"]    # $fDen
+    fluidBulk    = groupOverrides.get("fluidBulk",    matProps["fluidBulk"])       # $fBulk: raw bulk modulus of pore fluid
+    fluidDensity = groupOverrides.get("fluidDensity",  matProps["fluidDensity"])    # $fDen
 
     # soil layer properties (with per-group overrides)
     void = groupOverrides.get("void", soil["void"])   # $void (voids ratio)
@@ -1842,8 +1842,8 @@ def write_bbarBrickUP(el, f, matProps, materialTag, nodeCoords=None):
     permY = groupOverrides.get("permY", soil["permY"])
     permZ = groupOverrides.get("permZ", soil["permZ"])
 
-    fluidBulk = matProps["fluidBulk"]
-    fluidDensity = matProps["fluidDensity"]
+    fluidBulk = groupOverrides.get("fluidBulk", matProps["fluidBulk"])
+    fluidDensity = groupOverrides.get("fluidDensity", matProps["fluidDensity"])
 
     # computed values
     bulk = fluidBulk / porosity
@@ -1999,8 +1999,8 @@ def write_20_8_BrickUP(el, f, matProps, materialTag, nodeCoords=None):
     permY = groupOverrides.get("permY", soil["permY"])
     permZ = groupOverrides.get("permZ", soil["permZ"])
 
-    fluidBulk = matProps["fluidBulk"]
-    fluidDensity = matProps["fluidDensity"]
+    fluidBulk = groupOverrides.get("fluidBulk", matProps["fluidBulk"])
+    fluidDensity = groupOverrides.get("fluidDensity", matProps["fluidDensity"])
 
     # computed values
     bulk = fluidBulk / porosity
