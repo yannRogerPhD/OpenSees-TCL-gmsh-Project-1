@@ -1,15 +1,15 @@
 //
 x0 = 0; y0 = 0;
 //+
-zMeshDense = 2; zMeshMedDense = 2; zMeshLoose = 2;
+zMeshDense = 5.0; zMeshMedDense = 5.0; zMeshLoose = 5.0;
 //+
-lx1 = DefineNumber[ 2, Name "Parameters/initDims/lx1" ];
+lx1 = DefineNumber[ 50, Name "Parameters/initDims/lx1" ];
 //+
-ly1 = DefineNumber[ 2, Name "Parameters/initDims/ly1" ];
+ly1 = DefineNumber[ 50, Name "Parameters/initDims/ly1" ];
 //+
-transX1 = DefineNumber[ 2, Name "Parameters/initDims/transX1" ];
+transX1 = DefineNumber[ 11, Name "Parameters/initDims/transX1" ];
 //+
-transY1 = DefineNumber[ 2, Name "Parameters/initDims/transY1" ];
+transY1 = DefineNumber[ 11, Name "Parameters/initDims/transY1" ];
 //+
 zLoose = DefineNumber[ 30, Name "Parameters/zLoose" ];
 zTransLoose = Ceil(zLoose/zMeshLoose) + 1;
@@ -59,3 +59,4 @@ Transfinite Surface {:};
 Recombine Surface {:};
 //+
 Transfinite Volume {:};
+//+

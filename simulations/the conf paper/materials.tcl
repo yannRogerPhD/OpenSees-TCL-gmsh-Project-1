@@ -20,7 +20,7 @@ set void10 1.1   ;# e=(2.7-1.8)/(1.8-1.0)
 # !!!!!!!!!!!!!! material sublayer 1 (0.0 - 1.0 m; T_avg = -10.5°C) !!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (102 - 115) + (200 - 211) --> total 26 volumes --> OK
 set matTag1         1
-set rho1            1.8e3  ;# mass density (kg/m3)
+set rho1            1.8  ;# mass density (kg/m3)
 set refShearModul1  2.5e6  ;# reference shear modulus (kPa)
 set refBulkModul1   5.4e6  ;# reference bulk modulus (kPa)
 set cohesi1         2.6e3  ;# apparent cohesion at zero confinement (kPa)
@@ -45,7 +45,7 @@ set zPerm1 1.0e-8
 # !!!!!!!!!!!!!! material sublayer 2 (1.0 - 2.0 m; T_avg = -7.5°C) !!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (88 - 101) + (188 - 199) --> total 26 volumes --> OK
 set matTag2         2
-set rho2            1.8e3
+set rho2            1.8
 set refShearModul2  2.1e6
 set refBulkModul2   4.6e6
 set cohesi2         2.2e3
@@ -71,7 +71,7 @@ set zPerm2  1.0e-9
 # !!!!!!!!!!!!!! material sublayer 3 (2.0 - 3.0 m; T_avg = -4.5°C) !!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (74 - 87) + (176 - 187) --> total 26 volumes --> OK
 set matTag3         3
-set rho3            1.8e3
+set rho3            1.8
 set refShearModul3  1.7e6
 set refBulkModul3   3.8e6
 set cohesi3         1.7e3
@@ -94,7 +94,7 @@ set zPerm3  1.0e-8
 # !!!!!!!!!!!!!! material sublayer 4 (3.0 - 4.0 m; T_avg = -1.5°C) !!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (60 - 73) + (164 - 175) --> total 26 volumes --> OK
 set matTag4         4
-set rho4            1.8e3
+set rho4            1.8
 set refShearModul4  1.3e6
 set refBulkModul4   2.9e6
 set cohesi4         1.2e3
@@ -126,7 +126,7 @@ set zPerm4  1.0e-8
 ## for the ABOVE 04 SUBLAYERS, the unfrozen active layer (all 04 sublayers share
 # identical unfrozen parameters): let's call it tag 10
 set matTag10          10
-set rho10            1.8e3  ;# mass density (kg/m3)
+set rho10            1.8    ;# mass density (kg/m3)
 set refShearModul10  7.5e4  ;# reference shear modulus (kPa)
 set refBulkModul10   2.0e5  ;# reference bulk modulus (kPa)
 set cohesi10         50     ;# cohesion (kPa)
@@ -164,7 +164,7 @@ set zPerm10  1.0e-7
 # VolumeID Tags in GMSH: (46 - 59) + (152 - 163) --> total 26 volumes --> OK
 # VolumeID Tags in GMSH: (31 - 45) + (140 - 151) --> total 27 volumes --> OK
 set matTag5         5
-set rho5            1.9e3   ;# mass density (kg/m3)
+set rho5            1.9     ;# mass density (kg/m3)
 set refShearModul5  5.5e4   ;# reference shear modulus (kPa)
 set refBulkModul5   1.5e5   ;# reference bulk modulus (kPa)
 set frictionAng5    30      ;# friction angle (degrees)
@@ -197,7 +197,7 @@ set zPerm5  6.6e-5
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!! material sublayer 6 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (16 - 30) + (128 - 139) --> total 27 volumes --> OK
 set matTag6         6
-set rho6            1.9e3   ;#
+set rho6            1.9     ;#
 set refShearModul6  7.5e4   ;#
 set refBulkModul6   2.0e5   ;#
 set frictionAng6    33      ;#
@@ -232,7 +232,7 @@ set zPerm6  6.6e-5
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!! material sublayer 7 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # VolumeID Tags in GMSH: (1 - 15) + (116 - 127) --> total 27 volumes --> OK
 set matTag7         7
-set rho7            2.1e3   ;#
+set rho7            2.1     ;#
 set refShearModul7  1.3e5   ;#
 set refBulkModul7   3.9e5   ;#
 set frictionAng7    40      ;#

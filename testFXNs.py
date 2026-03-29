@@ -5,8 +5,9 @@ import meshHelper as mh
 
 # meshFile = os.path.join("testing functions", "G18", "G18-5-2.msh")
 # path = "/Users/yannroger-ft/Desktop/gitHub/OpenSees-Geotechnical/simulations/test SP and MP"
-path = "/home/yafeu/Desktop/GitHub/OpenSees-Geotechnical/simulations/the conf paper"
-meshFile = os.path.join(path, "model1.msh")
+# path = "/home/yafeu/Desktop/GitHub/OpenSees-Geotechnical/simulations/the conf paper"
+path = "/Users/yannroger-ft/Desktop/gitHub/OpenSees-Geotechnical/simulations/the conf paper"
+meshFile = os.path.join(path, "model.msh")
 outDir = os.path.join(os.path.dirname(meshFile), "TCL-Files", os.path.splitext(os.path.basename(meshFile))[0])
 
 # define each group category
@@ -21,9 +22,9 @@ groupCategories = {
     "quad": set(), "bbarQuadUP": set(), "quadUP": set(),
 
     # soil 3D
-    "brickUP": set(), "bbarBrickUP": set(), "SSPbrickUP": set(range(1, 212)), "SSPbrick": set(),
+    "brickUP": set(), "bbarBrickUP": set(), "SSPbrickUP": set(range(1, 8)), "SSPbrick": set(),
     "20_8_BrickUP": set(),
-
+ 
     # ASD absorbing boundaries 2D
     # "ASD2D_B": set(), "ASD2D_L": set(), "ASD2D_R": set(), "ASD2D_BL": set(), "ASD2D_BR": set(),
     #
@@ -350,6 +351,13 @@ baseNodes = mh.sortNodesByZ(mh.sortNodesByY(mh.sortNodesByX(baseNodes, nodeCoord
 with open(os.path.join(outDir, "fixBaseNodes.tcl"), "w") as fBaseN:
     for i in baseNodes:
         fBaseN.write(f"fix {i} 1 1 1 0\n")
+
+topNodes = mh.selectBoundaryNodes(nodeCoords, axis="z", face="max")
+topNodes = mh.sortNodesByZ(mh.sortNodesByY(mh.sortNodesByX(topNodes, nodeCoords), nodeCoords), nodeCoords)
+with open(os.path.join(outDir, "drainageTopNodes.tcl"), "w") as fTopN:
+    for i in topNodes:
+        fTopN.write(f"fix {i} 0 0 0 1\n")
+
 # """
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -443,5 +451,5 @@ with open(os.path.join(outDir, "updatePerm.tcl"), "w") as fUpdatePerm:
 
 elePhyGrp1and2and3_ID = mh.getElementsTagByGroup(elmtsRemapped, {1, 2, 3})
 
-print(equalMasterLateral)
+# print(equalMasterLateral)
 

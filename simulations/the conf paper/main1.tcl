@@ -1,14 +1,32 @@
 wipe
 model BasicBuilder -ndm 3 -ndf 4
 
-source TCL-Files/model1/soil_nodesByDOF_4DOF.tcl
-source TCL-Files/model1/fixBaseNodes.tcl
-source TCL-Files/model1/equalDOFs1D.tcl
+source TCL-Files/model10/soil_nodesByDOF_4DOF.tcl
+source TCL-Files/model10/fixBaseNodes.tcl
+source TCL-Files/model10/equalDOFs1D.tcl
+
+fix 2  0 0 0 1    ;# surface nodes: PP = 0 (free drainage)
+fix 3  0 0 0 1
+fix 6  0 0 0 1
+fix 7  0 0 0 1
 
 source materials.tcl
 
-source TCL-Files/model1/elements_SSPbrickUP.tcl 
-source TCL-Files/model1/analysisParams.tcl
+source TCL-Files/model10/elements_SSPbrickUP.tcl 
+source TCL-Files/model/analysisParams.tcl
+
+numberer    RCM
+system      SparseGeneral
+test		RelativeEnergyIncr 1e-3 50 1
+algorithm	KrylovNewton
+constraints	Penalty 1.0e14 1.0e14
+integrator 	Newmark 0.6 0.3025
+analysis	Transient
+
+recorder Node -file results/results10/gravE_disp.out    -time -nodeRange 1 32  -dof 1 2 3 disp
+recorder Node -file results/results10/gravE_pp.out      -time -nodeRange 1 32  -dof 4 vel
+recorder Element -file results/results10/gravE_stress.out -time -eleRange 489 540 stress
+recorder Element -file results/results10/gravE_strain.out -time -eleRange 489 540 strain
 
 updateMaterialStage -material 1 -stage 0
 updateMaterialStage -material 2 -stage 0
@@ -18,43 +36,56 @@ updateMaterialStage -material 5 -stage 0
 updateMaterialStage -material 6 -stage 0
 updateMaterialStage -material 7 -stage 0
 
-# constraints Penalty 1.e10 1.e10
-constraints Transformation
-test        RelativeNormDispIncr 1e-5 50 1
-algorithm   Newton
-numberer    RCM
-system      SparseGeneral
-integrator  Newmark $gamma $beta
-analysis    Transient
+recorder Node -file results/results10/gravP_disp.out    -time -nodeRange 1 32  -dof 1 2 3 disp
+recorder Node -file results/results10/gravP_pp.out      -time -nodeRange 1 32  -dof 4 vel
+recorder Element -file results/results10/gravP_stress.out -time -eleRange 489 540 stress
+recorder Element -file results/results10/gravP_strain.out -time -eleRange 489 540 strain
 
-# InitialStateAnalysis on
+set startT  [clock seconds]
 
-set startT [clock seconds]
-set ok [analyze 2 5.0e-2]
-if {$ok != 0} {
-    puts "WARNING: elastic gravity did not converge — retrying with relaxed tolerance"
-    test NormDispIncr 1e-3 100 1
-    analyze 2 5.0e-2
+set NumIncr0 5
+for {set numincr 1} {$numincr <= $NumIncr0} {incr numincr 1} {
+	puts "**Elastic Geostatic Analysis step : $numincr **"
+	analyze 20  5.0e2
 }
 
-puts "Finished with elastic gravity analysis..."
+puts " Elastic Geostatic Analysis step success ";
 
-# InitialStateAnalysis off
-# puts "InitialStateAnalysis is OFF — starting plastic gravity..."
 
+# switch material stage from elastic (gravity) to plastic -------> 2nd run
+
+updateMaterialStage -material 1 -stage 1
+updateMaterialStage -material 2 -stage 1
+updateMaterialStage -material 3 -stage 1
+updateMaterialStage -material 4 -stage 1
 updateMaterialStage -material 5 -stage 1
 updateMaterialStage -material 6 -stage 1
 updateMaterialStage -material 7 -stage 1
 
-# DIAGNOSTIC RECORDERS for gravity phase
-recorder Node -file results1/grav_disp.out    -time -nodeRange 1 32  -dof 1 2 3 disp
-recorder Node -file results1/grav_pp.out      -time -nodeRange 1 32  -dof 4 vel
-recorder Element -file results1/grav_stress.out -time -eleRange 489 540 stress
-recorder Element -file results1/grav_strain.out -time -eleRange 489 540 strain
+set NumIncr1 5
+for {set numincr 1} {$numincr <= $NumIncr1} {incr numincr 1} {
+	puts "**Plastic Geostatic Analysis step : $numincr **"
+	analyze 40  5e2
+}
 
-test NormDispIncr 1e-3 50 1
-system BandGeneral
-analyze 40 5.0e-4
+puts " Plastic Geostatic Analysis step success ";
+puts "First run done. Gravity Applied"
+
+
+# After plastic geostatic
+set node_top    6
+set node_bottom 31
+
+set disp_top    [nodeDisp $node_top    3]
+set disp_bot    [nodeDisp $node_bottom 3]
+set pp_top      [nodeDisp $node_top    4]
+set pp_bot      [nodeDisp $node_bottom 4]
+
+puts "Geostatic Check"
+puts "Vertical disp top node:    $disp_top  (should be approx 0)"
+puts "Vertical disp bottom node: $disp_bot  (should be 0, fixed)"
+puts "Pore pressure top:         $pp_top    (should be approx 0 if drained top)"
+puts "Pore pressure bottom:      $pp_bot    (should be gamma_w * H)"
 
 
 # update permeability for dynamic analysis
@@ -66,10 +97,10 @@ set xPerm5 6.6e-5; set yPerm5 6.6e-5; set zPerm5 6.6e-5
 set xPerm6 6.6e-5; set yPerm6 6.6e-5; set zPerm6 6.6e-5
 set xPerm7 6.6e-5; set yPerm7 6.6e-5; set zPerm7 6.6e-5
 
-source TCL-Files/model1/updatePerm.tcl
+source TCL-Files/model10/updatePerm.tcl
 puts "Finished updating permeabilities for dynamic analysis..."
 puts " "
-flush stdout
+
 
 setTime 0.0
 wipeAnalysis
@@ -79,7 +110,7 @@ set recDT [expr 10*$motionDT]
 
 set node1 6; set node2 19; set node3 23; set node4 27
 
-recorder Node -file results1/accelRigidBaseSPConf.out -time -dT $recDT \
+recorder Node -file results/results10/accelRigidBaseSPConf.out -time -dT $recDT \
     -node $node1 $node2 $node3 $node4 \
     -dof 1 2 3 accel
 
